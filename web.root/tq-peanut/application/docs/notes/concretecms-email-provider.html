@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>ConcreteCMS Email Providers</h1>
+<p>ConcreteCMS uses provider classes the permit the overriding of core services. We use a custom provider to override
+the default mail service to use the Tops email system instead.
+The concreteCms service uses Lamina Mail (and formerly Zend mail)</p>
+<p>There are two classes:</p>
+<ul>
+<li>Application\providers\TopsMailServiceProvider
+-Located in application\src\providers directory</li>
+<li>Tops\concrete5\services\TopsMailService<ul>
+<li>Located in packages/knockout_view/src/concrete5/services/</li>
+</ul>
+</li>
+</ul>
+<p>To configure your application:</p>
+<ol>
+<li>In classes.ini register a mailer class:</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-ini">[tops.mailer]
+type='Tops\mail\TMailgunMailer'
+singleton=1</code></pre>
+<p>See <a href="../peanut/email.html">Email</a> for more details.</p>
+<ol start="2">
+<li>Add code to register the ConcreteCMS provider application/config/app.php (not to be confused with bootstrap/app.php)</li>
+</ol>
+<pre><code class="language-php">&lt;?php
+include_once (PNUT_APPLICATION . '/' . DIRNAME_CLASSES . '/providers/TopsMailServiceProvider.php');
+
+return [
+    'providers' =&gt; array(
+       'core_mail' =&gt; '\Application\providers\TopsMailServiceProvider'
+    ),
+
+];
+</code></pre>
+<p>If you want to use the default ConcreteCMS service instead, omit this code from app.php</p>
+<ol start="3">
+<li>Be sure 'topsmailservice' is enabled in settings.ini.  Since it is enabled by default, just comment out
+any existing setting that would turn it off.</li>
+</ol>
+</body>
+</html>

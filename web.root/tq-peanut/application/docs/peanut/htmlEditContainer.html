@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>TinyMce with htmlEditContainer</h1>
+<p>HtmlEditContainer is a Typescript class designed as a facade to simplify initialization and control of the TinyMce editor.
+The TinyMce library is used to present a WYSIWYG editor for email and content. Email composition is the
+primary use in our application.</p>
+<h2>Initialization</h2>
+<p>Initialization sequence is important with TinyMce.  For instance unexpected behavior can occur if the editor
+is used before it is fully initialized.  For that reason, it is important to define a startup function that
+executes after initialization so that you do not present the editor for use prematurely.</p>
+<p>HtmlEditContainer offers to initialization methods.</p>
+<pre><code class="language-typescript">       initialize = (selector: string, onInitialized?: () =&gt; void);</code></pre>
+<p>Selector is the id of the textarea where the editor appears. The optional onInitialized function
+is the function the executes after initialization is complete.</p>
+<p>This method is usually a safe bet to use in the init() method of a view model.  The constructor is
+takes an instance of view model or a knockout component.</p>
+<pre><code class="language-typescript">    let me = this;
+    me.application.loadResources([
+        '@pnut/htmlEditContainer'
+    ], () =&gt; {
+        // create editor instance            
+        me.htmlEditor =  new Peanut.htmlEditContainer(me);
+        // set uptions
+        me.htmlEditor.addOptions({height: '50ex'})
+        me.htmlEditor.includeDesignTools();
+        // initialize
+        me.htmlEditor.initialize('test-editor', () =&gt; {
+            me.bindDefaultSection();
+            successFunction();
+        })
+    });</code></pre>
+<p>The htmlEditContainer.initialize() function takes care of loading TinyMce script dependencies and ensures the editor is not used
+until after the view model is presented.  Another option is to load the script dependencies and instatiate the 
+htmlEditContainer in the view model init() method and then call htmlEditContainer.initEditor() whenever 
+you are ready to initialize the editor. In this case it is not necessary to pass the view model reference 
+to the constructor.</p>
+<pre><code class="language-typescript">me.application.loadResources([
+    '@lib:tinymce',
+    '@pnut/ViewModelHelpers.js',
+    '@pnut/htmlEditContainer'
+], () =&gt; {
+    me.htmlEditor = new Peanut.htmlEditContainer();
+    me.htmlEditor.includeDesignTools();
+    me.htmlEditor.initEditor('messagehtml',() =&gt; {
+        me.bindDefaultSection();
+        successFunction();
+    })
+});</code></pre>
+<p>In certain circumstances we need to delay initialization until first use of the editor. We found this to be the case
+in one instance where the editor was presented in a dialog box and invoked in the context of a service response 
+handler. It seems that trouble can occur if text assignment does not occur in the same context as the initialization.</p>
+<p>The following example is taken for the implementation of a knockout component.  In the component initialization
+we instantiate the htmlEditContainer.</p>
+<pre><code class="language-typescript">    me.application.loadResources([
+        '@pnut/htmlEditContainer'
+    ], () =&gt; {
+        me.htmlEditor =  new Peanut.htmlEditContainer(me.owner);
+
+        // finish component initialization
+
+    });</code></pre>
+<p>Then in the service response we check for initialization and display the editor.</p>
+<pre><code class="language-typescript">    let me = this;
+    if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+        if (me.htmlEditor.editorInitialized) {
+            me.htmlEditor.setContent(serviceResponse.Value);
+            me.showModal('editorModal')
+        }
+        else {
+            me.htmlEditor.addOptions({height: '25em'})
+            this.htmlEditor.initialize('confirmation-editor', () =&gt; {
+                me.htmlEditor.setContent(serviceResponse.Value);
+                me.showModal('editorModal')
+            });
+        }
+    }</code></pre>
+<h2>Tool Bar Options</h2>
+<p>The editor offer two built-in configurations, and a means to declare custom options.</p>
+<p>By default a simple tool bar is presented:</p>
+<p><img src="../img/tinymce-simple.jpg" alt="tinymce-simple.jpg" /></p>
+<p>Use this method to display a richer set of tool bar options:</p>
+<pre><code class="language-typescript">me.htmlEditor.includeDesignTools();</code></pre>
+<p><img src="../img/tinymce-design-tools.jpg" alt="tinymce-design-tools.jpg" /></p>
+<p>There are additional methods you can used to show particular tools.</p>
+<h2>Editor configuration and other options</h2>
+<p>By default, the editor is configured for use in email. You can change to a configuration
+that favors content editing by using the configureForContentEditing() method.</p>
+<pre><code class="language-typescript">me.htmlEditor.configureForContentEditing();</code></pre>
+<p>The difference is the when configured for email, URLs for links and images are expanded to the full URL
+including the protocol ('https://).  When the alternative expands to the document root with no
+protocol.</p>
+<p>And for most flexible configuration you can use the addOptions method to add or overwrite 
+any TinyMce initialization options.  This is frequently used to set the height of the editor:</p>
+<pre><code class="language-typescript"> me.htmlEditor.addOptions({height: '50ex'})</code></pre>
+<p>For a full list and documentation of other options see:
+<a target="_blank" href="https://www.tiny.cloud/docs/tinymce/5/configure/">TinyMce Documentation</a></p>
+<h2>TinyMce inside Bootstrap 5 Modal</h2>
+<p>Inside a Bootstrap 5 modal, dialog windows such as the 'link' dialog mysterious fail to allow editing. This issue 
+occurs due to Bootstrap's enforceFocus behavior, which prevents elements outside the modal from gaining focus. 
+Since TinyMCE's link dialog is technically a separate modal, Bootstrap interferes with its functionality.</p>
+<p>There are two steps to fix this.</p>
+<p>First disable ensureFocus by adding the 'data-bs-focus="false"' attribute to the top level modal element.</p>
+<pre><code class="language-html">&lt;div class="modal" id="send-message-modal" data-bs-focus="false" &gt;</code></pre>
+<p>Since this automatic focus is now disabled, you need to "manually" focus an element when the dialog is shown. 
+And your version of this event handler before the dialog box is shown.</p>
+<pre><code class="language-typescript">    document.getElementById('send-message-modal').addEventListener('shown.bs.modal', function () {
+        let subjectField = document.getElementById('subject');
+        if (subjectField) {
+            subjectField.focus();
+        }
+    });</code></pre>
+<h2>Images and ConcreteCMS</h2>
+<p>In ConcreteCMS, the file manager can be used effectively with TinyMce to compose email with
+images.  See a full description of the technique here:</p>
+<p><a href="../pdf/email-images.pdf">Email Images with Concrete CMS</a></p>
+</body>
+</html>

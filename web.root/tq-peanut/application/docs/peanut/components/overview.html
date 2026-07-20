@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../../markdown.css">
+
+</head>
+<body>
+<p><a href="../../index.html">Return to docs home page</a></p>
+<h1>Peanut UI Components</h1>
+<p>Notes from SCYM project may apply to or be adapted in the FMA project.</p>
+<h2>Component types</h2>
+<p>We use "component" here to mean any Typescript/HTML code that can be reused across peanut ViewModel/Views.  They include:</p>
+<ul>
+<li>Knockout Components</li>
+<li>Observable container classes</li>
+<li>Model/View Patterns</li>
+</ul>
+<h3>Knockout Components</h3>
+<p>Based on Knockout js component model. Like a viewmodel, has a view model class match with an HTML templated.  Peanut has special support for dynamic loading of thes components.</p>
+<p>Components models are stored in a 'components' and named by convention:</p>
+<pre><code>componentName + 'Component.ts
+e.g. personsSelectorComponent.ts</code></pre>
+<p>Templates are store in a 'templates' directory parallel to the components directory and named by convention:</p>
+<pre><code>componentName + '.html'</code></pre>
+<p>Here's a template for the component viewmodel:</p>
+<pre><code class="language-typescript">/// &lt;reference path='../../typings/knockout/knockout.d.ts' /&gt;
+namespace Peanut {
+    export class componentnameComponent {
+        // observables
+
+        // variables.
+
+
+        // include constructor if any params used
+        constructor(params: any) {
+            let me = this;
+
+            if (!params) {
+                console.error('componentnameComponent: Params not defined in translateComponent');
+                return;
+            }
+            // initialize observavles and variables from params
+            /* Example:
+                if (!params.parameterName) {
+                    console.error('componentnameComponent: Parameter "parameterName" is required');
+                    return;
+                }
+            */
+
+        }
+    }
+}</code></pre>
+<p>Component templates are an ordinary HTML fragment with data bindings to the component view model.</p>
+<h4>Initialization</h4>
+<p>Components are registered or loaded in the ViewModel.init() function using the application.registerComponent method.</p>
+<pre><code class="language-typescript">me.application.registerComponents('@pnut/modal-confirm', () =&gt; {
+
+});</code></pre>
+<p>Sometimes the view model needs some control over the component, for instance to load or clear data.  In this case
+late binding can be used so that the view model may create the component vm and keep the reference.
+In this technique, the application.loadComponent() method is used to reference the component source and
+templalte then registerComponent is called passign in an instance of the model.</p>
+<pre><code class="language-typescript">me.application.loadComponents('tests/message-constructor', () =&gt; {
+    let cvm = new messageConstructorComponent('Smoke Test Buttons:');
+    me.application.registerComponent('tests/message-constructor', cvm, () =&gt; {
+        me.bindDefaultSection();
+        successFunction();
+    });
+});
+</code></pre>
+<h3>Comunication with ViewModel</h3>
+<p>The component can communicate with the owning ViewModel using one or more of these techniques.</p>
+<ol>
+<li>Pass a reference to the view model using a parameter in the markup with the value 'self'.  Often used to provide a translator object.
+as in the case of translateComponent.</li>
+<li>Pass a reverence to a method on the view model. See pagerComponent for an example.</li>
+<li>Use the constructor in the case of a late bound component like 'personSelectorComponent'.</li>
+</ol>
+<h4>Markup examples:</h4>
+<pre><code class="language-html">&lt;translate params="code:'form-legend',translator:self"&gt;&lt;/translate&gt;
+&lt;pager params='click:onPagerClick,page:currentPage,max:maxPages,waiter:refreshing,owner:self'&gt;&lt;/pager&gt;</code></pre>
+<h4>ViewModel event handlers</h4>
+<p>The handle event method is typically used for communication between objects such as knockout components.  An evant handler
+method is defined in the interface IEventHandle (peanut.d.ts)</p>
+<pre><code class="language-typescript">    export interface IEventSubscriber {
+        handleEvent : (eventName: string, data?: any) =&gt; void;
+    }</code></pre>
+<p>ViewModelBase implements IEventSubscriber with an empty method, so overiding is optional and calls to handleEvent
+have not effect if not overriden in the concrete view model class.</p>
+<p>A reference to the view model may be passed using the constructor or in the markup, and implemented in view model like this:</p>
+<pre><code class="language-typescript">handleEvent = (eventName:string, data?:any)=&gt; {
+    let me = this;
+    switch (eventName) {
+        case 'person-selected' :
+            me.newTerm(&lt;INameValuePair&gt;data.person);
+            break;
+
+        case 'person-search-cancelled' :
+            // alert('Search cancelled.');
+            break;
+        case 'test' :
+            alert('event test');
+            break;
+    }
+};</code></pre>
+<pre><code class="language-typescript">selectPerson = (personItem:INameValuePair)=&gt; {
+    var me = this;
+    me.hide();
+    if (me.owner) {
+        me.owner.handleEvent('person-selected',
+            {person: personItem, modalId: me.
+              Id()}
+        )
+    }
+};</code></pre>
+<h3>Observable container classes</h3>
+<p>These classes encapsulate a set of observables and may be used in different view models. Implementation of the view is done in the specific ViewModel/View that hosts the instance of this class.</p>
+<h4>Usages</h4>
+<p>Often used for forms.</p>
+<p>Class example:</p>
+<pre><code>/pnut/packages/qnut-directory/js/PersonObservable.ts</code></pre>
+<p>Usage example:</p>
+<pre><code>/pnut/packages/qnut-directory/vm/UserProfileViewModel.ts</code></pre>
+<p>Or used for special ui components.
+Class example:</p>
+<pre><code>/pnut/js/searchListObservable.ts</code></pre>
+<p>Usage example:</p>
+<pre><code>/pnut/packages/qnut-directory/js/DirectoryEntities.ts</code></pre>
+<h3>Model/View Patterns</h3>
+<p>These are simply code fragments that may be extracted from an existing ViewModel and View and adapted for use elsewhere.</p>
+<p>They may be suitable for later refactoring to a component or reusable class.</p>
+</body>
+</html>

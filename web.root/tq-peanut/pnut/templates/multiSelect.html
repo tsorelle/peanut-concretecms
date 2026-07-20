@@ -1,0 +1,15 @@
+<div class="form-group mb-3 pnut-multi-select">
+    <label class="form-label" data-bind="visible:label, text:label,attr: { for: controlId }"></label>
+    <select class="form-select"
+            data-bind="visible:options().length, attr: { id: controlId },
+            options: options, optionsText:'name', value: selectedItem, optionsCaption:caption">
+    </select>
+    <ul style="clear: both;padding-left:2rem" data-bind="foreach:selected">
+        <li><span data-bind="text:name"></span>
+            <span style="white-space: nowrap;">
+            [<a href="#" data-bind="click:$parent.removeItem">
+            <span data-bind="text:$parent.removeText"></span>
+            </a>] </span>
+        </li>
+    </ul>
+</div>

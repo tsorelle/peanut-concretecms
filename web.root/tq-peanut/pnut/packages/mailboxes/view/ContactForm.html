@@ -1,0 +1,64 @@
+<div id="contactform-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="contactform-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+    <h3 data-bind="text:headerMessage"></h3>
+        <div class="col-md-12">
+            <form  data-bind="visible:formVisible">
+
+                <div class="form-group mb-3" data-bind="visible: mailboxList().length > 0,css: {'text-danger': mailboxSelectError}">
+                    <label class="control-label form-control-label" for="mailBox" data-bind="selectLabel">
+                        <translate params="code:'mail-select-recipient',translator:self"></translate></label>
+                    <span class="error" data-bind="visible: mailboxSelectError, text: mailboxSelectError"></span>
+                    <select class="form-select"  id="mailBox" data-bind="options: mailboxList,
+                       optionsText: 'displaytext',
+                       value: selectedMailbox,
+                       optionsCaption: selectRecipientCaption"></select>
+                </div>
+
+
+                <div class="form-group mb-3" data-bind="css: {'text-danger': fromNameError}">
+                    <label class="control-label form-control-label" for="fromName"><translate params="code:'label-your-name',translator:self"></translate> </label>
+                    <span class="error" data-bind="visible: fromNameError, text: fromNameError"></span>
+                    <input type="text" class="form-control" id="fromName" data-bind="textInput: fromName" />
+                </div>
+
+                <div class="form-group mb-3" data-bind="css: {'text-danger': fromAddressError}">
+                    <label class="control-label" for="fromAddress"><translate params="code:'label-your-email',translator:self"></translate></label>
+                    <span class="error" data-bind="visible: fromAddressError, text: fromAddressError"></span>
+                    <input type="text" class="form-control" id="fromAddress" data-bind="textInput: fromAddress" />
+                </div>
+
+                <div class="form-group mb-3" data-bind="css: {'text-danger': subjectError}">
+                    <label class="control-label" for="subject"><translate params="code:'label-subject',translator:self"></translate></label>
+                    <span class="error" data-bind="visible: subjectError, text: subjectError"></span>
+                    <input type="text" class="form-control" id="subject" data-bind="textInput: messageSubject" />
+                </div>
+
+                <div class="form-group mb-3"  data-bind="css: {'text-danger': bodyError() != ''}">
+                    <label class="control-label" for="body"><translate params="code:'label-message',translator:self"></translate></label>
+                    <span class="error" data-bind="visible: bodyError, text: bodyError"></span>
+                    <div data-bind="visible:userIsAnonymous">
+                        <textarea rows="8" class="form-control" id="body" data-bind="value: messageBody"></textarea>
+                    </div>
+                    <div data-bind="visible:!userIsAnonymous()">
+                        <textarea id="messagehtml" rows="8" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <button class="btn btn-primary" data-bind="click: sendMessage"><i class="fas fa-paper-plane"></i>
+                        &nbsp;Send your message
+                    </button>
+                </div>
+
+                <input type="hidden" name="recipientId" id="recipientId" value="">
+                <div class="security-section">
+                    <label for="security-control">Do not fill in this field</label>
+                    <input type="text" id="security-control" value="" />
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+<!-- end div container -->

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>Development Environment Setup</h1>
+<h1>The Runtime Environment</h1>
+<h2 id="the-lamp-stack">The LAMP Stack</h2>
+<p>The acronym LAMP originally referred to Linux-Apache-MySQL-Perl.  Now it is used generically
+to refer to similar combinations.  For instance most now substitute PHP for Perl, sometimes
+MariaDB for MySQL, sometimes nginx for Apache.  And there are versions for OSes other than Linux. </p>
+<p>In our case the following services must be included:</p>
+<ol>
+<li>Web Server: Apache or nginx.</li>
+<li>PHP version 8.2 or greater.</li>
+<li>MySQL or MariaDB.</li>
+</ol>
+<p>These are availble in several forms, select one of the following.</p>
+<ul>
+<li>Docker image
+(ours? download info?)</li>
+<li>Wamp Server (Windows  only)<br>
+<a target="_blank" href="https://wampserver.aviatechno.net/">https://wampserver.aviatechno.net/</a></li>
+<li>MAMP for Mac or Windows<br>
+<a target="_blank" href="https://www.mamp.info/en/windows/">https://www.mamp.info/en/windows/</a></li>
+<li>XAMP (by Apache Friends)<br>
+<a target="_blank" href="https://www.apachefriends.org/download.html">https://www.apachefriends.org/download.html</a></li>
+<li>AMPPS (by Softaculous)<br>
+<a target="_blank" href="https://ampps.com/">https://ampps.com/</a></li>
+</ul>
+<h1>Development Tools</h1>
+<h2>Recommended Editors/IDE</h2>
+<h3>PhpStorm</h3>
+<p>Full stack PHP / Typescript development environment . Individual subscription is $99 for first year and decreases in subsequent years.  <br>
+see: <a target="_blank" href="https://www.jetbrains.com/phpstorm/buy/?section=personal&amp;billing=yearly">https://www.jetbrains.com/phpstorm/buy/?section=personal&amp;billing=yearly</a></p>
+<p>If you have an affiliation with a college or university (student, instructor...) you may be able to
+obtain a free copy.<br>
+see: <a target="_blank" href="https://www.jetbrains.com/phpstorm/buy/?section=discounts&amp;billing=yearly">https://www.jetbrains.com/phpstorm/buy/?section=discounts&amp;billing=yearly</a></p>
+<h3>VS Code</h3>
+<p>Visual Studio Code is Microsoft's free code editor based on Visual Studio. You can download and install
+it from the Microsoft Store.  It is very capable, but you'll
+need to do additional configuration for PHP and Typescript support.</p>
+<ul>
+<li><a target="_blank" href="https://code.visualstudio.com/docs/languages/php">https://code.visualstudio.com/docs/languages/php</a></li>
+<li><a target="_blank" href="https://code.visualstudio.com/Docs/languages/typescript">https://code.visualstudio.com/Docs/languages/typescript</a></li>
+</ul>
+<h2>Compilers and other Tools</h2>
+<p>Additionally you'll need these additional free tools. They can be installed individually using NPM or may
+come with your development IDE such as PHPStorm.</p>
+<ol>
+<li>NodeJS / Npm - Package manager to install other tools:<br>
+<a target="_blank" href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a></li>
+<li>Git - Version Control<br>
+<a target="_blank" href="https://github.com/git-guides/install-git">https://github.com/git-guides/install-git</a></li>
+<li>TypeScript compiler:
+<a target="_blank" href="https://www.typescriptlang.org/">https://www.typescriptlang.org/</a></li>
+</ol>
+<p>Optional: </p>
+<ol>
+<li>Composer, used to update third-party code located in the "vendor" directory:
+<a target="_blank" href="https://getcomposer.org/">https://getcomposer.org/</a></li>
+<li>SASS compiler for css files:
+<a target="_blank" href="https://sass-lang.com/install/">https://sass-lang.com/install/</a></li>
+</ol>
+<h1>Environment setup</h1>
+<p>You'll need some files stored on our web server.  We'll provide FTP credentials.</p>
+<h2>Steps</h2>
+<p>Here are the steps you will take.</p>
+<ol>
+<li>Install NodeJS and Git if your don't have them already</li>
+<li>Download the project setup files from the web server.<br><ul>
+<li>(home)/dev/setup/fma-project-start.zip</li>
+<li>(home)/dev/setup/fma-dev-database.sql</li>
+<li>(home)/dev/setup/application-documents.zip</li>
+</ul>
+</li>
+<li>Create a project directory</li>
+<li>Extract fma-project-start.zip to your project directory.</li>
+<li>Extract application-documents.zip to the application subdirectory of your project directory.</li>
+<li>Check out from the Git Respository to your project root folder.<br>
+<a target="_blank" href="https://github.com/tsorelle/austinquakers-2019">https://github.com/tsorelle/austinquakers-2019</a> <br>
+Branch: release-2024.2</li>
+<li>If needed, install the <a href="#the-lamp-stack">LAMP stack</a></li>
+<li>Configure the web server to point to your document root at (project directory)/web.root
+See <a href="#web-server-configuration">Web Server Configuration</a></li>
+<li>Using PhpAdmin or other MySQL tool, execute the "fma-dev-database.sql" script to create 
+and populate the database.</li>
+<li>Run a typescript compile to build the javascript. See <a href="#compiling-typescript">Compiling Typescript</a>.</li>
+<li>Update configuration files if needed. See <a href="#configuration-files">Configuration Files</a></li>
+</ol>
+<h2 id="compiling-typescript">Compiling Typescript</h2>
+<p>See this article for installing and configuring TypeScript<br>
+<a target="_blank" href="https://www.typescriptlang.org/download/">https://www.typescriptlang.org/download/</a></p>
+<p>If typescript is installed to run at the command line, change to the project root directory, where
+the tsconfig.json is located, and simply run "tsc".</p>
+<pre><code class="language-cmd">&gt; tsc</code></pre>
+<p>If using PhpStorm with the bundled version of typescript, follow these steps:</p>
+<ol>
+<li>Check your typescript configuration in <br>
+Settings &gt; Languages &amp; Frameworks &gt; Typescript<br>
+For complete documentation see:<br>
+<a target="_blank" href="https://www.jetbrains.com/help/phpstorm/typescript-support.html">https://www.jetbrains.com/help/phpstorm/typescript-support.html</a></li>
+<li>Open any *.ts file in the editor. And click the "TS" icon at bottom or the window, 
+and click the "Hammer" icon (build).</li>
+</ol>
+<p><img src="img/ts-compile.jpg" alt="ts-compile.jpg" /></p>
+<ol start="3">
+<li>From the "Compile TypeScript" menu, select "tsconfig.json"<br> 
+<img src="img/tsconfig-compile.jpg" alt="tsconfig-compile.jpg" /></li>
+</ol>
+<p>Once you have compiled all the files, the IDE will automatically recompile individual files when
+they are changed.</p>
+<h2 id="configuration-files">Configuration files</h2>
+<p>Configuration files checked out from the repository will usually be suitable for your development 
+environment.  However, here is a quick summary in case you need to make changes.</p>
+<p>All the files discussed below are located in the \application\config folder.</p>
+<h3>Classes.ini</h3>
+<p>The setting in this file of most concern to the developer is the "tops.mailer" section.
+Developers will want a mail handler for testing that does not really send messages.</p>
+<p>The two choices are 'TDevMailer' or 'TNullMailer'</p>
+<pre><code class="language-ini">; use null mailer to disable mail service
+;type='Tops\mail\TNullMailer'
+;singleton=1
+
+; writes messages to the maildrop directory
+type='Tops\mail\TDevMailer'
+singleton=1</code></pre>
+<p>TNullMailer disables mail services.  It does nothing and raises no errors.</p>
+<p>TDevMailer writes the messages to a maildrop directory where the developer can open them
+in a browser to examine the contents. The directory must be created in advance. The default
+location is "maildrop" in the project route.  The location can be overridden by a setting in
+application/config/settings.ini. See below.</p>
+<h3>Settings.ini</h3>
+<h2>composer</h2>
+<pre><code class="language-ini">[locations]
+; composer='./vendor'</code></pre>
+<p>The composer setting determines the location of the vendor folder relative to the document root (web.root).
+If the setting is commented out or not present the default is '../vendor'. This is consistent with our standard
+set up but if you have multiple vendor folders or use different location, you can change it.</p>
+<h2>maildrop</h2>
+<pre><code class="language-ini">[mail]
+; maildrop='\dev\fma\tmp\mail'</code></pre>
+<p>By default TDevMailer writes files to the 'maildrop' directory in your project directory.  If you prefer a different 
+location you can override the setting here. </p>
+<h3>database.php</h3>
+<p>This file is created by the ConcreteCMS installation when you enter database information. If you need to edit the
+file to point to a different database, go right ahead and ignore the "DO NOT EDIT THIS FILE DIRECTLY" warning.</p>
+<p>configuration:</p>
+<pre><code class="language-php">    'database' =&gt; 'austinqu_fma',
+    'username' =&gt; 'austinqu_dba',
+    'password' =&gt; 'F0xS@ysN0W@r',
+    'character_set' =&gt; 'utf8mb4',</code></pre>
+<h2 id="web-server-configuration">Web Server Configuration</h2>
+<p>(These instructions apply to the Apache server only.)</p>
+<p>After your LAMP stack is installed, check these Apache and PHP configuration files. You will need to point to the 
+web.root directory as your document root. In the examples below we use "d:/projects/fma/web.root".  Replace this with 
+the full path to web.root on your machine</p>
+<p>There are two appoaches.</p>
+<ol>
+<li>Change the default Document root</li>
+<li>Create a virtual host (VHost)</li>
+</ol>
+<p>To use the default document root, change this entry in httpd.conf:</p>
+<pre><code class="language-apacheconf">DocumentRoot "d:/projects/fma/web.root"
+&lt;Directory "d:/projects/fma/web.root"&gt;
+    Options +Indexes +FollowSymLinks +Multiviews
+    AllowOverride all
+    Require local
+&lt;/Directory&gt;</code></pre>
+<p>Using this option you can open your dev site in a browser with:</p>
+<pre><code>http://localhost</code></pre>
+<p>The second option is especially useful if you have multiple web sites to test or if you are using localhost for other 
+purposes. For example, in Wampserver localhost is used for access to several utilities.</p>
+<p>To configure your site as a VHost...<br>
+Leave the document root definition as is and add an additional <directory> section in httpd.conf:</p>
+<pre><code class="language-apacheconf"># local.austinquakers.org
+&lt;Directory "d:/projects/fma/web.root"&gt;
+    Options Indexes FollowSymLinks
+    AllowOverride all
+    Require all granted
+&lt;/Directory&gt;
+</code></pre>
+<p>Make sure the following settings are enabled.</p>
+<pre><code class="language-apacheconf">LoadModule vhost_alias_module modules/mod_vhost_alias.so
+# Virtual hosts
+Include conf/extra/httpd-vhosts.conf
+</code></pre>
+<p>If you do not have a httpd-vhosts.conf file in conf/extra, create one.</p>
+<p>Add the following settings:</p>
+<pre><code class="language-apacheconf"># localhost
+# Change the path if your localhost document root is elsewhere.
+&lt;VirtualHost _default_:80&gt;
+  ServerName localhost
+  ServerAlias localhost
+  DocumentRoot "${INSTALL_DIR}/www"
+  &lt;Directory "${INSTALL_DIR}/www/"&gt;
+    Options +Indexes +Includes +FollowSymLinks +MultiViews
+    AllowOverride All
+    Require local
+  &lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName local.austinquakers.org
+  DocumentRoot "d:/projects/fma/web.root"
+&lt;/VirtualHost&gt;</code></pre>
+<p>As a final step, update your "hosts" file. Usually found at C:\Windows\System32\drivers\etc\hosts.<br>
+Add this line.</p>
+<pre><code>127.0.0.1 local.austinquakers.org</code></pre>
+<p>Once all this is complete you can your development site like this:</p>
+<pre><code>http://local.austinquakers.org</code></pre>
+<p>Note that we did not use https: as we would on a production site.  You can change this by installing open ssl on the
+local web server.</p>
+<h2>PHP Settings</h2>
+<p>Check your php.ini file for these settings:</p>
+<ul>
+<li>max_execution_time - 60 to 120</li>
+<li>allow_url_fopen - On</li>
+<li>allow_url_include - Off</li>
+<li>file_uploads - On</li>
+<li>memory_limit - 128M to 512M</li>
+<li>upload_max_filesize - 512M</li>
+</ul>
+<h2>XDebug Installation</h2>
+<p>If you will be doing any PHP debugging you will need to install XDebug for PHP. XDebug 3 is preferred.  Many LAMP stacks 
+such as WampServer come with XDebug pre-installed.  If you are not sure, open info.php in the browser and look for 
+the XDebug section.  The info.php file contains just this:</p>
+<pre><code class="language-php">&lt;?php
+phpinfo();</code></pre>
+<p>For Windows use the XDebug installation wizard to generate installation instructions:<br>
+<a target="_blank" href="https://xdebug.org/wizard">https://xdebug.org/wizard</a></p>
+<p>On Linux you may use the PECL PHP extension manager.  Here are instrucitons for Linux
+<a target="_blank" href="https://dev.to/xxzeroxx/how-to-install-and-configure-xdebug-in-linux-36h8">https://dev.to/xxzeroxx/how-to-install-and-configure-xdebug-in-linux-36h8</a></p>
+<p>On Mac OS you can use homebrew:<br>
+<a target="_blank" href="https://blog.scriptmint.com/installing-xdebug-3-on-macos-and-debug-in-vs-code-912f0d728005">https://blog.scriptmint.com/installing-xdebug-3-on-macos-and-debug-in-vs-code-912f0d728005</a></p>
+<h3></h3>
+<h3>Configure Xdebug for PhpStorm</h3>
+<p>See these instructions for PhpStorm:
+<a target="_blank" href="https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html">https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html</a></p>
+<h3>Configure Xdebug for VS Code</h3>
+<p><a target="_blank" href="https://dev.to/yongdev/how-to-debug-php-using-xdebug-on-vscode-3n4">https://dev.to/yongdev/how-to-debug-php-using-xdebug-on-vscode-3n4</a></p>
+<h2>Unit Testing</h2>
+<p>Our unit tests are under (project root)/tests and are run using PHPUnit 11.5. We have included a copy of phpunit.phar, 
+the PHP archive used to run phpunit, in the (project root)/bin directory.<br />
+The "bootstrap" script that sets up the PHP environment for running our tests is tests\unit\inittesting.php</p>
+<p>A typical command line to run the tests contained in one file would look like this:</p>
+<pre><code class="language-shell">php bin\phpunit.phar --bootstrap tests\unit\inittesting.php tests\unit\DatabaseTest.php</code></pre>
+<p>This assumes your php.exe for 8.2 is in your command serch path.  If not, include the full path, e.g.</p>
+<pre><code class="language-shell">C:\wamp64\bin\php\php8.2.26\php.exe bin\phpunit.phar --bootstrap tests\unit\inittesting.php tests\unit\DatabaseTest.php</code></pre>
+<h3>PHPStorm</h3>
+<p>The PHPUnit support in PhpStorm allows step debugging of unit tests as well as running them.
+Be sure to enable the "Default bootstrap file:" and set the full path to "tests\unit\inittesting.php"</p>
+<h3>VS Code</h3>
+<p>There are several VS Code extenions that support running and debugging PhpUnit tests.<br />
+We have not tested these so please give us feedback on your experience if you try one of them out:</p>
+<ul>
+<li>
+<p>PHPUnit Extension, Elon Mallin: <br>
+<a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=emallin">https://marketplace.visualstudio.com/items?itemName=emallin</a>.</p>
+</li>
+<li>
+<p>PHPUnit Test Explorer, Run your PHPUnit OR Pest tests in Node using the Test Explorer UI.<br>
+<a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=recca0120.vscode-phpunit">https://marketplace.visualstudio.com/items?itemName=recca0120.vscode-phpunit</a></p>
+</li>
+<li>
+<p>Better PHPUnit<br>
+<a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=calebporzio.better-phpunit">https://marketplace.visualstudio.com/items?itemName=calebporzio.better-phpunit</a></p>
+</li>
+<li>
+<p>VSCode-Docker-PHPUnit, <br>
+<a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=eric-c-hansen.vscode-docker-phpunit">https://marketplace.visualstudio.com/items?itemName=eric-c-hansen.vscode-docker-phpunit</a></p>
+</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<site-map>
+	<about title='About' description='About Nutshell' roles=''>
+		<us title='About Us' description='' roles='' />
+		<!-- terry title='About The Author' description='' roles='' / -->
+		<!-- nutshell title='About Nutshell' description='' roles='' / -->
+			<!-- libs title="Components" description="" roles=""/>
+			<design title="Design" description="" roles=""/>
+		</nutshell -->
+	</about>
+	<!-- help title="Help Pages" icon="fas fa-question-circle" description="help"/ -->
+
+	<tests title="Test Pages" description="Pages for testing.">
+		<simpletest title="Simple Test" description="Basic smoke test" roles="" />
+		<modaltest title="Modal Test" description="Test modal dialogs" roles="" />
+		<servicetest title="Service Test" description="Test remote service call" roles="" />
+		<componentstest title="Component Test" description="Test component loading" roles="" />
+		<messagestest title="Messages Test" description="Dialogs and Waiters" roles="" />
+		<multiselect title="Multiselect Test" description="Demo multiselect component" roles="" />
+		<password title="Password Test" description="Demo change password component" roles="" />
+		<pager title="Pager Test" description="Demo pager component" roles="" />
+		<editor title="Editor Test" description="Demo editor component" roles="" />
+	</tests>
+	<tools title="Tools" description="Utilities for administration" roles="administrator" icon="fas fa-cog">
+		<users title="Users" description="User management" roles="administrator" />
+		<scheduler title="Task Scheduler" description="Manage automated tasks"  />
+		<contacts title="Contact Management" description="Manage contacts" />
+		<email title="Email Tools" description="Mailing list management" >
+			<mailboxes title="Mailboxes" uri="tools/email/admin/mailboxes" description="Maintain Mailboxes" />
+			<send title="Send Messages" description="Mailing form" uri="tools/email/admin/message"  />
+			<lists title="Lists" uri="tools/email/admin/lists" description="Email Lists and subscriptions" />
+			<queue title="Message Queue" uri="tools/email/admin/queue" description="Message queue" />
+		</email>
+
+	</tools>
+	<help title="Help" description="Help and documentation">
+		<docs title="Documentation" description="Technical Documentation"/>
+	</help>
+	<!-- page title='' uri='' description='' roles='' / -->
+</site-map>

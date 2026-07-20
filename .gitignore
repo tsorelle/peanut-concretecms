@@ -1,0 +1,67 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.junie/
+.vscode/
+.aiignore/
+*.swp
+*.swo
+
+# Dependencies
+/vendor/
+node_modules/
+**/node_modules/
+
+# Temporary and Build files
+**/*.zip
+.phpunit.result.cache
+
+# Project root folders
+/bin/
+/maildrop/
+/deployment/
+/workspace/
+/distribution/
+/notes/private
+
+# Web root - Distribution files
+/web.root/robots.txt
+/web.root/index.php
+/web.root/LICENSE.TXT
+
+# Web root - Concrete core and updates
+/web.root/concrete/
+/web.root/updates/
+
+/web.root/tq-peanut/src/test/scripts/
+
+# Web root - Application folder
+/web.root/application/files/*
+/web.root/application/config/*
+/web.root/tq-peanut/application/assets/js/libraries/fontawesome/*
+!/web.root/application/config/app.php
+
+/web.root/application/themes
+
+# Web root - tq-peanut config
+/web.root/tq-peanut/config/mailgun.ini
+
+# Web root - Specific package/theme folders
+/web.root/packages/theme_basic_bedrock/
+/web.root/packages/knockout_view/installation/
+
+# Developer tools and test files
+/dev-tools/model-builder/**
+/tests/unit/files/pdf/**
+
+# Theme build
+/theme-build/node_modules/
+/theme-build/output/
+/theme-build/package-lock.json
+
+# Project exclude paths
+/web.root/packages/knockout_view/typings/**
+/web.root/packages/knockout_view/typings-old/**

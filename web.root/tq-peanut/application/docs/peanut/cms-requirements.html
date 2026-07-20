@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Peanut Base Structure</h1>
+<p>In this document we want to describe the essential requirements, directory structure and files
+that make up a Peanut installation on a CMS host.</p>
+<p><strong>Terminology disambiguation:</strong> The term "package" is used in ConcreteCMS to refer to installable modules,
+located in the 'packages' directory, that implement themes, blocks and other add-on items.</p>
+<p>Peanut also uses the term "package", it this case to refer to optional module for the peanut 
+system.  Usually a collection of viewmodels and related PHP source for particular applications.
+We'll refer to these respectively as "cms packages" and "peanut packages." </p>
+<p>Practically all CMS systems have such installable units called by different names. We refer to 
+these generically as "modules" or "cms modules".</p>
+<p>ConcreteCMS will refer to versions 8.0 and later or generically to ConcreteXXX.<br />
+Concrete5 will refer to earlier versions.  </p>
+<h2>Start up requirements</h2>
+<h3>Required JS scripts</h3>
+<p>The following scripts must be referenced at the top of the page.</p>
+<ul>
+<li>Knockout JS:<br>'<a target="_blank" href="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js">https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js</a>'</li>
+<li>Head JS:<br>
+'<a target="_blank" href="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.min.js">https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.min.js</a>',</li>
+<li>Peanut loader found in the peanut distribution directories (e.g. in a package or module)<br>
+'dist/loader.min.js' or 'core/PeanutLoader.js'<br>
+Note that the minified loader file has not been well tested.</li>
+</ul>
+<h2>Startup Script</h2>
+<p>This statement must be used to generate the startup script in or below the footer area </p>
+<pre><code class="language-php">print ViewModelManager::GetStartScript();</code></pre>
+<p>If the page contains a viewmodel, this outputs a script block like this:</p>
+<pre><code class="language-html">&lt;script&gt;
+    Peanut.PeanutLoader.startApplication('FmaMailingLists#1351');
+&lt;/script&gt;</code></pre>
+<p>If multiple viewmodels are present:</p>
+<pre><code class="language-html">&lt;script&gt;
+    Peanut.PeanutLoader.startApplication('@pkg/qnut-committees/CommitteeDescription#750', function() {
+      Peanut.PeanutLoader.loadViewModel('@pkg/qnut-committees/CommitteeMembers#2986', function() {
+        Peanut.PeanutLoader.loadViewModel('@pkg/qnut-documents/DocumentList#2987', function() {
+          Peanut.PeanutLoader.loadViewModel('@pkg/qnut-calendar/Calendar#761');
+        });
+      });
+    });
+&lt;/script&gt;</code></pre>
+<p>When no viewmodels are present on the page an empty string is output,
+thus having no effect.</p>
+<h2>ViewModel Loading converntions</h2>
+<h1>Naming and location</h1>
+<p>Viewmodels are is located in the application/peanut directory or in the "peanut package" directorys.<br>
+The js file containing the ViewModel subclass is in a "/vm" subdirectory and the html file containing the "view" is
+in the corresponding "/view" subdirtory</p>
+<p>In all peanut host systems, configuration is specified for a viewmodel in a viewmodel.ini file as in this example:</p>
+<pre><code class="language-ini">[committees]
+vm=Committees
+roles=authenticated
+heading='committee-list-heading'
+
+[committee-sidebar]
+vm=CommitteeSidebar
+
+[committee-description]
+vm=CommitteeDescription</code></pre>
+<p>One viewmodels.ini file may be located in either the application/config directory. Note that all
+peanut host systems must have an "application" directory, not just ConcreteCMS.</p>
+<p>Other viewmodels.ini are located in "config" subdirectory of each "peanut package" (not to be confused with ConcreteCMS packages).</p>
+<p>The code example above comes from:<br>
+pnut/packages/qnut-committees/config/viewmodels.ini</p>
+<h2>Other configuration files</h2>
+<p>Peanut configuration files are located either in "peanut package" directories or application/config.
+Those located in application/config include:</p>
+<ul>
+<li>settings.ini: general settings that may be deployment specfic.</li>
+<li>database.php: Database connection information.  This format conforms to ConcreteCMS but is used accross peanut implementations.</li>
+<li>classes.ini: used by the Peanut object container system (see below)</li>
+<li>mailgun.ini: Connection information for the Mailgun mailing service. IMPORTANT: this file
+should never be posted in a public location such as a public git repository.</li>
+</ul>
+<h2>Peanut paths</h2>
+<p>ViewModels use a convention to referece files and resources loaded in the init() function
+and elsewhere. These files are loaded using application.loadResources, application.registerComponent 
+PeanutLoader.loadViewModel and other load funtions. See KnockoutHelper.ts in core.<br>
+E.g.<br></p>
+<pre><code class="language-typescript">application.loadResources(
+    [
+        '@pnut/ViewModelHelpers',
+        '@pnut/editPanel',
+        '@pnut/searchListObservable',</code></pre>
+<p>The prefixes beginning with "@" are resolved as follows:</p>
+<ul>
+<li>@lib: js library directory </li>
+<li>@pnut: peanut core root path + "styles" or application + "assets/styles/pnut"</li>
+<li>@pkg: peanut packages directory.</li>
+</ul>
+<h3>vendor directory</h3>
+<p>This is created by the 'composer' package manager and contains third party PHP code use by
+peanut. It is located above the main document root and the location is specified in settings.ini.</p>
+<p>The items contained here should not duplicate those in the vendor file of the CMS. So for 
+various implementations we need to take account of what libraries are included with the CMS.</p>
+<h3>assets directory</h3>
+<p>The application/assets directory contains javascript libraries and other item used by peanut,
+but not necessarily included in the CMS.  In loading routines such as 'application.loadResources()'
+the prefix "@lib:" resolves to this location.</p>
+<h2>Applications</h2>
+<p>Currently Peanut is available for two CMS Systems: ConcreteCMS and Nutshell (by Terry SoRelle).</p>
+<p>In the past we have offered versions Drupal and Wordpress.  These are not currently supported but could be revived
+if needed.</p>
+<p>For detail ConcreteCMS documentation see the section devoted to the ConcreteCMS specific section.  All documents
+if this section (Peanut) apply to the other implementations as well.</p>
+</body>
+</html>

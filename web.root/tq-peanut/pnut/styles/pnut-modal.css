@@ -1,0 +1,11 @@
+.pnut-modal-menu ul {
+    max-height: 50vh;
+    overflow-y: scroll;
+    list-style: none;
+}
+.pnut-modal-menu a {
+    list-style: none;
+}
+.pnut-modal-menu a:hover {
+    background-color: lightgrey;
+}

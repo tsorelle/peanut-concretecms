@@ -1,0 +1,74 @@
+<div id="documentaddenda-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="documentaddenda-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <p data-bind="visible:pageIntro,text:pageIntro"></p>
+                <h3>Main Document</h3>
+
+                <div class="row">
+                    <div class="col-md-9">
+                        <label>
+                            <translate params="code:'label-title',translator:self"></translate>
+                        </label>
+                        <div><span data-bind="text:documentTitle"></span></div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <translate params="code:'label-publication-date',translator:self"></translate>
+                        </label>
+                        <div><span data-bind="text:documentPublicationDate"></span></div>
+                    </div>
+                 </div>
+                <div class="row" data-bind="visible:documentDescription">
+                    <div class="col-md-12" style="padding-top: 1em">
+                        <label>
+                            <translate params="code:'label-description',translator:self"></translate>
+                        </label>
+                        <div data-bind="text:documentDescription"></div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 1em">
+                    <div class="col-md-2">
+                        <a href="#" target="_blank" data-bind="visible: viewPdfHref, attr: {href: viewPdfHref}">
+                            <i class="far fa-file"></i><translate params="code:'document-icon-label-view',translator:self"></translate></a>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#" data-bind="visible: downloadHref, attr: {href: downloadHref}">
+                            <span class="fa fa-download" aria-hidden="true"></span> <translate params="code:'document-icon-label-download',translator:self"></translate></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="#" data-bind="visible: editHref, attr: {href: editHref}">
+                            <span class="fas fa-pencil-alt" aria-hidden="true"></span> <translate params="code:'document-icon-label-edit',translator:self"></translate></a>
+                    </div>
+                </div>
+
+
+                <div class="row" data-bind="visible:addenda().length">
+                    <div class='table-responsive col-md-12'>
+                        <h3>Addenda</h3>
+                        <table class="table table-hover">
+                            <tbody data-bind="foreach:addenda">
+                            <td>
+                                <span data-bind="text:title"></span>
+                                <span data-bind="visible:description"> - </span>
+                                <span data-bind="text:description"></span>
+                            </td>
+                            <td><a href="'#" target='_blank' data-bind="visible:documentType=='PDF', attr: { href: viewUrl, title: $parent.docViewLinkTitle }"> <i class="far fa-file-pdf"></i></a></td>
+                            <td><a href="'#" data-bind="attr: { href: downloadUrl, title: $parent.docDownloadLinkTitle }"><i class="fas fa-file-download"></i></a></td>
+                            <td><a href="'#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a></td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>updates for bootstrap 5</h1>
+<p>This versions of Peanut/Qnut depends on BootStrap ver 5.  Here are some notes about converting from 
+Bootstrap 3, which was used previousl</p>
+<h2>Modals</h2>
+<ol>
+<li>
+<p>update modal-header<br>
+For BS-5 or BS-4 title goes before close button. Any button that
+automatically closes a model shoud have: data-bs-dismiss="modal". 
+Remove any X characters. This is handled in the styling.</p>
+<pre><code class="language-html"> &lt;h4 class="modal-title"&gt;Title Here&lt;/h4&gt;
+ &lt;button type="button" class="close btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"&gt;
+ &lt;/button&gt;</code></pre>
+<p>In the current php 7 version (2024-12-12) Austinquakers.org site, which is kind of a mix between
+Bootstrap 3 and 5 use this pattern. 
+The button preceeds the title and the X character is used.</p>
+<pre><code>&lt;button type="button" 
+   class="close btn-close"
+   data-bs-dismiss="modal"
+   aria-label="Close"&gt;
+      &amp;times;
+   &lt;/button&gt;
+&lt;h4 class="modal-title"&gt;TITLE GOES HERE!&lt;/h4&gt;</code></pre>
+</li>
+<li>
+<p>UPDATE close button in footer, add this attribute to link: data-bs-dismiss="modal"</p>
+<pre><code>&lt;a href="#" data-bs-dismiss="modal" data-dismiss="modal"&gt;Close&lt;/a&gt;</code></pre>
+</li>
+<li>
+<p>For wide modal use modal-lg class:</p>
+<pre><code>&lt;div class="modal-dialog modal-lg" &gt;</code></pre>
+</li>
+</ol>
+<h2>Forms</h2>
+<h3>Form Classes</h3>
+<p>Add 'form-select' class to select element:</p>
+<pre><code> &lt;select class="form-select"&gt;</code></pre>
+<p>Replace 'form-group' with 'form-group mb-3'&gt;</p>
+<pre><code>&lt;div class='form-group mb-3'&gt;</code></pre>
+<p>Class form-group is not defined in Bootstrap-5, mb-3 is defined in v.5 but not in previous versions. It added .5 rem to bottom margin.
+For list of new generic spacing classes see:
+<a target="_blank" href="https://getbootstrap.com/docs/5.0/utilities/spacing/">https://getbootstrap.com/docs/5.0/utilities/spacing/</a></p>
+<h3>Checkbox</h3>
+<p>Version 3:</p>
+<pre><code class="language-html">&lt;div class="checkbox"&gt;
+   &lt;label &gt;
+      &lt;input type="checkbox" &gt; Checkbox label
+   &lt;/label&gt;
+&lt;/div&gt;</code></pre>
+<p>Version 5</p>
+<pre><code class="language-html">&lt;div class="form-check"&gt;
+  &lt;input class="form-check-input" type="checkbox" value="" id="checkboxfield"&gt;
+  &lt;label class="form-check-label" for="checkboxfield"&gt;
+     Checkbox label
+  &lt;/label&gt;
+&lt;/div&gt;</code></pre>
+<h3>Radio Buttons</h3>
+<p>Same as checkbox except type="radio" on input.
+Note seperate div for each button.</p>
+<pre><code class="language-html">&lt;div class="form-check"&gt;
+  &lt;input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"&gt;
+  &lt;label class="form-check-label" for="flexRadioDefault1"&gt;
+    Default radio
+  &lt;/label&gt;
+&lt;/div&gt;
+&lt;div class="form-check"&gt;
+  &lt;input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked&gt;
+  &lt;label class="form-check-label" for="flexRadioDefault2"&gt;
+    Default checked radio
+  &lt;/label&gt;
+&lt;/div&gt;</code></pre>
+<h3>Classes</h3>
+<ul>
+<li>pull-left &gt; float-start</li>
+<li>pull-right &gt; float-end</li>
+</ul>
+<p><strong>Forms and Tables</strong></p>
+<ul>
+<li>form-group: form-group mb-3</li>
+<li>data-dismiss: data-bs-dismiss&lt;br.&gt;
+(any bootstrap "data-" should be changed to "data-bs". Careful, dont change "data-bind")</li>
+<li>btn-default:  btn-outline-primary</li>
+<li>text-right: text-end</li>
+</ul>
+<p><strong>Replace bootstrap display classes:</strong></p>
+<ul>
+<li>hidden-print = d-print-none</li>
+<li>hidden-xs = d-none d-sm-block</li>
+<li>visible-print-block =  d-none d-print-block</li>
+<li>hidden-md hidden-sm hidden-lg = d-block d-sm-none</li>
+</ul>
+<h3>Tabs</h3>
+<p>Tab styling changed a lot.</p>
+<ol>
+<li>The "nav-item" class must be applied on all "li" elements withing the "nav nav-tabs" "ul"</li>
+<li>The "nav-link" class must be applied to the "a" (link) elements</li>
+<li>The "active" class must be applied to the active "a" (link) element. Not the "li" element as previously done. <pre><code class="language-html">&lt;ul class="nav nav-tabs"&gt;
+    &lt;li  class="nav-item" &gt;
+        &lt;a class="nav-link"  href="#" data-bind="click:setSearchTypeInfo,
+            css: { active: searchType() == 'info'}"
+        &gt;Document Information Search&lt;/a&gt; &lt;/li&gt;
+    &lt;li  class="nav-item"&gt;
+        &lt;a class="nav-link"  href="#"  data-bind="click:setSearchTypeText,
+             css: { active: searchType() == 'text' }"&gt;
+            Full Text Search
+        &lt;/a&gt; &lt;/li&gt;
+    &lt;li class="nav-item"&gt;
+        &lt;a class="nav-link" href="#"  data-bind="click:setSearchTypeLookup
+             ,css: { active: searchType() == 'lookup' }"&gt;
+            Document Lookup
+        &lt;/a&gt; &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</li>
+</ol>
+<h3>Date Picker Popup</h3>
+<p>There is no date component in Bootstrap 5. Previously used jQueryUI.<br />
+As an alternative we can use input type=date or type=datetime-local.<br><br>
+Note that unlike the jQueryUI datepicker, the value of a type=date input
+must be in ISO format.</p>
+<ul>
+<li>This works: <ul>
+<li>'2001-09-02'</li>
+</ul>
+</li>
+<li>These do not work:<ul>
+<li>'2001-9-2'</li>
+<li>'9/2/2001'</li>
+<li>'9/2/01'</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-html">&lt;label for="birthdaytime"&gt;Birthday (date and time):&lt;/label&gt;
+&lt;input type="datetime-local" id="birthdaytime" name="birthdaytime"&gt;
+
+&lt;label for="birthday"&gt;Birthday:&lt;/label&gt;
+&lt;input type="date" id="birthday" name="birthday"&gt;
+
+&lt;!-- knockout example  --&gt;
+&lt;input class="form-control" type="date" id="startdate-input" data-bind="value:taskEditForm.startdate"/&gt;</code></pre>
+<p>For existing markup, just add the type attribute (date or datetime-local) to the tag.</p>
+<pre><code class="language-html">&lt;label for="endDate" class="form-label"&gt;End Date&lt;/label&gt;
+&lt;input type="date" id="endDate" class="form-control datepopup" data-bind="value:sessionForm.endDate, css: {'is-invalid': sessionForm.endDateInvalid}"/&gt;</code></pre>
+<h3>Dropdown Menus</h3>
+<p>In Bootstrap 5 each link in the li elements must have class="dropdown-item". 
+Also the data-toggle attribut must be data-bs-toggle</p>
+<pre><code class="language-html">&lt;div class="dropdown"&gt;
+  &lt;button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" 
+          data-bs-toggle="dropdown" aria-expanded="false"&gt;
+    Dropdown button
+  &lt;/button&gt;
+  &lt;ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"&gt;
+    &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Action&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Another action&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Something else here&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+<h3>Popovers</h3>
+<h4>Initialization</h4>
+<p>In ViewModel.Init()</p>
+<pre><code class="language-typescript">    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })</code></pre>
+<p>or Javascript:</p>
+<pre><code class="language-Javascript">const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(
+        popoverTriggerEl =&gt; new bootstrap.Popover(popoverTriggerEl))</code></pre>
+<h4>Markup Example</h4>
+<p>Change all data-toggle to data-bs-toggle, data-trigger to data-bs-trigger, data-content, data-bs-content</p>
+<pre><code class="language-html">  &lt;a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Contacts Fields"
+     data-bs-content="firstname, lastname, fullname, phone1, phone2, homephone, email, dateofbirth, 
+        addressname, address1, address2, city, state, postalcode, 
+        country, affiliation code, role, primary affiliation"&gt;Fields...&lt;/a&gt;
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>EMail</h1>
+<h2>TPostOffice</h2>
+<h3>SendMessage from Us</h3>
+<pre><code class="language-php">public static function SendMessageFromUs(
+    $recipients, $subject, $bodyText, 
+    $addressId=self::DefaultMailbox, 
+    $contentType=TContentType::Html ) </code></pre>
+<p>The $recipients can be a single instance or an array of strings or TEmailAddress objects.</p>
+<p>String formats include:</p>
+<ol>
+<li>Simple address: 'recipient@mailservice.com'</li>
+<li>Name and address format 'Joe Smith <a href="mailto:recipient@mailservice.com">recipient@mailservice.com</a>'</li>
+</ol>
+<p>Multiple addresses can be combined in a single string, seperated by ';'.</p>
+<p>TEmailAddress obects can be created as:</p>
+<pre><code class="language-phpt">new TEmailAddress($address, $name);</code></pre>
+<p>The optional $addressId parameter is a mailbox code.</p>
+<h2>Template Example</h2>
+<pre><code class="language-php">$templateManager = new MailTemplateManager();
+$template = $templateManager-&gt;getTemplateContent('SiteAnnouncement.html');
+
+$recipient = new \Tops\mail\TEmailAddress($user-&gt;email,$user-&gt;fullname);
+$bodyText = TTemplateManager::ReplaceContentTokens($template, [
+    'fullname' =&gt; $user-&gt;fullname,
+    'username' =&gt; $user-&gt;username,
+    'pwd' =&gt; $user-&gt;pwd]);
+
+\Tops\mail\TPostOffice::SendMessageFromUs(
+    $recipient,
+    'New Website for SCYM',
+    $bodyText
+);</code></pre>
+<h3>Template Search Method</h3>
+<p>TTemplateManager starts template search in: <em>'application/peanut/mail/templates'</em></p>
+<p>If not found: <strong>packages/knockout_view/pnut/mail/templates</strong></p>
+<p>Templates are organized in subdirectories by language code such as "en".
+You may create an html version, txt version or both.</p>
+<h3>Template Format</h3>
+<p>Templates contain tokens for replacement surrounded by double square brackets: [[token]].</p>
+<p>Example:</p>
+<pre><code class="language-html">&lt;h3&gt;Greetings [[fullname]] from [[organizationname]]&lt;/h3&gt;
+&lt;p&gt;
+    We have created an account for you on our web site. You can sign in here:
+    &lt;a href="[[loginlink]]"&gt;&lt;strong&gt;Sign in&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+    Your user name is:
+    &lt;strong&gt;[[username]]&lt;/strong&gt;
+&lt;/p&gt;
+&lt;p&gt;
+    Previously, you selected a password or we assigned one for you. If you don't know what it is, go here:&lt;br&gt;
+    &lt;a href="[[passwordlink]]"&gt;&lt;strong&gt;Recover your password.&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+    We are delighted to have you with us. If you need any help, contact our web support at:&lt;br&gt;
+    &lt;strong&gt;[[supportaddress]]&lt;/strong&gt;
+&lt;/p&gt;</code></pre>
+<p>Configuring a Mailer Class</p>
+<p>To use Peanut mailing fetures you must register a mailer class in application\config\classes.ini.  These
+classes handle mail in different way and can be easily 'swapped' out depending on the needs of the environment.</p>
+<p>Example:</p>
+<pre><code class="language-ini">[tops.mailer]
+type='Tops\mail\TMailgunMailer'
+singleton=1</code></pre>
+<p>The choices are:</p>
+<ul>
+<li>
+<p>Tops\mail\TNullMailer</p>
+<ul>
+<li>Disables all email functions, silently</li>
+</ul>
+</li>
+<li>
+<p>Tops\mail\TPhpMailer</p>
+<ul>
+<li>PhpMailer is good for testing and CMSes without a good native mailer</li>
+</ul>
+</li>
+<li>
+<p>Tops\mail\TMailgunMailer</p>
+<ul>
+<li>Uses the mailgun API to send messages</li>
+</ul>
+</li>
+<li>
+<p>Tops\mail\TDevMailer</p>
+<ul>
+<li>For use in the development environment. Writes messages to a 'maildrop' directory. </li>
+</ul>
+</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<div id="incrementalselecttest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="incrementalselecttest-view-container" class="row" style="display: none">
+  <div class="col-md-5">
+    <div style="margin-top: 1rem; width:50%">
+      <incremental-select params="items:cityList,
+      selected:onCitySelect,
+      caption:'Search for a City',label:'City'"></incremental-select>
+    </div>
+
+    <div>
+        <incremental-select params="items:cityList, selected:selectedCities,caption:'Search for a City',label:'Cities'"></incremental-select>
+    </div>
+    <div>
+      <selected-list params="source:selectedCities"></selected-list>
+    </div>
+
+    <div>
+      <selected-list params="source:selectedCities,label:'Cities READONLY',readonly:true,emptymessage:'No cities'"></selected-list>
+    </div>
+
+  </div>
+</div>
+

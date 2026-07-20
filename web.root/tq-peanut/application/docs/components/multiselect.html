@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Multiselect Component</h1>
+<p>Type: knockout component</p>
+<p>Supports user input of multiple associated values to an "array" field.</p>
+<p><strong>Source:</strong>: /knockout_view/pnut/components/multiSelectComponent.ts
+<strong>Template:</strong>: /knockout_view/pnut/templates/multiSelect.html
+<strong>Example:</strong> /application/peanut/tests/vm/TestPageViewModel.ts and /view/TestPage.html</p>
+<h3>Markup Example</h3>
+<pre><code class="language-html">&lt;multi-select params="items:itemList, selected:selectedItems,sort:'code',
+    translator:self, label:'Multiselect', caption:'Select something...'"&gt;
+&lt;/multi-select&gt;</code></pre>
+<h3>Parameters</h3>
+<ul>
+<li>items: <strong><em>Required.</em></strong>  : KnockoutObservableArray of ILookupItem;</li>
+<li>selected:  <strong><em>Required.</em></strong> : KnockoutObservableArray of ILookupItem;</li>
+<li>translator: A host class to perform translations.  Usually a view model</li>
+<li>label: May be literal, or translator code.  Default blank.</li>
+<li>caption: May be literal, or translator code. Default 'Please select...'</li>
+<li>sort: Value for sorting options, Default: 'name'</li>
+</ul>
+<h3>Data</h3>
+<p>Data is in the form of ILookupItem[]</p>
+<pre><code class="language-typescript">    export interface ILookupItem {
+        id : any;
+        code: string;
+        name: string;
+        description : string;
+    }</code></pre>
+<h3>Dependencies and Initialization</h3>
+<p>Initialized from a Peanut ViewModel init() function.</p>
+<pre><code class="language-typescript">// register the component
+me.application.registerComponents('@pnut/multi-select', () =&gt; {
+
+});</code></pre>
+<p>Lodash dependencies remove in SCYM version. 1/22/2022.  Older versions require lodash library to be loaded.</p>
+<pre><code class="language-typescript">me.application.loadResources(['@lib:lodash'], () =&gt; {
+
+});</code></pre>
+</body>
+</html>

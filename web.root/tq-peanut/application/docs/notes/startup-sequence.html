@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Startup Sequence</h1>
+<p>This document is for reference only. It describes the somewhat
+complicated process for loading the PEANUT system. 
+The need to modify this code is very unlikely, but it might
+be useful to understand what it does.</p>
+<p>The viewmodel developer just needs to define and register (viewmodel.ini) the view (html) and the viewmodel (TypeScript),
+and put a Knockout View Block on the page. See:  <a href="viewmodels-views.html">View Models and Views</a> for details.</p>
+<p>The rest takes care of itself.  Here is the actual sequence:</p>
+<ol>
+<li>
+<p>application/bootstrap/app.php is executed by ConcreteCMS on start up.<br />
+This file registers routing instructions and performs other CMS configurations. 
+Peanut specific routing etc is included in 'peanut-app.php' which 
+calls /config/peanut-bootstrap.php</p>
+</li>
+<li>
+<p>Bootstrap::initialize() in peanut-bootstrap.php<br>
+Initalizes settings used by Peanut and registers autoload functions for our 
+vendors directory as well as Peanut PHP code.</p>
+</li>
+<li>
+<p>Concrete\Package\KnockoutView\on_start()<br>
+Registers the required javascript assets: headJS and the Peanut loader. 
+All other JS and CSS dependencies are loaded dynamically by Peanut, 
+unless they are already present in ConcreteCMS.</p>
+</li>
+<li>
+<p>Concrete\Package\KnockoutView\Block\KnockoutView\Controller.view()<br></p>
+<ul>
+<li>Retrieves and initializes view model settings: ViewModelManager::getViewModelSettings();</li>
+<li>Using the view model setting, the content of the ViewModel's view html file is
+assigned to the 'content' attribute which is rendered with the page.</li>
+</ul>
+</li>
+<li>
+<p>ViewModelManager::getViewModelSettings()<br>
+Searches the config and packages directory, parses viewmodel.ini files and
+creates an array of "vmInfo" objects to be refenced in
+later loading code.</p>
+</li>
+<li>
+<p>Footer code in theme/elements/footer_bottom.php</p>
+<pre><code class="language-php"> if (!$c-&gt;isEditMode()) {
+     if (class_exists('\Peanut\sys\ViewModelManager')) {
+         \Peanut\sys\ViewModelManager::RenderStartScript();
+     } else {
+         print "ViewModelManager not found. Package 'knockout_view' is required.";
+     }
+ }</code></pre>
+<p>At run time, RenderStartScript() produces code that loads one or more viewmodels used on the
+current page, or blank if there are none. This is based on the array compiled in step #2. Because
+this code is located at the very bottom of the page, all the markup has been loaded including the
+view, the previous steps have been performed, so we are all ready to load the viewmodel and bind it 
+to the markup.<br><br>Example:</p>
+<pre><code class="language-php"> Peanut.PeanutLoader.renderServiceMessageTags();
+ Peanut.PeanutLoader.startApplication('@pkg/qnut-committees/CommitteeDescription#750', function() {
+   Peanut.PeanutLoader.loadViewModel('@pkg/qnut-committees/CommitteeMembers#2995', function() {
+     Peanut.PeanutLoader.loadViewModel('@pkg/qnut-documents/DocumentList#2996', function() {
+       Peanut.PeanutLoader.loadViewModel('@pkg/qnut-calendar/Calendar#2997');
+     });
+   });
+ });</code></pre>
+<p>In most cases only one view model is loaded. A Committee page uses four blocks.<br></p>
+</li>
+<li>
+<p>PeanutLoader.startApplication() in web.root/packages/knockout_view/pnut/core/PeanutLoader.ts<br></p>
+<ul>
+<li>Loads remaining javascript dependencies</li>
+<li>Calls Application.startVM</li>
+</ul>
+</li>
+<li>
+<p>Appliction.startVM() in web.root/packages/knockout_view/pnut/core/App.ts<br>
+Calls koHelper.loadViewModel() to load the first viewmodel.</p>
+</li>
+<li>
+<p>Peanut.KnockoutHelper.loadViewModel() in web.root/packages/knockout_view/pnut/core/KnockoutHelper.ts<br>
+Instantiates and initializes the ViewModel, then calls the start() method for the viewmodel.</p>
+</li>
+<li>
+<p>Peanut.ViewModelBase.start() in web.root/packages/knockout_view/pnut/core/ViewModelBase.ts<br>
+ViewModelBase, as you might guess, is the base class for all viewmodels. The start() routine which
+performs initialization and them calls the init() method for the current instance.</p>
+</li>
+<li>
+<p>ViewModel init() method. For example see: web.root/application/peanut/tests/vm/SimpleTestViewModel.ts<br>
+Every implementation of a viewmodel must include an init() method. This will contain all specific
+startup code for the view model and must call the bindDefaultSection() method and any other
+binding methods that use Knockout helper utilities such as  koHelper.bindSection (by way of the Application object)
+to bind the viewmodel two the view.</p>
+</li>
+<li>
+<p>Peanut.KnockoutHelper.bindSection() <br>
+Uses the KnockoutJS library to bind the view model to the view.</p>
+</li>
+<li>
+<p>If needed addtional viewmodels are loaded with Peanut.PeanutLoader.loadViewModel()</p>
+</li>
+</ol>
+</body>
+</html>

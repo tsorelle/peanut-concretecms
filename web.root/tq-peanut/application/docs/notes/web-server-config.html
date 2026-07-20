@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>Web Server Configuration for Development</h1>
+<p>The target deployment webserver is usually running Apache under Linux or other Unix variant.<br />
+The PHP version on the target testing server (testing.austinquakers.org) is 8.2</p>
+<h2>Apache configuration</h2>
+<p>Indicate the document root directory for the project in the httpd.conf and httpd-vhosts.conf</p>
+<p>In the examples below, substitute the full path to the document root in your environment. </p>
+<h3>httpd-vhosts.conf</h3>
+<pre><code class="language-xml">&lt;Directory "D:/dev/fma/austinquakers.new/web.root"&gt;
+        Options Indexes FollowSymLinks
+        AllowOverride all
+        Order Allow,Deny
+        Allow from all
+&lt;/Directory&gt;</code></pre>
+<h3>httpd-vhosts.conf</h3>
+<pre><code class="language-xml">&lt;VirtualHost *:80&gt;
+        ServerName local.austinquakers.org
+        DocumentRoot "D:/dev/fma/austinquakers.new/web.root"
+&lt;/VirtualHost&gt;
+</code></pre>
+<p>For Windows you can place an entry in the \Windows\System32\drivers\etc\hosts file:</p>
+<pre><code class="language-php">127.0.0.1 local.austinquakers.org</code></pre>
+<p>This allows you to reference your test site in the browser as <a target="_blank" href="http://local.austinquakers.org">http://local.austinquakers.org</a></p>
+<h2>PHP</h2>
+<p>Install PHP Version 8.2.x</p>
+<h3>Required PHP settings:</h3>
+<ul>
+<li>max_execution_time - 60 to 120</li>
+<li>allow_url_fopen - On</li>
+<li>allow_url_include - Off</li>
+<li>file_uploads - On</li>
+<li>memory_limit - 128M to 512M</li>
+<li>upload_max_filesize - 512M</li>
+</ul>
+<h3>XDebug Extension:</h3>
+<p>Debugging PHP requires the Xdebug extension.  Here are some resources to 
+help you install for PhpStorm, Microsoft Code or Visual Studio:</p>
+<ul>
+<li>
+<p>PhpStorm<br>
+<a target="_blank" href="https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html">https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html</a></p>
+</li>
+<li>
+<p>Microsoft Code and Visual Studio:<br>
+<a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug">https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug</a></p>
+</li>
+<li>
+<p>Installation reference from Xdebug
+<a target="_blank" href="https://xdebug.org/docs/install">https://xdebug.org/docs/install</a></p>
+</li>
+</ul>
+</body>
+</html>

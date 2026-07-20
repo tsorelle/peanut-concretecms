@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Java Script Arrays</h1>
+<p>We no longer use UnderscroreJS or Lodash (_.somefunction()). 
+Use pure javascript alternatives.  There are several functions in Peanut.Helper 
+that you may use:</p>
+<pre><code class="language-typescript">_.filter(list,function (...)
+list.filter(function (...)
+
+_.sortBy(list,propertyname);
+Peanut.Helper.SortByAlpha(list,propertyname); //  case insensitied
+Peanut.Helper.SortByInt(list,propertyname); //  whole number values
+Peanut.Helper.SortBy(list,propertyname); //  conversions or case don't matter
+
+ _.find(list, function(item: any) {...});
+ list.find(function(item: any) {...});
+
+ _.forEach
+ // A plain javascript for loop is the mose efficient
+let cars = ['Ford','Toyota','Tesla'];
+for (let i = 0; i &lt; cars.length; i++) {
+    text += cars[i] + "&lt;br&gt;";
+}
+
+_.findIndex
+let currentIndex = me.meetings.findIndex( function(meeting : FriendsMeeting){
+    return meeting.meetingId == updated.meetingId;
+});
+
+/* Replacing _.forEach with with array.forEach,
+ alhough less efficient, may be a reasonable 
+ and simpler solution for legacy code */
+cars.forEach(
+    (car: string) =&gt; {
+        console.log(car);
+    }
+)
+</code></pre>
+<p>More suggestions: <a target="_blank" href="https://blog.bitsrc.io/you-dont-need-lodash-or-how-i-started-loving-javascript-functions-3f45791fa6cd">https://blog.bitsrc.io/you-dont-need-lodash-or-how-i-started-loving-javascript-functions-3f45791fa6cd</a></p>
+</body>
+</html>

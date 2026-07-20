@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/peanut/docs">Return to docs home page</a></p>
+<h1>Knockout View: ConcreteCMS block</h1>
+<h2>Inserting a viewmodel on a ConcreteCMS page</h2>
+<p>First, of course we must create the viewmodel and associated configuration as described in 
+<a href="../peanut/viewmodels-views.html">View Models and Views</a></p>
+<p>Once we have a viewmodel, we can installing on our ConcreteCMS with the "Knockout View" block. The
+block can be placed on any page along with other content.  Multiple viewmodels can
+be placed on a page. For more information see (Multiple Viewmodels)[multiple-viewmodels.html].</p>
+<p>Most viewmodels produce the entire content for the page. We provide the "Peanut Host Page"
+page type for convenience.</p>
+<p>After dropping the block on the page, edit the block:
+<img src="img/new-knockout-block.jpg" alt="new-knockout-block.jpg" /></p>
+<p>Enter the viewmodel identifier in the "View Model" field.  This must correspond
+to an entry in your viewmodel.ini file. This is all that is required in most cases.
+The section below explains the optional fields.</p>
+<h3>Fields in Knockout View Block</h3>
+<p><img src="img/knockoutview-edit-forn.jpg" alt="knockoutview-edit-forn.jpg" /></p>
+<ul>
+<li><strong>View Model</strong>: the view model identifier.</li>
+<li><strong>Input value</strong>: a value that may be used by a Service Command executed by the
+viewmodel. See  <a href="../peanut/service-commands.html">Service Commands</a></li>
+<li><strong>Panel Title and Open panel</strong>:<br>
+These are used by the "Collapsible Knockout Panel" custom template when
+applied to a knockout view block. See: <a href="templates-and-styles.html">Templates and Styles.html</a></li>
+<li><strong>Add Wrapper Markup</strong>: when checked, alls markup that adds HTML markup give
+the output margins and padding to match the page. Uncheck if you want the
+output to cover the entire width of the window, or if you have include
+special enclosing mark up in the view.</li>
+<li><strong>Content</strong>: HTML markup placed here can be used in place of a view file. If
+you want this, add "view='content'" to the viewmodel.ini entry.</li>
+</ul>
+<pre><code class="language-ini">[simple-test]
+vm=tests/SimpleTest
+view=content</code></pre>
+<h2>Behind the Scenes</h2>
+<p>This is all it takes to install a viewmodel in your ConcreteCMS page. But, a lot is going on to make your
+view model presentation appear as if by magic.  If you want to know how the magic is done, see:<b>
+<a href="startup-sequence.html">Peanut Startup Sequence in ConcreteCMS</a></p>
+</body>
+</html>

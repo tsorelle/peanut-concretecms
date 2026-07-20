@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Object Container</h1>
+<p>In order to adapt peanut to different versions and installations
+we use a lightweight dependency container system that creates instances based on entries in the application/classes.ini</p>
+<h2>Dynamic object creation</h2>
+<p>For many scenarios we "plug in" an automaically created instance of a class that supports
+a common interface.  For example objects that implement the IMailer interface are used to 
+send email messages.</p>
+<pre><code class="language-php">interface IMailer {
+    public function send(TEMailMessage $message);
+    public function setSendEnabled($value);
+}</code></pre>
+<p>Classes implement IMailer include:</p>
+<ul>
+<li>TPhpMailer: uses the PHPMailer framework.</li>
+<li>TMailgunMailer: uses the Mailgun email service</li>
+<li>TDevMailer: for testing in a development enviornment, writes 
+the message to a file an a "maildrop" directory.</li>
+<li>TNullMailer: for testing or temporarily disabling mailing features. 
+Does not interupt the mailing process but does not actually send a message.</li>
+</ul>
+<p>The TObjectContainer class handles object creation. The most commonly used functions 
+are these static methods:</p>
+<ul>
+<li>TObjectContainer::HasDefinition($key) - checks to see if a class is registered in classes.ini</li>
+<li>TObjectContainer::Get($key) - creates an instance.</li>
+</ul>
+<h3>Example:</h3>
+<h4>classes.ini</h4>
+<p>In classes.ini for a development environment:</p>
+<pre><code class="language-ini">[tops.mailer]
+type='Tops\mail\TDevMailer'
+singleton=1</code></pre>
+<p>In production:</p>
+<pre><code class="language-ini">[tops.mailer]
+type='Tops\mail\TMailgunMailer'
+singleton=1</code></pre>
+<p>Singleton means that a single global instance of the class is reused.</p>
+<h4>Usage in PHP</h4>
+<pre><code class="language-php">$mailer = TObjectContainer::Get('tops.mailer');
+$mailer-&gt;send($message);</code></pre>
+<h2>Common definitions</h2>
+<p>Here are some example entries in classes.ini that are frequently used.</p>
+<ul>
+<li><em>[tops.userfactory]</em> Creates a facade for creation of user objects specific to the CMS or framework</li>
+<li><em>[tops.mailer]</em> Uses different mail services to send email messages</li>
+<li><em>[tops.permissions]</em>  Adapts the peanut permission structure to the CMS or framework</li>
+<li><em>[tops.language]</em> Objects used for translation</li>
+<li><em>[peanut.vmcontext]</em> Interprets vmcontext codes for different CMS implementations</li>
+<li><em>[tops.eventhandler.user]</em> Routes user events depending on the CMS</li>
+<li><em>[peanut.subscription_manager]</em> Handle email subscriptions for different implementations of Peanut</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>SASS Compilation</h1>
+<h2>Build:</h2>
+<p>Here we describe the SASS build process for Peanut/ConcreteCMS 9 
+sites using a clone of the Atomik theme in the application/themes 
+directory. </p>
+<p>The deployment file is:</p>
+<ul>
+<li>Austinquakers.org: application\themes\fma\css\skins\default.css </li>
+<li>Scym.org: application\themes\peanut\css\skins\peanut.css</li>
+</ul>
+<p>The term "local deployment directory" refers to the associated path
+in your development environment.</p>
+<p>The SASS version used is: 1.43.5 compiled with dart2js 2.14.4</p>
+<h2>Setup</h2>
+<ol>
+<li>Install SASS</li>
+</ol>
+<ul>
+<li>Using Node.js: <pre><code>npm install -g sass</code></pre>
+<ul>
+<li>or see <a target="_blank" href="https://sass-lang.com/install/">SASS-Lang Install</a></li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>Create /sass directory in the project root.</li>
+<li>Copy web.root/concrete/bedrock/assets to /sass/assets</li>
+<li>Create /sass/output directory</li>
+<li>Get the powershell script from the Git repository copy to /sass</li>
+</ol>
+<h2>Build scripts:</h2>
+<p>These are Windows PowerShell scripts. If you are using a different OS
+such as MacOS, you should be able to adapt these to some other scripting
+engine such as bash or Node.js.</p>
+<ul>
+<li>buildcss.ps1 - compile all scss from Fma theme and Bedrock. Result in sass\output
+is copied to the local deployment directory.</li>
+<li>deploycss.ps2 - replace the css file in the local deployment directory from sass\output</li>
+</ul>
+<h3>Parameters</h3>
+<p>The buildcss script accepts two optional parameters. Used the full name and precede with a dash.</p>
+<ul>
+<li>-plain: Creates an uncompressed file. Compression is used if omitted.</li>
+<li>-verbose: Runs the compiler in "--verbose" mode which displays all warnings as well as errors.</li>
+</ul>
+<h2>Adapt to other concreteCMS installations</h2>
+<p>Change the "constants" declarations in the scripts to conform to the directory
+and filenames used in your site.</p>
+<h2>Errors and Warnings</h2>
+<p>The reason we make a copy of the "bedrocks/assets" directory is to be able
+to make any necessary changes, should compilation errors occur in the current
+version. We have done so in the past, but right now there doesn't seem to be any
+reason to do.</p>
+<p>However, the current ConcreteCMS distribution SASS source files raise 
+numerous deprecation warnings, the most common being the report that the 
+"@import" rule is deprecated. 
+See <a target="_blank" href="https://sass-lang.com/blog/import-is-deprecated/">Sass-lang: import deprecated</a></p>
+<p>Due to the use of deprecated features a new version of the SASS compiler 
+may break this build. If this happens, we hope ConcreteCMS will provide 
+upgraded SASS files for Atomik and bedrock, which can be use to fix up our theme.<br />
+Otherwise we will need to keep using an older release of the SASS compiler
+or make our own changes to the files in the SASS/assets folder.</p>
+<p>To see all the warnings use the "-verbose" parameter to the buildcss.ps1 script.</p>
+<h2>Extra styles</h2>
+<p>We include a plain style sheet, application/themes/fma/css/extra.css.</p>
+<p>You may use this stylesheet for quick fixs and temporary overrides.  However,
+the best practice is to migrate any changes made to this file to the SASS
+build system.</p>
+<h2>Why not use WebPack?</h2>
+<p>ConcreteCMS recommends that theme developers who use Bedrock based themes adopt 
+a build process using WebPack and Laravel Mix to bundle compile, minimize and 
+bundle JavaScript and CSS.</p>
+<p>See: <a target="_blank" href="https://documentation.concretecms.org/9-x/developers/working-themes/introduction-bedrock">Introduction to Bedrock</a></p>
+<p>This seems to be overkill for our purposes.  The Peanut framework is not compatible
+with WebPack and has its own modularization and real-time loading scheme. So we just need to 
+compile the CSS and use the distributed JavaScript package for Atomik/ConcreteCMS.</p>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>JQuery Replacements</h1>
+<p>Most jQuery code should be replaced by pure javascript alternatives.
+One exception in the jQuery Ajax library. Although future version my use the "fetch api",
+For now we continue to use jQuery Ajax for service calls for backward compatibility.</p>
+<p>In ConcreteCMS, this library is included. For other versions such as "Nutshell" add "ajax" 
+the "dependencies" list in settings.ini to load the ajax library.</p>
+<h2>ViewModalBase functions</h2>
+<p>These helper functions can be called from any viewmodel class</p>
+<pre><code class="language-typescript">        // replaces JQuery('#id').val();
+        public getInputElementValue(id: string) {
+
+        // replaces jQuery('#id').hide()
+        public hideElement(id: string) {
+        }
+
+        // replaces jQuery('#id').show()
+        public showElement(id: string, style = 'block') {
+</code></pre>
+<h3>Post form</h3>
+<pre><code class="language-Javascript">document.querySelector("#test-form").setAttribute("action", url);
+document.querySelector("#test-form").submit();</code></pre>
+</body>
+</html>

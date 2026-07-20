@@ -1,0 +1,85 @@
+/*
+
+#page-content {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+*/
+
+#nutshell-main-section {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.fullscreen {
+    margin: 0 !important;
+    max-width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.1rem;
+    padding-top: 0;
+}
+
+.verse {
+    padding-left: 1rem;
+    padding-right: 1rem
+}
+.lyrics-menu {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border: 1px solid black;
+    position: fixed;
+    background-color: white;
+    z-index: 99;
+    max-width: 99%;
+}
+
+.container {
+    max-width: 100%;
+}
+.menu-label {
+    font-weight: bold !important;
+}
+
+.linkhighlight {
+    border: 1px solid black;
+}
+
+.linklist {
+    list-style: none;
+    padding-left: 0;
+}
+
+.linklist a {
+    color: black;
+}
+.linkhighlight a {
+    font-weight: bold;
+}
+
+.linklist li {
+    padding-left: 1rem;
+}
+
+.dragSource{
+    opacity : .4;
+}
+.dragover{
+    border-style: dashed;
+}
+
+.info-button {
+    /*
+    z-index: 100;
+    position: fixed;
+    top: 20%;
+    left: 95.5%;
+    right:0;
+    */
+    /*margin-right: 1rem;*/
+    float:right;
+    font-size: 2rem;
+}

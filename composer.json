@@ -1,0 +1,36 @@
+{
+  "name": "twoquakers/fma2",
+  "description": "Peanut Framework Adapted for ConcreteCMS and FMA",
+  "version" : "3.0",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0+",
+  "authors": [
+    {
+      "name": "Terry SoRelle",
+      "email": "twoquakedev@outlook.com"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "*",
+    "smalot/pdfparser": "*",
+    "soundasleep/html2text": "*",
+    "mailgun/mailgun-php": "*",
+    "nyholm/psr7": "^1.8",
+    "phpmailer/phpmailer": "*",
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "php-http/guzzle7-adapter" : "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "@stable",
+    "phpcompatibility/php-compatibility": "^9.3"
+  },
+  "scripts": {
+    "sniffer:php8": "phpcs -p ./src --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2"
+  }
+}

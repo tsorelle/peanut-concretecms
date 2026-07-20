@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Peanut Patterns</h1>
+<h2>ViewModel &gt; ServiceCommand &gt; Repository</h2>
+<p>The "ViewModel &gt; ServiceCommand &gt; Repository" (as I am calling it) is the
+foundation pattern in Peanut for fetching data from the SQL database and displaying
+it on the web page. And, additionally, process business rules and other tasks 
+along the way.</p>
+<p>This scenario is repeated numerous times across the application.</p>
+<p>The main actors in this scenario are these classes and their descendents:</p>
+<ol>
+<li>ViewModel (Typescript)</li>
+<li>TServiceCommand (PHP)</li>
+<li>TPdoQueryManager (PHP) </li>
+</ol>
+<p>Other classes my play supporting roles include entity classes (TPDOQueryManager and descendants), 
+Data manager classes (suffixed with "DataManager") ServiceBroker (JavaScript) and others.</p>
+<p>This may seem complicated at first due to the number of objects involved.<br />
+However, the strict seperation of concerns means that most classes have a 
+relatively small amount of code to perform a clearly defined task.</p>
+<p><img src="img/viewmodel-service-repository.jpg" alt="viewmodel-service-repository.jpg" /></p>
+<p>Lets walk through this scenario with a specific example. </p>
+<h3>ViewModel</h3>
+<p>The example starts in pnut/packages/mailboxmailboxes/vm/MailboxesViewModel.ts, 
+the ViewModel in our diagram. See pnut/packages/mailboxes/js/MailboxListObservable.ts
+The MailboxListObservable is a helper class that we'll consider a part of this View Model.</p>
+<p>The 'downloadMailboxList' function (line 45) quite obviously is supposed to get a 
+list of mailbox object and display them on the webpage.  On line 59 we call a 'Service Command':</p>
+<pre><code class="language-typescript">me.services.executeService('peanut.Mailboxes::GetMailboxList',request,
+    function(serviceResponse: Peanut.IServiceResponse) {
+        if (translated) {
+            me.application.hideWaiter();
+        }
+        if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+            let response = &lt;IGetMailboxesResponse&gt;serviceResponse.Value;
+            me.owner.addTranslations(response.translations);
+            me.setMailboxes(response.list)
+        }</code></pre>
+<p>The initial parameter of "executeService" tells us the name an location of the service command
+By convention this will be TGetMailboxListCommand.  For new, we'll skip explaining the connecting
+that makes an AJAX service call to the web server and how the framework identifies the 
+TServiceCommand subclass and executes its "run()" method.</p>
+<p>The request object is empty in this case but if the service needs input it would contain
+the input values.</p>
+<h3>Service Command and a "datamanager"</h3>
+<p>The GetMailboxListCommand receives the request and fires the run() method, 
+pnut/packages/mailboxes/src/services/GetMailboxListCommand.php, line 70.</p>
+<p>On line 83 of GetMailboxListCommand we retrieve the list from a "data manager" class, TPostOffice,
+and insert the result in a response object;</p>
+<pre><code class="language-php">    protected function run()
+    {
+    ...
+        $manager = TPostOffice::GetMailboxManager();
+        $response = new \stdClass();
+        $response-&gt;list = $manager-&gt;getMailboxes(true);
+    ...        
+    }</code></pre>
+<h3>A "repository"</h3>
+<p>The TPostOffice class creates a repository class, MailboxesRepository.  The MailboxesRepository-&gt;getMailboxList() 
+method calls on its parent class to execute a statement.</p>
+<pre><code class="language-php">$stmt = $this-&gt;executeStatement($sql);</code></pre>
+<p>Then returns an array of mailbox objects.</p>
+<pre><code class="language-php">    $stmt-&gt;setFetchMode(PDO::FETCH_OBJ);
+    $result = $stmt-&gt;fetchAll();</code></pre>
+<p>These methods rely on the PHP PDO framework (<a target="_blank" href="https://www.php.net/manual/en/book.pdo.php">PHP Data Objects</a>) to execute a query on the database and 
+format the result as an array of objects.</p>
+<h3>ViewModel and View</h3>
+<p>The response object is returned to MailboxListObservable, on line 63 where it 
+is bound to the view</p>
+<pre><code class="language-typescript">    if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+        let response = &lt;IGetMailboxesResponse&gt;serviceResponse.Value;
+        me.owner.addTranslations(response.translations);
+        me.setMailboxes(response.list)
+    }</code></pre>
+<p>Note that the structure of the response is specified in an Interface that conforms
+to the structure of the pHP object returned from the service command.</p>
+<pre><code class="language-typescript">    export interface IGetMailboxesResponse {
+        list: IMailBox[];
+        translations: string[];
+    }</code></pre>
+<p>This is solely for the convenience of the programmer and error checking.</p>
+<p>This completes the scenario depicted in our diagram.</p>
+</body>
+</html>

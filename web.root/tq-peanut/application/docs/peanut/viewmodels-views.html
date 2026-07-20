@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>View Models and Views</h1>
+<p>The key technology used for the presentation parts of Peanut is the KnockoutJS, a 
+lightweight JavaScript library that supports two-way databinding between a JavaScript
+object called a ViewModel and a section of HTML called the View.</p>
+<p>The online documentation provides a clear and easy explanation so I will refer you
+there rather than attempt an explanation here.  Check out this like for a general 
+understanding of viewmmodels, views, obsrvables and components. Then the rest of
+this article will make sense.</p>
+<p><a target="_blank" href="https://knockoutjs.com/documentation/introduction.html">Knockout JS Documentaton</a></p>
+<p>As long as you understand the concepts, you won't have to be concerned with the 
+details of ViewModel loading and binding.  You will need to discover how the
+various databinding work but you can pick that up as needed with the help of
+the Knockout online reference.</p>
+<p>You will need to understand the conventions we use for creating and managing viewmodels, 
+views and components. This is what I'll explain here.</p>
+<h2>ViewModels and Views in Peanut</h2>
+<p>Note: For the fist part of these instructions, please refer the the "Simple Test" 
+page example.  This is a "Hello World" type of basic demonstration of Peanut/Knockout.</p>
+<ul>
+<li>URL: <a href="/tasks/testing/simple-test">/tasks/testing/simple-test</a><br>
+(sign in with an administrator account to see this page)</li>
+<li>Source:<ul>
+<li>viewmodel: web.root/application/peanut/tests/vm/SimpleTestViewModel.ts</li>
+<li>view: web.root/application/peanut/tests/view/SimpleTest.html</li>
+</ul>
+</li>
+<li>ini file: web.root/application/config/viewmodels.ini</li>
+</ul>
+<p>You may not need to build your own, but understanding how it is done will 
+help maintain the existing collection. It is important to follow our conventions for
+naming a file location since much of the functionality is driven by convention.
+Mind the case of filenames remembering that on the Linux servers where our sites live
+the file system is case sensitive.</p>
+<p>Our viewmodels are written in TypeScript. If you are not familiar see (TypeScriptLang.org)[<a target="_blank" href="https://www.typescriptlang.org/">https://www.typescriptlang.org/</a>].
+Most details of our code is plain JavaScript, so, you know JavaScript you should be at home.</p>
+<p>Views for us are fragments of HTML that are inserted in the page. These files are location in particular places depending
+on how you intend to apply or distrubute them.</p>
+<h3>Other Essentials</h3>
+<h4>Knockout Components</h4>
+<p>These components are essentially smaller viewmodel/view pieces that can be
+used across view models.  Components are loaded and registered in the 
+ViewModel.init() method and referenced in the view as a custom tag.</p>
+<p>To learn about how they are implemented in Peanut,
+see <a href="components/components-overview.html">Components Overview</a></p>
+<h4>Service Commands</h4>
+<p>Service commands are PHP classes that recieve remote requests (Ajax)
+from a JavaScript/TypeScript client, usually a view model.</p>
+<p>For a detailed discussion of Service Commands see: <a href="service-commands.html">Service Commands</a></p>
+<h2>Location and naming conventions</h2>
+<p>Viewmodels are stored in direcories named "vm" with the related view file in a
+directory named "view" on the same directory level.  We frequently use the term 
+"viewmodel" to refer to both.  The pair share a view model
+name used to name the files and to identify them in the code. </p>
+<p>In our "Simple Test" example, convertions for names and locations of files, as well
+as naming of identifiers is as follows:</p>
+<ul>
+<li>ViewModel name "SimpleTest"</li>
+<li>ViewModel identifier: "simple-test"</li>
+<li>Section in viewmodel.ini: [simple-test]</li>
+<li>Viewmodel class name: <strong>SimpleTest</strong>ViewModel</li>
+<li>Viemodel file name: <strong>SimpleTest</strong>ViewModel.ts (compiles to SimpleTestViewModel.js)</li>
+<li>View file name: <strong>SimpleTest</strong>.html</li>
+<li>Source file locations are "view" and "vm" under web.root/application/peanut/tests</li>
+<li>Div id names in SimpleTest.html<ul>
+<li>id="<strong>simpletest</strong>-load-message"</li>
+<li>id="<strong>simpletest</strong>-view-container"</li>
+</ul>
+</li>
+</ul>
+<h2>Creating and Installing a Viewmodel</h2>
+<p>The steps involved in producing a new viewmodel include:</p>
+<ol>
+<li>Choose a location for the viewmodel files</li>
+<li>Choose a globally unique view model name. </li>
+<li>Add an entry to a viewmodels.ini file</li>
+<li>Create and implement the viewmodel class and view html file.</li>
+<li>Implement any related service commands you will need. See: <a href="service-commands.html">Service Commands</a></li>
+<li>Add a Knockout View block to a page as described in the previous section.</li>
+</ol>
+<h3>Locations</h3>
+<p>These are the various locations you can choose from. You can also put your files
+in a sub-directory if you indicate this in the viewmodel.ini entry.</p>
+<ul>
+<li>web.root/application/peanut<br><ul>
+<li>This location is for viewmodels that are specific to a particular application. 
+For example: austinquakers.org for Friends Meeting of Austin.</li>
+<li>The viewmodels.ini file for these is web.root/application/config/viewmodels.ini</li>
+<li>PHP source such as Service Commands for the application go in web.root/application/src</li>
+</ul>
+</li>
+<li>Sub-directories of the Peanut Package directory: web.root/packages/knockout_view/pnut/packages<ul>
+<li>This is for code that might be used in other sites with Peanut.<ul>
+<li>Each package has a "config" subdirectory containing its viewmodels.ini file.</li>
+<li>Each package has a "src" subdirectory for PHP source code.</li>
+<li>Directory names for packages for use by other Friends meetings and organizations are
+prefixed with "qnut-".  E.g. web.root/packages/knockout_view/pnut/packages/qnut-committees</li>
+<li>Peanut core features are contained in package directories prefixt with "peanut-".
+E.g. web.root/packages/knockout_view/pnut/packages/qnut-committees</li>
+</ul>
+</li>
+<li>PHP code used in common by all Peanut and application features is in:
+web.root/packages/knockout_view/src<h3>Naming</h3>
+<p>Viewmodel names are camel cased, e.g. "SimpleTest". We derive the viewmodel identifier
+by lowercasing the name and putting a hyphen between words. E.g. "simple-test"</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Viewmodel names must be globally unique. For example if you have a one named 
+"ContactForm" and there is an existing one by the same name, the loader will
+pick the first one it comes to when scanning the viewmodels.ini files. This is
+not fatal but could cause confusion.  The easiest way to determine uniqueness is
+to use a search feature, such as the one in the PhpStorm IDE.</p>
+<h3>Entry in viewmodels.ini</h3>
+<p>The viewmodels.ini entry begins with "[viewmodel-identifier]" follow by
+vm=ViewModelName. Example:</p>
+<pre><code class="language-ini">[committees]
+vm=Committees</code></pre>
+<p>If the viewmodel is located in a sub-directory, this can be included in the vm setting.</p>
+<pre><code class="language-ini">[simple-test]
+vm=tests/SimpleTest</code></pre>
+<h4>Other optional settings: ####</h4>
+<ul>
+<li>view: indicates a custom view file that will be used instead of the
+the usual one indicated by the naming convention. In the ConcreteCMS version,
+view=content" indicates that the content field of the Knockout View block will be used instead
+of a view file</li>
+<li>roles: Is a comma delimited of security roles to which use of the viewmodel is 
+limited.  This is an extra security measure, you should generally use page permissions
+to limit access in a graceful way.<pre><code class="language-ini">[committees]
+vm=Committees
+roles=authenticated</code></pre>
+<h2>Creating the View file in HTML</h2>
+</li>
+</ul>
+<p>To start, open the template file, web.root/packages/knockout_view/pnut/examples/view-template.txt.</p>
+<p>Replace the two occurance of "viewname" with the viewmodel name, the name not the identifier.  For example
+the SimpleTest viewmodel will have two divs</p>
+<pre><code class="language-html">&lt;div id="simpletest-load-message"&gt;&lt;span class="..." style="color:lightgrey"&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div id="simpletest-view-container" style="display:none" class="..." &gt;</code></pre>
+<p>Save in your chosen location as (ViewModel name).html. <br>Example: web.root/application/peanut/tests/view/SimpleTest.html</p>
+<p>Now you can add your markup and data bindins inside the "-view-container" div.</p>
+<h2>Defining the ViewModel class in TypeScript</h2>
+<p>To start, open the template file, web.root/packages/knockout_view/pnut/examples/viewmodel-template.txt</p>
+<p>Replace "VmNameViewModel" with the class name of your view model. E.g "SimpleTestViewModel"</p>
+<p>Replace "PackageName" with the appropriate name space for your view model.  For viewmodels in packages this corresponds 
+to the directory name. Viewmodels in pnut/packages/qnut-directory have the namespace QnutDirectory. Viewmodels in
+application/peanut use "Peanut" as the namespace.</p>
+<p>Save the file to your chosen location as (Your ViewModel name) + "ViewModel.ts".  <br>Example:
+web.root/application/peanut/tests/vm/SimpleTestViewModel.ts</p>
+<p>Depending on the location you may need to correct the relative paths in reference path elements.</p>
+<p>If your location is web.root/application/peanut/tests/vm.  The reference to ViewModelBase.ts is</p>
+<pre><code class="language-html">/// &lt;reference path='../../../../packages/knockout_view/pnut/core/ViewModelBase.ts' /&gt;</code></pre>
+<p>In web.root/application/peanut/vm.</p>
+<pre><code class="language-html">/// &lt;reference path='../../../packages/knockout_view/pnut/core/ViewModelBase.ts' /&gt;</code></pre>
+<p>In a package directory, e.g. web.root/packages/knockout_view/pnut/packages/qnut-directory/vm</p>
+<pre><code class="language-html">/// &lt;reference path="../../../../pnut/core/ViewModelBase.ts" /&gt;</code></pre>
+<p>File names are case sensitive.
+Correct:</p>
+<pre><code class="language-html">/// &lt;reference path='../../../../pnut/core/Peanut.d.ts' /&gt;</code></pre>
+<p>Incorrect:</p>
+<pre><code class="language-html">/// &lt;reference path='../../../../pnut/core/peanut.d.ts' /&gt;</code></pre>
+<p>If you have recently installed a type library using NPM you may not need to use a reference path. Just see if 
+the TypeScript compiler or your IDE recognize the identifiers you use.</p>
+<p>Now you can begin to implement the view model class. Start with defining knockout observables to match any databinding
+you put in the view.  You don't have to initialize them yet but if you are testing any data-bind attribute in the view
+must match an observable in the viewmodel class or an error will be raised.</p>
+<p>Example:</p>
+<p>In SimpleTest.html:</p>
+<pre><code class="language-html">&lt;h2 data-bind="text:messageText"&gt;Not bound&lt;/h2&gt;</code></pre>
+<p>Must have a corresponding observable defined in SimpleTestViewModel.ts</p>
+<pre><code class="language-typescript">    export class SimpleTestViewModel  extends Peanut.ViewModelBase {
+    messageText =
+        ko.observable('This is a simple test, just to make sure all the foundational MVVM stuff is working.');
+
+}</code></pre>
+<p>The next step is to implement the init() method.  Here you will load any resources, libraries, components, styles and
+execute any Service Commands you need to download initialization data.</p>
+<h2>The ViewModel.init() function</h2>
+<p>The init() function is where you implement any custom code that must run
+after all other page elements are loaded and before the view is displayed.
+This can include variable and observable initialization and loading of any
+additional JavaScript libraries, style sheets and other resources that
+your view model depends on.</p>
+<p>Often there will be a call to a service command to obtain initial data to
+assign to the observables.</p>
+<p>The init() function must finally call bindDefaultSection() to bind the 
+observables to the view and successFuntions() which load subsequent view 
+models if needed.</p>
+<pre><code class="language-typescript">  me.bindDefaultSection();
+  if (successFunction) {
+      successFunction();
+  }</code></pre>
+<p>Often the init() function will have a series of loader function calls and
+maybe a service command each of which will have an annoymous function that
+executes on successfull completion. It might look something like
+this:</p>
+<pre><code class="language-typescript">init(successFunction?: () =&gt; void) {
+  let me = this;
+  me.application.loadResources([..]),() =&gt; {
+    me.application.loadComponents('..', () =&gt; {
+      me.services.executeService('GetInitialData',null, 
+              function(serviceResponse: Peanut.IServiceResponse) {
+                if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+                  // assign observables
+
+                  // and finally ...
+                  me.bindDefaultSection();
+                  if (successFunction) {
+                    successFunction();
+                  }
+                }
+              }
+      );
+    });
+  };
+}</code></pre>
+<p>Note how the 'success' functions wait for each predecessor task to complete
+and finally the binding and final success function takes place.</p>
+<h3>Loader functions</h3>
+<p>The Peanut Application object provides a number of functions for use in initialization
+that load components and resources. <a href="#1-Component-loading">[1]</a></p>
+<ul>
+<li>loadResources: loads JavaScript files and libraries and css stylesheets</li>
+<li>registerComponents: loads and registers Knockout components</li>
+<li>loadComponents: loads component viewmodels for later registration (late bound components)</li>
+</ul>
+<p>Each of these functions take as their first parameter a list of resource, either as an array of strings or
+a comma delimited list in a single string. Example:</p>
+<pre><code class="language-typescript">me.application.registerComponents([
+    '@pnut/month-lookup,',
+    '@pnut/modal-confirm',
+    '@pnut/pager',
+    '@pnut/multi-select'
+    ], () =&gt; {
+        me.application.loadResources([
+          '@lib:local/moment-js',
+          '@pnut/ViewModelHelpers',
+          '@lib:fullcalendar-js',
+          '@lib:tinymce'
+        ], () =&gt; {
+            . . .
+      });
+    });    </code></pre>
+<p>Typically these resources references start with a token that begins with '@'.  These are used by the Peanut loader to 
+locate the resource:</p>
+<ul>
+<li>'@pnut/' refers the the Peanut JavaScript source directory. <ul>
+<li>In ConcreteCMS: web.root/packages/knockout_view/pnut/js</li>
+</ul>
+</li>
+<li>'@pkg/' refers to the Peanut packages directory.<br><ul>
+<li>In ConcreteCMS: web.root/packages/knockout_view/pnut/packages</li>
+</ul>
+</li>
+<li>'@lib/' refers to an external or local Javascript library.<ul>
+<li>'@lib:local' refers to the application libraries location.<br>
+In ConcreteCMS: web.root/application/assets/js/libraries</li>
+<li>External libraries (e.g. '@lib:tinymce') are resolved using the [libraries]
+section of the application/config/settings.ini file. These references can be a
+local path or a URL. A setting of 'installed' indicates that the library is
+already loaded by the CMS. Here is an example from austinquakers.org / ConcreteCMS:<pre><code class="language-ini">[libraries]
+tinymce='/application/assets/js/libraries/tinymce/js/tinymce/tinymce.min.js'
+moment-js='moment/min/moment.min.js';
+fullcalendar-js='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js';
+fontawesome='installed'</code></pre>
+<hr>
+## Notes
+</li>
+</ul>
+</li>
+</ul>
+<h3>Component Loading</h3>
+<p>For usage examples of 'registerComponent' and late binding 
+techniques with 'loadComponent' see the test page 'Component Test'
+with source in: web.root/application/peanut/tests/vm/ComponentsTestViewModel.ts</p>
+<p>See also: <a href="components/components-overview.html">Components Overview</a></p>
+</body>
+</html>

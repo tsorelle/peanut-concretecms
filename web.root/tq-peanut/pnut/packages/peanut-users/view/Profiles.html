@@ -1,0 +1,175 @@
+<div id="contacts-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="contacts-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <div id="contact-list">
+                    <h4>Contacts</h4>
+                    <form data-bind="submit:doSearch">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter search value"
+                                  data-bind="value:filterValue" aria-label="Search / Filter" spellcheck="false">
+                            <button class="btn btn-outline-secondary" data-bind="click:clearFilter,hidden:filterValue() == ''"
+                                    type="button" title="Clear"><i style="color:darkgray" class="fas fa-times"></i></button>
+                            <button class="btn btn-outline-secondary"
+                                    data-bind="click:doSearch" type="button"><i class="fas fa-filter"></i></button>
+                        </div>
+                    </form>
+                    <p id="new-contact-button"> <a href="#" data-bind="click:newContact">New contact</a> </p>
+                    <table class="table table-hover">
+                        <tbody data-bind="foreach: contactList">
+                        <tr>
+                            <td>
+                                <a class="no-decoration" href="#" data-bind="click:$parent.selectContact">
+                                    <span data-bind="text:fullname"></span> (<span data-bind="text:email"></span> )
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <pager params='click:changePage,page:currentPage,max:maxPages,owner:self'></pager>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div id="error-message" data-bind='visible:contactForm.errorMessage' class="mb-2">
+                    <p class="text-danger" style='width: 100%; background-color: yellow; font-weight: bold'
+                       data-bind="text:contactForm.errorMessage"></p>
+                </div>
+
+                <div id="view-page" data-bind="visible:pageview() ==  'view'" >
+                    <p data-bind="hidden:contactForm.active">
+                        <strong>Inactive</strong>
+                    </p>
+                    <!--fullname : string;-->
+                    <div class="mb-3">
+                        <label for="fullname-view" class="form-label">Full name:</label>
+                        <span id="fullname-view" data-bind="text:contactForm.fullname" ></span>
+                    </div>
+                    <!--email -->
+                    <div class="mb-3">
+                        <label for="email-text" class="form-label">Email Address:</label>
+                        <span data-bind="text:contactForm.email" id="email-text"></span>
+                    </div>
+
+                    <!--phone : string;-->
+                    <div class="mb-3">
+                        <label for="phone-view" class="form-label">Phone:</label>
+                        <span id="phone-view" data-bind="text:contactForm.phone" ></span>
+                    </div>
+                    <!--subscriptions : number[] | null;-->
+                    <div class="mb-3">
+                        <selected-list params="source:contactForm.subscriptionsController,label:'Subscriptions',readonly:true,
+                                emptymessage:'No subscriptions'"></selected-list>
+                    </div>
+
+                    <!--notes : string;-->
+                    <div class="mb-3">
+                        <label class="form-label d-block" for="notes-view">Notes:</label>
+                        <div id="notes-view" data-bind="text:contactForm.notes" ></div>
+                    </div>
+
+                    <!--listingtypeId : any;-->
+
+                    <div class="mb-3" data-bind="hidden:contactForm.accountId">
+                        <a class="me-3" href="#" data-bind="click:newAccount">
+                            Create site account</a>
+                    </div>
+
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bind="click:editContact">Edit</button>
+                    </div>
+
+
+                </div>
+                <div id="edit-page" data-bind="visible:pageview() ==  'edit'" >
+                    <form data-bind="submit:saveChanges">
+                        <!--active : number;-->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="active-check"
+                                   data-bind="checked:contactForm.active">
+                            <label class="form-check-label" for="active-check">Active</label>
+                        </div>
+
+                        <!--fullname : string;-->
+                        <div class="mb-3">
+                            <label for="fullname" class="form-label">Full name</label>
+                            <input class="form-control" data-bind="value:contactForm.fullname" id="fullname"
+                                   type="text" placeholder="Full name" aria-label="fullname">
+                        </div>
+
+                        <!--email : string;-->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input class="form-control" data-bind="value:contactForm.email" id="email"
+                                   type="text" placeholder="Default input" aria-label="">
+                        </div>
+
+
+                        <!--phone : string;-->
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input class="form-control" data-bind="value:contactForm.phone" id="phone"
+                                   type="text" placeholder="Phone" aria-label="phone">
+                        </div>
+
+                        <!--subscriptions : number[] | null;-->
+                        <div>
+                            <multi-select params="controller: contactForm.subscriptionsController,sort:'code',translator:self,
+                            id:'subscriptions-select', label:'Email list subscriptions', caption:'Select subscriptions...'"></multi-select>
+                        </div>
+
+                        <!--notes : string;-->
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" data-bind="value:contactForm.notes" id="notes"
+                                      rows="5" aria-label="notes"></textarea>
+                        </div>
+                        <!--sortkey : string;-->
+                        <div class="mb-3">
+                            <label for="sortkey" class="form-label">Sort Key</label>
+                            <input class="form-control" data-bind="value:contactForm.sortkey" id="sortkey"
+                                   type="text" placeholder="Sort Key" aria-label="sortkey">
+                        </div>
+                        <!--listingtypeId : any;-->
+
+                        <div>
+                            <button type="button" class="btn btn-primary me-3" data-bind="click:saveChanges">Save</button>
+                            <a href="#" data-bind="click:cancelChanges">Cancel</a>
+                        </div>
+
+                    </form>
+                </div>
+                <div id="wait-page" data-bind="visible:pageview() ==  'wait'" >
+                    <h4>Updating... <span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></h4>
+                </div>
+                <div id="account-page" data-bind="visible:pageview() ==  'account'">
+                    <form data-bind="submit:createAccount">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input class="form-control" data-bind="value:accountForm.username" id="username"
+                                   autocomplete="username"
+                                   type="text" placeholder="Username" aria-label="username">
+                        </div>
+                        <div class="mb-3">
+                            <change-password params="password:accountForm.password,label:'Password'"></change-password>
+                        </div>
+                        <div>
+                            <multi-select params="controller: accountForm.rolesController,sort:'code',translator:self,
+                                id:'roles-select', label:'User roles', caption:'Select roles...'"></multi-select>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary me-3">Save</button>
+                            <a href="#" data-bind="click:cancelChanges">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+                <div id="error-page" data-bind="visible:pageview() ==  'error'">
+                    <p>Sorry, and unexpected error occured</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

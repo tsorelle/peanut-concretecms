@@ -1,0 +1,19 @@
+<div class="modal" id="[[modal-id]]-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title"  data-bind="text:[[modal-title]]"></h4>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    [[body content]]
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bind="click:[[function]]"><translate params="code:'label-ok',translator:self"></translate></button>
+                    <button type="button" class="btn btn-default btn-link"  data-bs-dismiss="modal"><translate params="code:'label-close',translator:self"></translate></button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- filter menu modal -->

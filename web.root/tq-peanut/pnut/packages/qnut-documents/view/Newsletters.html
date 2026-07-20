@@ -1,0 +1,218 @@
+<div id="newsletters-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="newsletters-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div id="tabs" class="row" data-bind="visible:canSend">
+            <div class="col-md-12">
+                <ul class="nav nav-tabs">
+                    <li  class="nav-item">
+                            <a href="#" class="nav-link" data-bind="click:showListTab, css: { active: tab()=='list'}">
+                                <translate params="code:'newsletter-label-list',translator:self"></translate></a></li>
+                    <li  class="nav-item">
+                            <a href="#" class="nav-link" data-bind="click:showSendTab, css: { active: tab()=='send'}">
+                                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;<translate params="code:'newsletter-label-send',translator:self"></translate></a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="list-panel" data-bind="visible:tab() =='list'">
+            <div class="row" id="pagers-top">
+                <div class="col-md-4 d-none d-sm-block hidden-xs">
+                    <button class="btn btn-link"  style="margin-right:1rem" data-bind="click:jumpStart,visible:currentPage() > 1" >
+                        <span class="fa fa-fast-backward"></span> <translate params="code:'newsletter-earliest',translator:self"></translate>
+                    </button>
+                </div>
+                <div class="col-md-4"style="text-align: center">
+                    <pager params='click:changePage,page:currentPage,max:maxPages,owner:self'></pager>
+                </div>
+                <div class="col-md-4 d-none d-sm-block hidden-xs">
+                    <button class="btn btn-link float-end"  data-bind="click:jumpEnd,visible:currentPage() < maxPages()" style="margin-left:1rem" >
+                        <span class="fa fa-fast-forward"></span> <translate params="code:'newsletter-latest',translator:self"></translate>
+                    </button>
+                </div>
+            </div>
+            <div class="row" id="newsletter-list">
+                <div class="col-md-12">
+                    <div id="phone-view" class=".d-block d-sm-none ">
+                        <div data-bind= "foreach:newsletterList" >
+                                <div data-bind="text:title"></div>
+                                    <div style="padding:0.5rem; border-bottom: 1px skyblue solid">
+
+                                        <a href="#" data-bind="visible:addenda > 0,attr: { href: addendaUri, title: $parent.addendaLinkTitle }"
+                                            style="margin-right: 1rem">
+                                            <span data-bind="text:addenda"></span> addenda
+                                        </a>
+
+                                        <a href="'#" style="margin-right: 4rem" target='_blank' data-bind="attr: { href: uri, title: $parent.docViewLinkTitle }"> <i class="far fa-file"></i>
+                                            View</a>
+                                        <a href="'#" target='_blank' data-bind="click:$parent.downloadDocument, attr: { href: uri, title: $parent.docDownloadLinkTitle }"><i class="fa fa-download" aria-hidden="true"></i>
+                                            Download
+                                        </a>
+
+                                        <span data-bind="visible:$parent.canSend">
+                                        <a href="'#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                                            </span>
+
+
+                                    </div>
+                        </div>
+                    </div>
+                    <div id="large-device-view" class="d-none d-sm-block hidden-xs">
+
+                        <div class='table-responsive' data-bind="visible:newsletterList().length">
+                        <table class="table table-hover">
+                            <thead>
+                            <th>
+                                <translate params="code:'label-publication-date',translator:self"></translate>
+                            </th>
+                            <th>
+                                <translate params="code:'label-title',case:'ucfirst',translator:self"></translate>
+                            </th>
+                            <th>
+                                <translate params="code:'Addenda',case:'ucfirst',translator:self"></translate> <!-- todo: translate -->
+                                <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+                                   data-bind="attr: {title: whatIsThis}"
+                                   data-bs-content="Newsletter addenda may include additional documents and handouts from Business Meeting.">
+                                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                                </a>
+                            </th>
+                            <th>&nbsp</th><th>&nbsp</th>
+                            <th data-bind="visible:canSend">&nbsp</th>
+                            </thead>
+                            <tbody data-bind="foreach:newsletterList">
+                            <td data-bind="text:publicationDate"></td>
+                            <td data-bind="text:title"></td>
+                            <td>
+                                <!-- a href="#" data-bind="visible:addenda()>0,attr: { href: addendaUri, title: $parent.addendaLinkTitle }">
+                                    <span data-bind="text:addenda"></span>
+                                </a -->
+                                <a href="#" data-bind="visible:addenda > 0,attr: { href: addendaUri, title: $parent.addendaLinkTitle }">
+                                    <span data-bind="text:addenda"></span> addenda
+                                </a>
+                            </td>
+                            <td><a href="'#" target='_blank' data-bind="attr: { href: uri, title: $parent.docViewLinkTitle }"><i class="fas fa-file-pdf" aria-hidden="true"></i></a></td>
+                            <td><a href="'#" target='_blank' data-bind="click:$parent.downloadDocument, attr: { href: uri, title: $parent.docDownloadLinkTitle }"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+                            <td data-bind="visible:$parent.canSend">
+                                <a href="'#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                            </td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="pagers-bottom" data-bind="visible:newsletterList().length > 6">
+
+                <div class="col-md-4">
+                    <button class="btn btn-link"  style="margin-right:1rem" data-bind="click:jumpStart,visible:currentPage() > 1" >
+                        <span class="fa fa-fast-backward"></span> <translate params="code:'newsletter-earliest',translator:self"></translate>
+                    </button>
+                </div>
+                <div class="col-md-4" style="text-align: center">
+                    <pager params='click:changePage,page:currentPage,max:maxPages,owner:self'></pager>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-link float-end"  data-bind="click:jumpEnd,visible:currentPage() < maxPages()" style="margin-left:1rem" >
+                        <span class="fa fa-fast-forward"></span> <translate params="code:'newsletter-latest',translator:self"></translate>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <div id="send-panel" data-bind="visible:tab() =='send'">
+            <form>
+                <div class="row"  id="issueSelector" data-bind="visible:!showMessage()">
+                    <div class="col-md-12">
+                        <table class="table-borderless">
+                            <tr>
+                                <td style="padding-right:1rem"><a href="#" data-bind="click:onPrevIssue" style="outline: 0; font-weight: normal"><i class="fa fa-backward fa-2x" aria-hidden="true"></i></a></td>
+                                <td style="text-align: center; padding-bottom: 1rem; width:20rem"><h2 data-bind="text:issueText"></h2></td>
+                                <td style="padding-left: 1rem"><a href="#" data-bind="click:onNextIssue" style="outline: 0; font-weight: normal"><i class="fa fa-forward fa-2x" aria-hidden="true"></i></a></td>
+                            </tr>
+                        </table>
+                        <div data-bind="visible:oldIssue" style="margin-bottom: .5rem">
+                            <label class="checkbox-inline"><input type="checkbox" data-bind="checked:overwrite">Overwrite existing file?</label>
+                        </div>
+                        <div id="document-upload" class="form-group mb-3" data-bind="visible:overwrite() || !oldIssue()" style="padding:.5rem; border: 1px dotted skyblue">
+                            <label for="documentFile"><translate params="code:'document-label-select-file',translator:self"></translate> </label>
+                            <span class="text-danger" data-bind="visible:fileSelectError">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-file-select',translator:self"></translate>
+                            </span>
+
+                            <input id="newsletterFile" accept='.pdf' data-bind="event: {change: onFileSelect}" type="file" style="width:100%;border:0;background-color: transparent" class="btn btn-outline-dark" id="documentFile" id="documentFile" placeholder="Select a file or drag from explorer"/>
+                        </div>
+                        <div data-bind="visible: fileSelected">
+                            <!-- div>
+                                <label style="margin-left: 2rem" class="checkbox-inline"><input type="checkbox" data-bind="checked:publish">Publish now</label>
+                            </div -->
+                            <div>
+                            <button class="btn btn-primary" data-bind="click: postNewsletter">
+                                <span style="margin-left: 1rem" data-bind="visible:!oldIssue()">Add newsletter</span>
+                                <span style="margin-left: 1rem" data-bind="visible:overwrite">Update newsletter</span>
+                            </button>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" data-bind="click: resendNewsletter, visible:oldIssue() && !overwrite()">
+                                <span data-bind="visible:oldIssue() && !overwrite()">Resend newsletter</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id='message-form' data-bind="visible:showMessage">
+                    <div class="col-md-12">
+                        <h2 data-bind="text:issueText"></h2>
+                        <div class="form-group"  data-bind="css: {'has-error': bodyError}">
+                            <label class="control-label" for="messagehtml"><translate params="code:'newsletter-label-message',translator:self"></translate></label>
+                            <span class="error" data-bind="visible: bodyError">
+                                <translate params="code:'newsletter-eror-no-content',translator:self"></translate>
+                            </span>
+                            <div>
+                                <textarea rows="10"  class="form-control" id="messagehtml"></textarea>
+                            </div>
+                            <clean-html params="editorId:'messagehtml'"></clean-html>
+                        </div>
+
+                        <div class="form-group">
+                            <div>
+                                <span style="margin-right: 1rem"></span><label class="checkbox-inline"><input type="checkbox" data-bind="checked:sendTest">
+                                <translate params="code:'send-test-message',translator:self"></translate></label>
+                            </div>
+                            <div>
+
+                            </div>
+                                <button class="btn btn-primary" data-bind="click:sendNewsletter">
+                                    <translate params="code:'newsletter-send-mailing',translator:self"></translate> <span class="fa fa-paper-plane-o" aria-hidden="true"></span>
+                                </button>
+                            <button class="btn btn-link" data-bind="click:onCancelSend">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row" id="send-result" data-bind="visible:tab()=='send-result'">
+            <div class="col-md-12">
+                <div data-bind="visible:sentCount" >
+                    <div data-bind="visible:queued">
+                        <p>
+                        <span data-bind="text:sentCount"></span> <translate params="code:'newsletter-result-message1',translator:self"></translate>
+                        </p>
+                        <p>
+                            <translate params="code:'newsletter-result-message2',translator:self"></translate>
+                            <a data-bind="attr: {href:queueLink}">
+                                <translate params="code:'newsletter-result-message3',translator:self"></translate> <i class="fa fa-forward" aria-hidden="true"></i>
+                            </a>
+                        </p>
+                    </div>
+                    <div data-bind="visible:!queued()">
+                        <p>
+                            <span data-bind="text:sentCount"></span> <translate params="code:'newsletter-result-message-sent',translator:self"></translate>
+                        </p>
+                    </div>
+                </div>
+                <div data-bind="visible:sentCount() == 0" >
+                    <translate params="code:'newsletter-send-error',translator:self"></translate>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

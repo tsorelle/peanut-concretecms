@@ -1,0 +1,154 @@
+<div id="manageusers-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="manageusers-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <h4>Users</h4>
+                <p id="new-user-button" data-bind="visible:showNewUserLink"><a href="#" data-bind="click:newUser">New user</a> </p>
+                <table class="table table-hover">
+                    <tbody data-bind="foreach: users">
+                    <tr>
+                        <td>
+                            <a class="no-decoration" href="#" data-bind="click:$parent.selectUser">
+                                <span data-bind="text:fullname"></span> (<span data-bind="text:username"></span> )
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <h4 data-bind="visible:userPanel()=='view'">Selected User</h4>
+                <div id="view-panel" data-bind="visible:userPanel()=='view'">
+                    <form>
+                        <div data-bind="hidden:userForm.accountId() == 0">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username:</label>
+                                <span class="me-4" data-bind="text:userForm.username"></span>
+                                <strong>Account Id:</strong><span data-bind="text:userForm.accountId"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" data-bind="hidden:userForm.active">
+                            <p><strong>Account Disabled</strong></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fullname" class="form-label">Full name:</label>
+                            <span data-bind="text:userForm.fullname" ></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address:</label>
+                            <span data-bind="text:userForm.email" id="email-text"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <selected-list params="source:userForm.rolesController,label:'User roles',readonly:true,
+                                emptymessage:'No roles assigned'"></selected-list>
+                        </div>
+
+                        <div class="mb-3">
+                            <a class="me-3" href="#" data-bind="click:changePassword">Change password</a>
+                            <a  href="#" data-bind="click:changeUserName">Change username</a>
+                        </div>
+
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bind="click:editUser">Edit</button>
+                        </div>
+                    </form>
+
+                </div>
+                <div id="edit-panel" data-bind="visible:userPanel()=='edit'">
+                    <h4 data-bind="hidden:userForm.accountId() == 0">Edit User</h4>
+                    <h4 data-bind="visible:userForm.accountId() == 0">New User</h4>
+                    <div data-bind='visible:userForm.errorMessage' class="mb-2">
+                        <p class="text-danger" style='width: 100%; background-color: yellow; font-weight: bold'
+                                data-bind="text:userForm.errorMessage"></p>
+                    </div>
+                    <form>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="active-check"
+                                   data-bind="checked:userForm.active">
+                            <label class="form-check-label" for="active-check">Active</label>
+                        </div>
+
+                        <div data-bind="visible:userForm.accountId() == 0">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input class="form-control" data-bind="value:userForm.username" id="username"
+                                       autocomplete="username"
+                                       type="text" placeholder="Username" aria-label="username">
+                            </div>
+                            <div class="mb-3">
+                                <change-password params="password:userForm.password,label:'Password'"></change-password>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fullname" class="form-label">Full name</label>
+                            <input class="form-control" data-bind="value:userForm.fullname" id="fullname"
+                                   type="text" placeholder="Full name" aria-label="fullname">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input class="form-control" data-bind="value:userForm.email" id="email"
+                                   type="text" placeholder="Default input" aria-label="">
+                        </div>
+
+                        <div>
+                            <multi-select params="controller: userForm.rolesController,sort:'code',translator:self,
+                            label:'User roles', caption:'Select roles...'"></multi-select>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary me-3" data-bind="click:saveUserChanges">Save</button>
+                            <a href="#" data-bind="click:cancelChanges">Cancel</a>
+                        </div>
+                    </form>
+
+                </div>
+                <div id="wait-panel" data-bind="visible:userPanel()=='wait'">
+                    <h4>Updating... <span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></h4>
+                </div>
+                <div id="username-panel" data-bind="visible:userPanel()=='username'">
+                    <h4>Change Username</h4>
+                    <form>
+                        <div data-bind='visible:userForm.errorMessage' class="mb-2">
+                            <p class="text-danger" style='width: 100%; background-color: yellow; font-weight: bold'
+                               data-bind="text:userForm.errorMessage"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username2" class="form-label">Username</label>
+                            <input class="form-control" data-bind="value:userForm.username" id="username2"
+                                   autocomplete="username"
+                                   type="text" placeholder="Username" aria-label="username">
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary me-3" data-bind="click:updateUserName">Update</button>
+                            <a href="#" data-bind="click:cancelChanges">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+                <div id="password-panel" data-bind="visible:userPanel()=='password'">
+                    <h4>Reset Password</h4>
+
+                    <form>
+                        <div data-bind='visible:userForm.errorMessage' class="mb-2">
+                            <p class="text-danger" style='width: 100%; background-color: yellow; font-weight: bold'
+                               data-bind="text:userForm.errorMessage"></p>
+                        </div>
+                    <div class="mb-3">
+                        <change-password params="password:userForm.password,id:'reset-pwd'"></change-password>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary me-3" data-bind="click:resetUserPassword">Reset</button>
+                        <a href="#" data-bind="click:cancelChanges">Cancel</a>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

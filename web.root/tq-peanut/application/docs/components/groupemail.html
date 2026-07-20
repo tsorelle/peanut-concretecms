@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/peanut/docs">Return to docs home page</a></p>
+<h1>Group Email Component</h1>
+<p>The Group EMail component is used to present a message editor as part of a page routine to send email messages to a
+small group such as a committee, comunity group or distribution list. Additionally the component may present a list
+of recipient email addresses which can be used if the user wants to send a message from their own email program.</p>
+<p>For a detailed explanation of usage, see the <a target="_blank" href="https://austinquakers.org/qnut/documents/1825">user help document</a></p>
+<h2>Interface</h2>
+<p>The host vm must implement an interface consisting of a function and five Knockout ovservables, that matches this 
+definition in the component.  This demonstrates a technique we often use to permit communication between the view model
+and an early-bound component.</p>
+<pre><code class="language-typescript">    interface IGroupListOwner extends IViewModel {
+        sendMemberMessages: (content: string, subject: string) =&gt; void;
+        messageModalVisible: KnockoutObservable&lt;boolean&gt;;
+        canShowEmails: KnockoutObservable&lt;boolean&gt;;
+        emailsText: KnockoutObservable&lt;string&gt;;
+        clearMessagesForm: KnockoutObservable&lt;boolean&gt;;
+        mailFormRecipients: KnockoutObservable&lt;string&gt;;
+    }</code></pre>
+<p>This set of observables and the function is accessed by the component through the "self" parameter that passes a 
+reference to the host vm to the component. The component tag in the host view looks like this.</p>
+<pre><code class="language-html">&lt;group-email params="owner:self"&gt;&lt;/group-email&gt;</code></pre>
+<p>The "self" parameter is actually a function in the view model base class that returns a reference to itself.
+This technique is used widely in our components.  The purpose of each interface item is as follows:</p>
+<ul>
+<li>messageModalVisible: when set to true this triggers display of the dialog box. </li>
+<li>canShowEmails: when set to false the display of email addresses is hidden.</li>
+<li>emailsText is a "\n" seperated list of addresses that will receive the mesage, in the form "Name <email address>"</li>
+<li>mailFormRecipients is the name of the group, to be displayed in the modal title.</li>
+<li>sendMemberMessages is a function called with the user clicks "Send"</li>
+<li>clearMessagesForm is set to true signaling the component to clear the form when it is next displayed.</li>
+</ul>
+<h2>Example:</h2>
+<p>Some code, not relevant to our discussion, has been elided "// ...". </p>
+<h3>In the declaration section at the top of the class</h3>
+<pre><code class="language-typescript">        clearMessagesForm = ko.observable(false);
+        emailsText = ko.observable('');
+        messageModalVisible = ko.observable(false);
+        mailFormRecipients = ko.observable('Members');
+        canShowEmails = ko.observable(true);</code></pre>
+<h3>On getAddresses</h3>
+<p>The getAddresses function is called when the user selects a distribution list.  The addresses are assigned on
+a successful invocation of the "GetDistributionListEmails" service and the group message form is displayed</p>
+<pre><code class="language-typescript">        getAddresses = (item: ILookupItem) =&gt; {
+            this.selectedList = item;
+            // ...
+            me.services.executeService('peanut.qnut-directory::messaging.GetDistributionListEmails', item.id ,
+                (serviceResponse: Peanut.IServiceResponse) =&gt; {
+                    if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+                        let response = serviceResponse.Value;
+                        me.emailsText(response.text);
+                        this.mailFormRecipients(item.name);
+                        this.messageModalVisible(true); // display email form
+                    }
+                })
+            // ...  
+            });
+        }</code></pre>
+<p>Since the component has been subscribed to the messageModelVisible observable it is signaled to display the form
+when messageModalVisible is set to true.  The component resets it to false.</p>
+<h2>Sending the messages</h2>
+<p>The sendMemberMessages function</p>
+<pre><code class="language-typescript">        sendMemberMessages = (subject: string, content: string)=&gt; {
+            let me = this;
+            me.distributionListCode(item.code);
+            me.distributionListName(item.name);
+            let request = {
+                code: me.distributionListCode(),
+                subject: subject,
+                body: content,
+                listName: me.distributionListName()
+            };
+            me.showWaitMessage('Sending messages...');
+            me.services.executeService('peanut.qnut-directory::messaging.SendDistributionMessages', request,
+                function (serviceResponse: Peanut.IServiceResponse) {
+                    if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+                        me.clearMessagesForm(true);
+                    } 
+                })
+            // ...
+
+    }
+</code></pre>
+<p>The service called by the host vm takes reponsibility for selecting the address list and sending the message.</p>
+<h2>Host vm code examples</h2>
+<ul>
+<li>ComponentsTest: /application/peanut/tests</li>
+<li>Committees: pnut/packages/qnut-directory</li>
+<li>CommitteeMembers: pnut/packages/qnut-committees</li>
+<li>GroupMembership: pnut/packages/qnut-usergroups</li>
+<li>DistributionLists: pnut/packages/qnut-directory</li>
+</ul>
+<p>The code for the groupEmail component is located in: pnut/components</p>
+</body>
+</html>

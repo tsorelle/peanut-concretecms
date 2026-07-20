@@ -1,0 +1,117 @@
+<div id="permissions-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="permissions-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <p><a href="#" data-bind="click:initializeRoles">Initialize roles</a>   </p>
+                <table>
+                    <thead>
+                    <tr><th><translate params="code:'permission-name-title',default:'Permission name (needs transation)',translator:self"></translate></th><th>&nbsp</th></tr>
+                    </thead>
+                    <tbody data-bind="foreach:permissionsList">
+                    <tr>
+                        <td data-bind="text:permissionName" style="padding-right: 10px"></td>
+                        <td><a href="#" data-bind="click:$parent.showPermissionUpdateForm">
+                            <translate params="code:'label-edit',default:'Edit (needs transation)',translator:$parent.self"></translate>
+                        </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="mt-4">
+                <a href="#" data-bind="click:addNewRole">Add new role</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="permission-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-bind="visible:bootstrapVersion() < 4" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title"><translate params="code:'update-permission-title',default:'Update Permission  (needs transation)',translator:self"></translate> </h3>
+                    <button type="button" class="close btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4> <span data-bind="text:permissionForm.permissionName"></span></h4>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-bottom: 20px">
+                        <div class="col-sm-6">
+                            <fieldset>
+                                <legend><translate params="code:'assigned-roles-title',default:'Assigned Roles  (needs transation)',translator:self"></translate></legend>
+                                <table>
+                                    <tbody data-bind="foreach:permissionForm.assigned">
+                                    <tr>
+                                        <td data-bind="text:Name" style="padding-right: 10px"></td>
+                                        <td><a href="#" data-bind="click:$parent.onRemoveRole,attr: { title: Description }">>></a> </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-6">
+                            <fieldset>
+                                <legend><translate params="code:'available-roles-title',default:'Avaliable Roles (needs transation)',translator:self"></translate></legend>
+                                <table>
+                                    <tbody data-bind="foreach:permissionForm.available">
+                                    <tr>
+                                        <td><a href="#" data-bind="click:$parent.onAddRole,attr: { title: Description }"><<</a> </td>
+                                        <td data-bind="text: Name" style="padding-left: 10px"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" data-dismiss="modal" data-bs-dismiss="modal">Close</a>&nbsp;
+                        <button type="button" style="margin-left:20px" class="btn btn-primary" data-bind="visible:permissionForm.changed,click:updatePermission">
+                            <translate params="code:'label-save-changes',default:'Save changes  (needs transation)',translator:self"></translate></button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+    </div>
+    <div id="new-role-modal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">New Role</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Enter a new role name
+                        <span data-bind="visible:newRoleForm.errorMessage() !== ''"><br></span>
+                        <span class="text-danger" data-bind="text:newRoleForm.errorMessage"></span>
+                    </p>
+                    <form>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="role-name-input">Role Name</label>
+                            <input id="role-name-input" data-bind="value:newRoleForm.roleName" type="text" class="form-control" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" data-bind="click:doAddNewRole" type="button">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- permissions view end -->

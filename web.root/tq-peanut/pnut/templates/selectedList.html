@@ -1,0 +1,16 @@
+<label class="form-label" data-bind="visible:label,text:label"></label>
+<div>
+    <div data-bind="visible:readonly">
+        <span data-bind="visible:selectedItems().length == 0,
+                text:emptymessage"></span>
+    </div>
+    <ul style="clear: both;padding-left:2rem" data-bind="foreach:selectedItems">
+      <li><span data-bind="text:name"></span>
+            <span style="white-space: nowrap;" data-bind="visible:!$parent.readonly()">
+                [<a href="#" data-bind="click:$parent.removeItem">
+                <span data-bind="text:$parent.removeText"></span>
+                </a>] </span>
+      </li>
+    </ul>
+</div>
+

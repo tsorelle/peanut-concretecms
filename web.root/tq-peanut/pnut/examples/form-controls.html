@@ -1,0 +1,153 @@
+<form>
+    <fieldset id="form-id" >
+
+        <legend>
+            <translate params="code:'form-legend',translator:self"></translate>
+        </legend>
+
+        <!-- has errors warning -->
+        <div class="alert alert-danger" role="alert" data-bind="visible:myForm.hasErrors">
+            <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+            <span class="sr-only"><translate params="code:'label-error',translator:self"></translate> :</span>
+            <translate params="code:'form-error-message',translator:self"></translate>
+        </div>
+
+        <!-- required text input -->
+        <!-- mb-3 for bootstrap 5, form-group for previous versions -->
+        <div class="form-group mb-3" >
+            <label for="firstname" class="control-label"><translate params="code:'label-first-name',translator:self"></translate>
+                <span data-bind="text:myForm.nameError"></span></label>
+            <input class="form-control" id="firstname" data-bind="value:myForm.firstname"/>
+        </div>
+
+        <!-- optional text input -->
+        <div class="form-group mb-3" >
+            <label for="middlename" class="control-label"><translate params="code:'label-middle-name',translator:self"></translate></label>
+            <input class="form-control" id="middlename" data-bind="value:myForm.middlename"/>
+        </div>
+
+        <!-- date field -->
+        <div class="form-group mb-3">
+            <label for="dob-input" class="control-label">
+                <translate params="code:'label-birth-date',translator:self"></translate></label>
+            <!-- datepicker class on input -->
+            <input class="form-control datepicker" type="text" id="dob-input"
+                   data-bind="value:myForm.dateOfBirth"/>
+        </div>
+
+        <!-- date field with secondary drop down -->
+        <div class="form-group mb-3">
+            <label for="dob-input" class="control-label"><translate params="code:'label-birth-date',translator:self"></translate>  (<translate params="code:'dir-label-kids-only',translator:self"></translate>)</label>
+            <div class="input-group" style="">
+                <input class="form-control datepicker" type="text" id="dob-input" data-bind="value:myForm.dateOfBirth"/>
+                <span class="input-group-btn" data-bind="visible:myForm.dateOfBirth()==''">
+                                <div class="dropdown">
+                                    <button class="btn btn-default btn-secondary dropdown-toggle" tabindex="" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Age?
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" data-bind="foreach:myForm.ages">
+                                        <li><a href="#" data-bind="click:$parent.myForm.calculateDob"><span data-bind="text:$data"></span></a></li>
+                                    </ul>
+                                </div>
+                                </span>
+            </div>
+        </div>
+
+        <!-- date picker initialization in view model
+                me.application.loadResources([
+                    '@lib:jqueryui-css',
+                    '@lib:jqueryui-js',
+                    // other resources
+                ], () => {
+                    jQuery(function () {
+                        jQuery(".datepicker").datepicker();
+                    });
+                    me.bindDefaultSection();
+                });
+        -->
+
+        <!-- select / drop-down -->
+        <div class="form-group mb-3">
+            <label for="directory-listing-input" class="control-label"><translate params="code:'dir-label-directory-listing',translator:self"></translate>:</label>
+            <!-- bootstrap 4 use form-control on select element -->
+            <select class="form-select" id="directory-listing-input"
+                    data-bind="options: directoryListingTypes,optionsText:'name', value: myForm.selectedDirectoryListingType"></select>
+        </div>
+
+
+        <!-- add/remove panel -->
+        <div class="form-group mb-3">
+            <label class="control-label"><translate params="code:'dir-label-affiliation-plural',translator:self"></translate></label>
+            <div><a href="#" data-bind="click:myForm.showAddAffiliationModal">
+                <translate params="code:'label-add',translator:self"></translate>&nbsp;<translate params="code:'dir-label-affiliation',translator:self"></translate>
+            </a>
+            </div>
+            <table class="table table-bordered"  data-bind="visible:myForm.affiliationList().length">
+                <tbody data-bind="foreach:myForm.affiliationList">
+                <td data-bind="text:organizationName" ></td>
+                <td data-bind="text:roleName"></td>
+                <td><a href="#" data-bind="click:$parent.myForm.removeAffiliation"><translate params="code:'label-remove',translator:$parent.self"></translate></a> </td>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- checkbox list -->
+        <div class="form-group mb-3">
+            <label class="control-label"><translate params="code:'dir-label-subscriptions',translator:self"></translate></label>
+            <ul  style="list-style: none" data-bind="foreach:myForm.emailSubscriptionList">
+                <li>
+                    <input type="checkbox" data-bind="checked:subscribed"/>
+                    <span data-bind="text:name"></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- single checkbox -->
+        <div class="form-group mb-3">
+            <label for="deceased-input" class="control-label"><translate params="code:'label-deceased',translator:self"></translate></label>
+            <input class="form-control datepicker" type="text" id="deceased-input" data-bind="value:myForm.deceased"/>
+        </div>
+
+        <!-- textarea -->
+        <div class="form-group mb-3">
+            <label for="messagehtml" class="control-label"><translate params="code:'label-notes',translator:self"></translate></label>
+            <textarea class="form-control" id="messagehtml" data-bind="value:myForm.notes"></textarea>
+        </div>
+        <!-- editor control for tinymce in view model
+            // load library in viewmodel.init()
+            me.application.loadResources([
+                '@lib:tinymce',
+                // other resources ...
+                ], () => {
+                    // initialize editor
+                    tinymce.init({
+                        selector: selector,
+                        toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | image",
+                        plugins: "image imagetools link",
+                        default_link_target: "_blank",
+                        branding: false
+                    });
+
+                    me.bindDefaultSection();
+                    successFunction();
+            });
+
+            // set content
+            tinymce.get('messagehtml').setContent(me.messageBody());
+
+            // get value
+            tinymce.triggerSave();
+            let text=jQuery('#messagehtml').val();
+        -->
+
+    </fieldset>
+    <!-- cancel-save buttons -->
+    <div id="form-buttons">
+        <button class="btn btn-primary" data-bind="click:onSave">
+            <translate params="code:'label-save',translator:self"></translate></button>
+        <button class="btn btn-default btn-secondary" data-bind="click:onCancel">
+            <translate params="code:'label-cancel',translator:self"></translate></button>
+    </div>
+
+    </div>

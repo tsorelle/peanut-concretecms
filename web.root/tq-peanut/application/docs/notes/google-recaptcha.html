@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Google Recaptcha Support</h1>
+<p>Peanut includes support for Google ReCaptcha V3.<br>
+See: <a target="_blank" href="https://developers.google.com/recaptcha">Google Recapcha</a></p>
+<p>As implemented in Peanut, the Google API is used, rather than markup on the page,
+to retrieve a decimal score indicating the probability the the "user" is a human rather than a
+robot script.  We translate this to an interger between 0 an 10.  Five or below indicates
+a high probability that the input is being delivered by a script.</p>
+<p>To enable Google Recaptcha a change must be made to the head section in the theme's
+header_top.php file:<br></p>
+<pre><code class="language-php">&lt;?php
+print \Tops\sys\TRecaptcha::RenderApiTag($c);
+&gt;</code></pre>
+<p>This will create the script tag for recaptcha if the page requires it.  This requirement
+is indicated using the "Require Captcha" page attribute:<br>
+<img src="img/require-captcha.jpg" alt="require-captcha.jpg" /></p>
+<p>The Google API keys needed are stored in the application\config\google.ini file:</p>
+<pre><code class="language-ini">[recaptcha]
+site='(site key here)'
+secret='(secret key here)'</code></pre>
+<p>The Peanut.Recaptcha class handles the operations needed in the view model. </p>
+<p>At the top of the view model file, place this reference. Adjusted for the relative location
+of your view model.</p>
+<pre><code class="language-typescript">/// &lt;reference path='../../../../pnut/js/Recaptcha.ts' /&gt;</code></pre>
+<p>Declare a variable for your recaptcha object:</p>
+<pre><code class="language-typescript"> recaptcha: Peanut.Recaptcha;</code></pre>
+<p>In the init() function, include '@pnut/Recaptcha' in a loadResources call.  Once the
+script loading completes you will make a service call to get the Google reCAPTCHA site key. 
+If this is all you need for the initialization you can use the "Peanut::GetRecaptchaSiteKey"
+service command.</p>
+<pre><code class="language-typescript">init(successFunction?: () =&gt; void) {
+    console.log('TestRecaptcha Init');
+    let me = this;
+    me.application.loadResources([
+        '@pnut/Recaptcha'
+    ], () =&gt; {
+        me.recaptcha = new Peanut.Recaptcha();
+        me.services.executeService('Peanut::GetRecaptchaSiteKey',null,
+            function(serviceResponse: Peanut.IServiceResponse) {
+                if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+                    let ready = serviceResponse.Value != 'none';
+                    me.recaptcha.setSitekey(serviceResponse.Value)
+                    // other initializations...
+                    me.bindDefaultSection();
+                    successFunction();
+                }
+            }
+        );
+    });
+};
+</code></pre>
+<p>Many view models already make a call to get initialization items. You can return the key in 
+the response as in the following example. If the user is authenticated, no captcha is needed 
+so we set the site key as 'none' otherwise we call TRecaptcha::GetSiteKey(), 
+and place the resulting value in the response.</p>
+<pre><code class="language-php">use Tops\sys\TRecaptcha;
+use Tops\sys\TUser;</code></pre>
+<pre><code class="language-php">$response-&gt;grsitekey ='none';
+if (!TUser::getCurrent()-&gt;isAuthenticated()) {
+    $response-&gt;grsitekey = TRecaptcha::GetSiteKey();
+}</code></pre>
+<p>Back in the view model set the sitekey in the recaptcha object.</p>
+<p>You'll no doubt have a button on the form to launch an action that you want protected
+by captcha. The event handler for this button should look something like this.</p>
+<pre><code class="language-typescript">    onRecaptchaSubmit = () =&gt; {
+        this.recaptcha.submit(this.getRecaptchaResponse);
+    }</code></pre>
+<p>In this case, getRecaptchaResponse is a seperate funtion that recieves a "token" parameter:</p>
+<pre><code class="language-typescript">getRecaptchaResponse = (token: string) =&gt; {
+    let me = this;
+    . . .
+}</code></pre>
+<p>You can make a seperate function or just include it inline as in this example from ContactFormViewModel.ts:</p>
+<pre><code class="language-typescript">        sendMessage = () =&gt; {
+            let me = this;
+            // validate the form and get the request first.
+            let message = me.createMessage();
+            if (message) {
+                // then if valid, call recaptha.submit
+                me.recaptcha.submit((token) =&gt; {
+                    if (message) {
+                        // include the token in the request to your service call
+                        message.token = token;
+                        me.services.executeService('peanut.Mailboxes::SendContactMessage', 
+                            message, function (serviceResponse: Peanut.IServiceResponse) {
+                                // the service will check verify the recaptcha token
+                            }
+                        );
+                    }
+                });
+            }
+        }</code></pre>
+<p>Include this code in your service command:</p>
+<pre><code class="language-php">use Tops\sys\TRecaptcha;</code></pre>
+<pre><code class="language-php">protected function run()
+{  
+    $message = $this-&gt;getRequest();
+    if (!empty($message-&gt;token)) {
+        $verification = TRecaptcha::Verify($message-&gt;token);
+        if ($verification &lt; 7) {
+            $this-&gt;setError('Recaptcha verification failed');
+            $this-&gt;setReturnValue('denied');
+            return;
+        }
+    }
+    // continue process...
+}</code></pre>
+<p>The TRecaptcha::Verify() function return a number 0 to 10 indicating the probability
+that the input came from a person rather than a robot.</p>
+<p>Usually, real persons produce a result of 9 or 10.  A result of 5 usually indicates a robot.
+You can adjust this threshold to me more or less cautious depending on the sensitivity of the access.</p>
+<p>If the score is too low, indicate the failure with either
+the setError or showError methods, and skip the rest of the 
+process.</p>
+</body>
+</html>

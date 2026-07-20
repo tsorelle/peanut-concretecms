@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Peanut Integration in ConcreteCMS</h1>
+<p>To include Peanut in a Concrete CMS site, we provide two custom blocks,
+a custom theme is required but it only needs a small change in the 
+footer_bottom.php file.</p>
+<p>To integrate the Peanut/Qnut system with ConcreteCMS we provide two custom
+blocks:</p>
+<ol>
+<li>
+<p>Knockout View Block  (in "Knockout View" package)<br>
+in web.root/packages/knockout_view<br>
+see: <a href="knockout-view.html">Knockout View Block</a><br></p>
+</li>
+<li>
+<p>Peanut Attribute Field Block (in "Peanut Utilities" package)<br>
+in web.root/packages/peanut_utilities<br>
+see: <a href="peanut-attribute-block.html">Peanut Attribute Block</a></p>
+</li>
+</ol>
+<p>The core peanut code and packages are under the Knockout View ComcreteCMS package.</p>
+<p>Configuration files and one essential PHP script are placed in the application/config directory</p>
+<ul>
+<li>settings.ini: Common settings for the current installaiton</li>
+<li>viewmodels.ini: Index of view models in application directories</li>
+<li>classes.ini: Plugin classes for the current applicaiton</li>
+<li>google.ini: API keys for google services</li>
+<li>mailgun.ini: API keys for mailgun</li>
+<li>peanut-bootstrap.php and settings.php: start up scripts for Peanut</li>
+</ul>
+<p>Additionally the application\bootstrap\app.php, has been modified to define routing paths for Peanut.</p>
+<p>The application\peanut and application\src directory contains installation specific PHP and Typescript code.</p>
+<p>For more details, see <a href="wheres-the-code.html">Where's the Code?</a> and <a href="startup-sequence.html">Startup Sequence</a></p>
+<h3>ConcreteCMS Theme</h3>
+<p>In previous versions, and Peanut modifid theme was provided in a seperate package.
+Now, we recommend locating your costom theme in the application\themes directory.</p>
+<p>For the AustinQuakers.org version, the theme as a "clone" of ConcreteCMS's Atomik theme.</p>
+<h4>Footer modification</h4>
+<p>A change to the elements/footer_bottom.php is required. The following code must be inserted
+at the end of the file, just before the terminating body tag.</p>
+<pre><code class="language-php">&lt;script type="text/javascript" src="&lt;?=$view-&gt;getThemePath()?&gt;/main.js"&gt;&lt;/script&gt;
+&lt;?php
+    if (!$c-&gt;isEditMode()) {
+        if (class_exists('\Peanut\sys\ViewModelManager')) {
+            \Peanut\sys\ViewModelManager::RenderStartScript();
+        } else {
+            print "ViewModelManager not found. Package 'knockout_view' is required.";
+        }
+    }
+?&gt;
+&lt;/body&gt;
+</code></pre>
+<p>This inserts JavaScript code that loads the viewmodels needed for the particular page.<br />
+See <a href="startup-sequence.html">Startup Sequence</a> for details.</p>
+<h4>Required JavaScript</h4>
+<p>The required javascript is inserted by the controller.php file in the knockout_view package.</p>
+<pre><code class="language-php">    public function on_start()
+    {
+        $al = AssetList::getInstance();
+        $al-&gt;register(
+            'javascript', 'knockoutjs',
+            'https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js',
+            array('local' =&gt; false,'minify' =&gt; false, 'position' =&gt;  \Concrete\Core\Asset\Asset::ASSET_POSITION_HEADER)
+        );
+
+        $al-&gt;register(
+            'javascript', 'headjs',
+            'https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.min.js',
+            array('local' =&gt; false,'minify' =&gt; false, 'position' =&gt;  \Concrete\Core\Asset\Asset::ASSET_POSITION_HEADER)
+        );
+
+        $optimize = $this-&gt;getOptimizationSetting();
+        $loaderScript = $optimize ?  'dist/loader.min.js' : 'core/PeanutLoader.js' ;
+        $al-&gt;register(
+            'javascript', 'peanut',
+            'pnut/'.$loaderScript,
+            array('minify' =&gt; false, 'position' =&gt;  \Concrete\Core\Asset\Asset::ASSET_POSITION_HEADER),
+            $this
+        );
+    }</code></pre>
+</body>
+</html>

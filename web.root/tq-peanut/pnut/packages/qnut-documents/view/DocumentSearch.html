@@ -1,0 +1,209 @@
+<div id="documentsearch-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="documentsearch-view-container" style="display: none;margin-bottom: 10rem">
+    <form>
+        <div class="row">
+            <div id="search-forms" class="col-md-12" data-bind="visible:!searched()">
+                <div id='tabs' class="row" data-bind="visible:fullTextSupported">
+                    <div class="col-md-9">
+                        <ul class="nav nav-tabs">
+                            <li  class="nav-item" >
+                                <a class="nav-link"  href="#" data-bind="click:setSearchTypeInfo,
+                                    css: { active: searchType() == 'info'}"
+                                >
+                                    <!-- info -->
+                                    <translate params="code:'document-search-type-info',translator:self"></translate>
+                                </a> </li>
+                            <li  class="nav-item">
+                                <a class="nav-link"  href="#"  data-bind="click:setSearchTypeText,css: { active: searchType() == 'text' }">
+                                    <!-- Full Text Search -->
+                                    <translate params="code:'document-search-type-full-text',translator:self"></translate>
+                                </a> </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"  data-bind="click:setSearchTypeLookup,css: { active: searchType() == 'lookup' }">
+                                    <!-- Full Text Search -->
+                                    <translate params="code:'document-search-type-lookup',translator:self"></translate>
+                                </a> </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="full-text-form" class="row" data-bind="visible:searchType() == 'text'" style="margin-bottom: 15px">
+                    <div class="col-md-12">
+                        <fieldset>
+                            <!-- label><translate params="code:'document-search-full-text',translator:self"></translate></label -->
+                            <div class="row" style="margin-top: 2ex">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="control-label form-control-label" for="textSearch">
+                                            <translate params="code:'document-search-full-text',translator:self"></translate> </label>
+                                        <input type="text" class="form-control" id="fullTextSearch" data-bind="textInput: textSearch, attr: { placeholder:defaultLookupCaption }" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+
+                <div id='search-form' class="row" data-bind="visible:searchType() == 'info'" style="margin-bottom: 15px">
+                    <div class="col-md-12">
+                        <fieldset  >
+                            <div class="row"  style="margin-top: 2ex">
+                                <div class="col-md-9">
+                                    <!-- Title -->
+                                    <div class="form-group mb-3">
+                                        <label class="control-label form-control-label" for="titleSearch" >
+                                            <translate params="code:'label-title',translator:self"></translate> </label>
+                                        <input type="text" class="form-control" id="titleSearch" data-bind="textInput: titleSearch, attr: { placeholder:defaultLookupCaption }">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group mb-3">
+                                        <label> <translate params="code:'document-file-type',translator:self"></translate> </label>
+                                        <select class="form-control"
+                                                data-bind="options: fileTypes,optionsText:'name',value:selectedFileType,optionsCaption:defaultLookupCaption"></select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="control-label form-control-label" for="textSearch">
+                                            <translate params="code:'document-search-text',translator:self"></translate> </label>
+                                        <input type="text" class="form-control" id="textSearch" data-bind="textInput: textSearch, attr: { placeholder:defaultLookupCaption }" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <entity-properties params="controller:propertiesController,columns:2, colwidth:'sm'" ></entity-properties>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3">
+                                        <label> <translate params="code:'document-committee-label',translator:self"></translate> </label>
+                                        <select class="form-control"
+                                                data-bind="options: committees, optionsText:'name',value:selectedCommittee,optionsCaption:defaultLookupCaption"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                    </div>
+                </div>
+
+                <div id='lookup-fomr' class="row" data-bind="visible:searchType() == 'lookup'" style="margin-bottom: 15px">
+                    <div class="col-md-12">
+                        <fieldset>
+                            <!-- label><translate params="code:'document-search-full-text',translator:self"></translate></label -->
+                            <div class="row" style="margin-top: 2ex">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="control-label form-control-label" for="docIdSearch" >
+                                            <translate params="code:'document-label-documentid',translator:self"></translate> </label>
+                                        <input type="text" class="form-control" id="docIdSearch" data-bind="textInput: docIdSearch, attr: { placeholder:defaultLookupCaption }">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="control-label form-control-label" for="fileNameSearch" >
+                                            <translate params="code:'document-label-filename',translator:self"></translate> </label>
+                                        <input type="text" class="form-control" id="fileNameSearch" data-bind="textInput: fileNameSearch, attr: { placeholder:defaultLookupCaption }">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div id="sort-panel" class="row mb-3" data-bind="visible:searchType() != 'lookup'">
+                    <div class="col-md-3">
+                        <div class="form-group mb-3">
+                            <label>Sort Order</label>
+                            <select class="form-control"
+                                    data-bind="options: sortOrders, optionsText:'Name',value:selectedOrder"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-6" data-bind="visible:searchType() == 'text'">
+                        <div class="mb-1"><strong>Search Enhancement</strong></div>
+                        <input class="form-check-input" type="checkbox" data-bind="checked:wideSearch" id="widenet">
+                        <label style="font-weight: normal" for="widenet">
+                            &nbsp;Widen the net (more results)
+                        </label>
+                    </div>
+                </div>
+
+                <div id='button-panel' class="row" >
+                    <div class="col-md-12 mb-3">
+                        <button type="button" class="btn btn-link" data-bind="click:clearForm">
+                            <translate params="code:'label-clear-form',translator:self"></translate>
+                        </button>
+                        <button type="button" class="btn btn-link" data-bind="click:executeSearch"><translate params="code:'document-search-button',translator:self"></translate>
+                            &nbsp;<span class="fa fa-search" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+                <div id="new-doc-link-panel" class="row" data-bind="visible:canEdit">
+                    <div class="col-md-12" style="padding-top: 2ex">
+                        <!-- todo: fix erroneous href -->
+                        <a data-bind="attr: {href: newDocumentHref}">&nbsp;<span class="fa fa-upload" aria-hidden="true"></span> <translate params="code:'document-new-button',translator:self"></translate></a>
+                    </div>
+                </div>
+
+            </div>
+            <div id="search-results" class="col-md-12" data-bind="visible:searched">
+            <fieldset >
+                <label data-bind="text:searchResultMessage"></label>
+                <div class="row mb-2">
+                    <div class="col-md-9">
+                        <button type="button" class="btn btn-outline-dark" data-bind="click:returnToSearchForm">
+                            <span class="fa fa-arrow-left"></span>&nbsp;
+                            <translate params="code:'document-search-return',translator:self"></translate>
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                       <a data-bind="visible: canEdit, attr: {href: newDocumentHref}">&nbsp;<span class="fa fa-upload" aria-hidden="true"></span> <translate params="code:'document-new-button',translator:self"></translate></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class='table-responsive' data-bind="visible:searchResults().length">
+                            <table class="table table-hover">
+                                <thead>
+                                <th>
+                                    <translate params="code:'label-publication-date',translator:self"></translate>
+                                </th>
+                                <th>
+                                    <translate params="code:'label-title',case:'ucfirst',translator:self"></translate>
+                                </th>
+                                <th>
+                                    <translate params="code:'label-doc-type',translator:self"></translate>
+                                </th>
+                                <th>&nbsp</th><th>&nbsp</th><th>&nbsp;</th>
+                                </thead>
+                                <tbody data-bind="foreach:searchResults">
+                                <td data-bind="text:publicationDate"></td>
+                                <td data-bind="text:title"></td>
+                                <td data-bind="text:documentType"></td>
+                                <td><a href="'#" target='_blank' data-bind="visible:documentType=='PDF', attr: { href: uri, title: $parent.docViewLinkTitle }"><i class="far fa-file-pdf"></i></a></td>
+                                <td><a href="'#" target='_blank' data-bind="click:$parent.downloadDocument, attr: { href: uri, title: $parent.docDownloadLinkTitle }"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+                                <td><a href="'#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }"><i class="fas fa-pencil-alt"></i></a></td>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div>
+                        <pager params='click:changePage,page:currentPage,max:maxPages,owner:self'></pager>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        </div>
+
+    </form>
+</div>

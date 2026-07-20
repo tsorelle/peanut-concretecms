@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h2>ViewModel event handlers</h2>
+<p>The handle event method is typically used for communication between objects such as knockout components</p>
+<pre><code class="language-typescript">        handleEvent = (eventName:string, data?:any)=&gt; {
+            let me = this;
+            switch (eventName) {
+                case 'person-selected' :
+                    me.newTerm(&lt;INameValuePair&gt;data.person);
+                    break;
+
+                case 'person-search-cancelled' :
+                    // alert('Search cancelled.');
+                    break;
+                case 'test' :
+                    alert('event test');
+                    break;
+            }
+        };
+</code></pre>
+</body>
+</html>

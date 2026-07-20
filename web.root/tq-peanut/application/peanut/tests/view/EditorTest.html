@@ -1,0 +1,24 @@
+<div id="editortest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="editortest-view-container" class="row" style="display: none">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
+        <label for="test-editor" style="display: none"></label>
+        <textarea  rows="10"  class="form-control" id="test-editor"></textarea>
+        <div class="pt-4">
+          <button class="btn btn-primary" style="margin-right: 1em" data-bind="click:setHtmlContent" >Set Content</button>
+          <button class="btn btn-secondary" data-bind="click:getHtmlContent" >Get Content</button>
+        </div>
+        <div class="pt-4">
+          <button class="btn btn-primary" style="margin-right: 1em" data-bind="click:checkDirty" >Check Dirty</button>
+          <button class="btn btn-secondary" data-bind="click:toggleDirty" >Toggle Dirty</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <content-controller params="owner:self,editor:htmlEditor,context:'editor-test'"></content-controller>
+</div>
+
+
+
+

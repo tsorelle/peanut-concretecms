@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>The Peanut Data Access</h1>
+<h2>The Lightweight ORM</h2>
+<p>Database operations in peanut are handled by a set of related classes that we call the lightweight ORM.  It is probalbly
+overblown to call it an object relational managment system, because it does not model relations between table classes.
+It is simply comprised of:</p>
+<ol>
+<li>Entity classes, that represent the data structure of a table and serve as data transfer objects, DTOs.</li>
+<li>Repository classes, that perform an operations aganist an single table or small set of related table.</li>
+</ol>
+<p>Each Entity/Repository class is related to a database table.  Fetch operations return an entity object or
+collection. A repository may also perform "free form" queies that return stdClass objects.</p>
+<p>There is a third kind of class, the "Data Manager" class that typically contains multiple repositories and handles
+relationality in the model.  There are no specially definded super classes or abstract classes for these. They simply
+follow the pattern.   See the Peanut\QnutDirectory\db\DirectoryManager class for a robust example.</p>
+<p>Starting class definition code for Entity and Repository classes can be generated using the Model Builder application
+found in dev-tools/modelbuilder.  Details follow.</p>
+<h2>PHP Data Objects (PDO)</h2>
+<p>Repository classes perform database operations based on the PHP PDO framework.  PDO is expecially suited to object oriented
+applications for its ability to return collections of class based objects or untyped stdClass objects as the result of SQL queries.
+PDO has other advantages such as its efficient parameterization of queries to protect against SQL injection.</p>
+<p>For a full description see: PHP Data Objects <a target="_blank" href="https://www.php.net/manual/en/book.pdo.php">https://www.php.net/manual/en/book.pdo.php</a> .</p>
+<p>The developer will frequently be called upon to use particular features of PDO.  Here is a quick introduction.</p>
+<p>In order to perform a SQL query, we need to do the following.</p>
+<ol>
+<li>Establish a database connection by creating a new PDO object.</li>
+<li>Given a SQL statement, as a string with replaceable prameters (optionally), prepare a SQL query using the
+prepare($sql) method on the connection object.  This returns a PDOStatement object. 
+See <a target="_blank" href="https://www.php.net/manual/en/pdo.prepare.php">PDO::prepare</a>.</li>
+<li>Call the execute($parameters) method on the statement object, optionally passing in an array of parameter vaiues.
+See <a target="_blank" href="https://www.php.net/manual/en/pdostatement.execute.php">PDOStatement::execute</a>.</li>
+<li>If the query returns data, call the fetch($mode) (or fetchAll, fetchObject...) method on the statement. The mode parameter 
+determines how PDO returns the row or value. Typically we use one of the following:<ul>
+<li>PDO::FETCH_OBJECT: Returns a new instance of an untyped object (stdClass)</li>
+<li>PDO::FETCH_CLASS: returns a new instance of the requested class</li>
+<li>PDO::FETCH_COLUMN: returns value of first column</li>
+</ul>
+</li>
+</ol>
+<p>In our applictions, base repositories and other data access classes encapsulate steps 1 to 3 and sometimes 4 as well.
+The task of the programmer is to write the SQL and provide parameters as an array.  Typically we use "?" as the 
+replacement token in the SQL.
+Here is a typical example from a repository class:</p>
+<pre><code class="language-php">    $sql=
+        'SELECT leadDays FROM qnut_notification_subscriptions s '.
+        'JOIN qnut_notification_types t ON s.notificationTypeId = t.id '.
+        "WHERE personId = ? AND s.itemId = ? AND t.code = 'calendar'";
+
+    $stmt = $this-&gt;executeStatement($sql,[$personId,$eventId]);
+    $result = $stmt-&gt;fetch(PDO::FETCH_COLUMN);</code></pre>
+<p>In this case TPdoQueryManager::executeStatement, performs steps 1 through 3.  The programmer provides the SQL and the 
+two parameters.  The executeStatement() call returns a PDO statement object.  We then call the fetchMethod with the mode
+parameter of PDO::FETCH column so as to obtain a single return value from the "leadDays" column.</p>
+<p>In the next example we select a single record based on a lookup column. </p>
+<pre><code class="language-php">    $sql = 'SELECT e.id,e.code,e.name,e.description FROM qnut_email_lists e WHERE  `code` = ?';
+    $stmt = $this-&gt;executeStatement($sql,[$code]);
+    return $stmt-&gt;fetch(\PDO::FETCH_OBJ);</code></pre>
+<p>This returns a single untyped object (stdClass)</p>
+<p>This one retrieves a collection of objects.</p>
+<pre><code class="language-php">    $sql = "SELECT id, personId, reportedDate, address,  ".
+        "IFNULL(`name`,'(unknown)') AS `name`, '' AS correction, null as restore, null as remove, null as invalid, ".
+        "IF(personId IS NULL,'0', CONCAT( '%s',personId)) AS personLink ".
+        "FROM `qnut_email_corrections` WHERE `errorLevel` = ? AND active=?";
+
+    $sql = sprintf($sql,$personFormUrl);
+
+    $stmt = $this-&gt;executeStatement($sql,[1,1]);
+    return $stmt-&gt;fetchAll(PDO::FETCH_OBJ);</code></pre>
+<p>In the last two examples, we need to construct a SQL query and use PDO::FETCH_OBJ to select untyped objects because the
+structure of the results we need do not match any defined entity class. More often we can use repository classes which
+uses PDO::FETCH_CLASS to return instances of our strictly typed entity classes.  DML functions, update,delete,insert are
+typically handled by repositories without explicitly defined SQL.</p>
+<p>More about this follows.</p>
+<h2>Common Patterns</h2>
+<p>The repository classes are designed to work with strongly typed Entity classes but can receive and return data in any
+form. For "free form" data results, an untyped PHP Class, stdClass, is used.</p>
+<p>Here we describe the typical flow of a data request. The actors in this scenario are:</p>
+<ul>
+<li>Client: A viewmodel running in the client browser.</li>
+<li>Service: a PHP TServiceCommand object on the web server.</li>
+<li>Repository: a repository object also on the server side.</li>
+</ul>
+<p>A manager object is frequently used as an intermediary between Service and Repository but is ommitted from the diagram
+for simplicity sake.</p>
+<p>Data is exchanged between these actors in the form of Data Transfer Objects (DTO).  These may take the form of an untyped
+PHP object, stdClass, or a more strongly typed Entity object.  On the client, these objects are created as JSON objects.</p>
+<p>Input and return data passing between client and server is bundled into DTO packages called Request and Response objects.</p>
+<p>A typical scenario is described in the diagram.  </p>
+<ol>
+<li>
+<p>Requests origniate from the client which may contain an entity Id value, 
+the primary key, for selection or a DTO object matching the entity data structure for inserts and updates.</p>
+</li>
+<li>
+<p>The Service recieves the Request packet and extracts the Id or DTO.  A Repository is created and method on the Repostory
+is called to perform the job.</p>
+</li>
+<li>
+<p>Using the Id, either sent as a single value or as part of the DTO, the repository retrieves the corresponding Entity
+object.</p>
+</li>
+<li>
+<p>If the request is for an insert or update operation, the Entity-&gt;assignFromOject(DTO) method is used to update
+any member data in the Entity object that has changed.  Then uses a method such as insert(Entity) or update(Entity) 
+to update the database.</p>
+</li>
+<li>
+<p>On return, the Service bundles the selected or updated data into a Response object to be returned to the client.</p>
+</li>
+<li>
+<p>In the transition back to the client, the response is converted to JSON.  The client then binds the data to the display.</p>
+</li>
+</ol>
+<p>This is a very common scenario but by no means the only variation. There is a wide variety of uses but this should 
+serve as a demonstration of basic principles.</p>
+<p><img src="img/orm-flow.jpg" alt="orm-flow.jpg" /></p>
+<h2>Class Model</h2>
+<h3>Entity and Repository Class Hierarchy</h3>
+<p>Entity and Repository classes are designed to work in pairs that match the data structure of a particular table in the 
+database.  A parallel hierarchy of base classes is provided for typical structural patterns.  </p>
+<p>The base classes provide all the fundamental connection management, data access and manipulation methods. Subclasses extend 
+these to match specific tables, and add additional specialized data operations. We use the ModelBuilder application to
+generate entity and repository classes that accurately mirror their table's data structure.  See <a href="#model-builder">Model Builder</a>.</p>
+<p>This diagram describes the class model for the base Entity and Repository classes.  Note that there is one more specialized
+class, TAssociationRepository that handles queries and updates to many-to-many associations, referencing left and right
+tables, with an id primary key, and an association table the tracks the key pairs that define the relationship.</p>
+<p>A more detailed explanation follows the diagram.</p>
+<p><img src="img/orm-classes.jpg" alt="orm-classes.jpg" /></p>
+<p>Entities descend from an abstract class:</p>
+<pre><code class="language-php">abstract class TAbstractEntity</code></pre>
+<p>This class mostly provides facilities to copy data from an untyped DTO which would typically be recieved by a service to
+use in insert/update operation. Examples will follow.</p>
+<p>An important subclass is...</p>
+<pre><code class="language-php">class TimeStampedEntity extends TAbstractEntity</code></pre>
+<p>This class models tables that include timestamp information and handles updates of date and time for insert and update events</p>
+<pre><code class="language-php">    public $createdby;
+    public $createdon;
+    public $changedby;
+    public $changedon;</code></pre>
+<p>The TEntity class adds an autoincremented primay key (int $id) and an active flag which is used to hide records in the 
+application rather than to actually delete them.  This is the pattern for the most important tables in the database</p>
+<pre><code class="language-php">class TEntity extends TimeStampedEntity</code></pre>
+<p>The NamedEntity class is typically used for lookup tables containing a selection of values associated with a column in another table. 
+See <code>qnut_document_types</code> or <code>qnut_email_lists</code></p>
+<pre><code class="language-php">class NamedEntity extends TEntity</code></pre>
+<p>NamedEntity provides some convenience methods for getting/setting values.  LookupTableEntity is a simplified version with
+data members only.  In either case the following columns are added to TEntity</p>
+<pre><code class="language-php">    public $name = '';
+    public $code = '';
+    public $description = '';</code></pre>
+<p>The data structure of the majority of tables are represented by descendants of these entity classes.  Starter code for 
+these class definitions cam be generated using the "Model Builder" application. </p>
+<h3>Repositories and other Data Access Classes</h3>
+<h4>Database</h4>
+<p>The TDatabase class is used by repositories and other classes to handle database connections and configuration.  </p>
+<pre><code class="language-php">class TDatabase</code></pre>
+<p>In ConcreteCMS, TDatabase uses the ConcreteCMS configuration file for database and server specifications,
+/application/config/database.php. The usual Peanut configuration file is database.ini.  Peanut supports the use of multiple
+databases in the same applications, where ConcreteCMS does not. If you want multiple database support, use the database.ini file
+and disable the tops.connections entry in classes.ini.</p>
+<pre><code class="language-ini">; enable this for all ConcreteCMS versions,  otherwise database.ini is used
+[tops.connections]
+type='Tops\concrete5\Concrete5ConnectionManager'</code></pre>
+<p>TDatabase provides a few standalone SQL operations:</p>
+<pre><code class="language-php">    public static function ExecuteSql($token, $script, $connection=null) {/*Run SQL Script*/}
+    public static function tableExists($tableName, $connection=null) {/*Check if table exists*/}
+    public static function rowCount($tableName, $connection=null)    {/*Get total row count in a table*/}</code></pre>
+<p>TDatabase is used by a few classes that provide general SQL operations, unrelated to repositories, such as TQuery:</p>
+<pre><code class="language-php">class TQuery</code></pre>
+<p>The TQuery class is used to execute ad hoc queries, and is primarily used in tests and scripts. It has a similar set 
+of data access funtions to the repository classes.  Here's a typical example:</p>
+<pre><code class="language-php">    $this-&gt;query = new TQuery();
+    $stmt = $this-&gt;query-&gt;executeStatement('select * from migrate_documents');
+    $docs = $stmt-&gt;fetchAll(\PDO::FETCH_OBJ);</code></pre>
+<h3>Repository classes</h3>
+<p>The TPdoQueryManager is an abstract super class for all repositories and some other database related classes.</p>
+<pre><code class="language-php">abstract class TPdoQueryManager</code></pre>
+<p>It provides basic SQL operations such as these:</p>
+<pre><code class="language-php">    /**
+     * Prepare and execute a PDO statement
+     * @param $sql
+     * @param array $params
+     * @return PDOStatement
+     */
+    protected function executeStatement($sql, $params = array());
+
+    /**
+     * Execute a PDO statememt to return a single numeric value 
+     * @param $sql
+     * @param $params
+     * @return false|mixed
+     */
+    public function getValue($sql, $params = array()) ;
+
+    /**
+     * Begin a transaction
+     */
+    public function startTransaction();
+
+    /**
+     * End a transaction
+     */
+    public function commitTransaction();
+
+    /**
+     * Roll back a transaction
+     */
+    public function rollbackTransaction();
+</code></pre>
+<h4>Entity Repositories</h4>
+<p>Most repository classes descend from TEntityRepository:</p>
+<pre><code class="language-php">abstract class TEntityRepository extends TPdoQueryManager implements IEntityRepository</code></pre>
+<p>This class supports the common database "CRUD" methods and automatically updates timestamp columns.  Here are the 
+essential methods.  See comments and code for more details, helper methods and less frequently used methods.</p>
+<pre><code class="language-php">    /**
+     * Subclasses return a list that defines the data structure.
+     * You can use "ModelBuilder" to generate this function for a given table.
+     */
+    protected abstract function getFieldDefinitionList();
+
+    /**
+     * return full class name for associated entity class.  Used to instatiate objects returned
+     * by queries. You can use "ModelBuilder" to generate this function for a sub-class.
+     */
+    protected abstract function getClassName();
+
+    /**
+     * return name of associated table
+     * You can use "ModelBuilder" to generate this function for a sub-class.
+     */
+    protected abstract function getTableName();
+
+    public function getLastErrorCode();
+
+    /**
+     * @param $id
+     * Return single instance of the associated Entity class selected by id
+     */
+    public function get($id)
+
+    /**
+     * Execute a select query returning a collection of instances of the associated entity class.
+     * Return PDO statement. The "fetch" instruction to retrieve the result must be invoked by the calling method
+     */
+    protected function executeEntityQuery($where, $params, $includeInactive = false,$orderAndLimit = '')
+
+    /**
+     * This replaces getSingleEntity, when clauses are to be included.
+     * Did not want to mess with getSingleEntity for backward compatibility reasons
+     */
+    public function getSingleInstance($where, $params, $clauses='', $includeInactive = false)
+
+    public function getRecordCount($condition,$params, $includeInactive=false) {
+
+    public function getCount($includeInactive=false, $where='', $clauses='') {
+
+    /**
+     * Return a single instance of associated entity class based on SQL conditionals and parameters
+     */
+    public function getSingleEntity($where, $params, $includeInactive = false)
+
+    /**
+     * Return a collection of instances of the associated entity class based on SQL conditionals and parameters
+     */
+    protected function getEntityCollection($where, $params, $includeInactive = false)
+
+
+    /**
+     * Update table based on entity object
+     */
+    public function update($dto, $userName = 'admin')
+
+    /**
+     * Insert values from entity object
+     */
+    public function insert($dto, $userName = 'admin')
+
+    /**
+     * Return all records as instances of the associated entity class
+     */
+    public function getAll($includeInactive = false,$orderField=false)
+    public function getAllSorted($orderField)
+
+    /**
+     * Delete record by entity id
+     */
+    public function delete($id)
+
+    /**
+     * Delete record(s) by foreigh key
+     */
+    public function deleteByForeignKey($key,$value,$filterCondition = null) {
+
+    /**
+     * Set 'active flag' to false
+     */
+    public function remove($id)
+
+    /**
+     * Change active flag to true
+     */
+    public function restore($id)
+
+    /**
+     * Return single instance of associated entity by id or other key
+     */
+    public function getEntity($value, $includeInactive = false, $fieldName = null)
+
+    /**
+     * Return single instance of associated entity by globally unique id
+     */
+    public function getEntityByUid($value, $includeInactive = false)
+
+    /**
+     * Return value of one field for id
+     */
+    public function getFieldValue($fieldName,$id) {
+</code></pre>
+<h3>Use Examples</h3>
+<p>Calls to Repository methods are typically found in repositories, service classes and manager classes.</p>
+<p>From UpdateEventCommand (service), where request is an object mirroring the entity recieved from a view model.</p>
+<pre><code class="language-php">        $repository = new EmailListsRepository();
+        $isNew = ($request-&gt;id === 0);
+        $list = $repository-&gt;getEntityByCode($request-&gt;code,true);
+        $list-&gt;assignFromObject($request);
+        if ($isNew) {
+            $repository-&gt;insert($list,$this-&gt;getUser()-&gt;getUserName());
+        }
+        else {
+            $repository-&gt;update($list,$this-&gt;getUser()-&gt;getUserName());
+        }</code></pre>
+<p>From PersonsRepository, use an ad-hoc query to select a partial record by foreign key from a related table. </p>
+<pre><code class="language-php">        $sql = 'select organizationId,roleId from qnut_person_affiliations WHERE personId=?';
+        $stmt = $this-&gt;executeStatement($sql,[$personId]);
+        $result = $stmt-&gt;fetchAll(PDO::FETCH_OBJ);</code></pre>
+<p>Get a lookup list as a collection of TLookupItem objects.</p>
+<pre><code class="language-php">        $sql =
+            'SELECT r.id, r.code,r.name,r.description FROM qnut_resources r '.
+            'JOIN qnut_calendar_event_resources e ON r.id = e.resourceId WHERE e.eventId = ?';
+        $stmt = $this-&gt;executeStatement($sql,[$eventId]);
+        $result = $stmt-&gt;fetchAll(PDO::FETCH_CLASS,'Tops\sys\TLookupItem');
+        return $result;</code></pre>
+<p>From PersonsRepository, get a list of persons residing at the same address:</p>
+<pre><code class="language-php">        $whereClause = "addressId = ? AND deceased is null";
+        if ($excludeOptOut) {
+            $whereClause .= ' and listingtypeId &lt;&gt; 0';
+        }
+        return $this-&gt;getEntityCollection($whereClause,[$addressId],$includeInactive);</code></pre>
+<h4>TAssociationRepository</h4>
+<p>This class is used to model many to many relations, such as mailing list subscribers/subscriptions.  The constructor enables
+you to create a repository on the fly or it can be used as a base class.</p>
+<p>For an instructive example see SubscriptionAssociation and EmailSubscriptionAssociation.</p>
+<h3>Manager classes</h3>
+<p>Manager classes are a stereotype, there are not abstract of based classes defined for these.  They typically use
+multiple repository classses to coordinate related tables.  See these examples ind /pnut/packages/qnut-directory/src/db</p>
+<ul>
+<li>DirectoryManager.php</li>
+<li>DistributionListManager.php</li>
+<li>EmailManager.php</li>
+</ul>
+<h2 id="namespaces-and-source-locations">Namespaces and source locations</h2>
+<p>By convention, database files are located under a "db" subdirectoy beneath a directory mapped to a root namespace dirctory
+or sometimes a secondary namespace dirctory. In peanut packages, the 'db' subdirectory is just below the package/src directory.</p>
+<p>Examples:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Path in ConcreteCMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tops\db</td>
+<td>packages/knockout_view/src/tops/db/</td>
+</tr>
+<tr>
+<td>Application\fma\db</td>
+<td>application/src/fma/db</td>
+</tr>
+<tr>
+<td>Peanut\QnutDirectory\db</td>
+<td>packages/knockout_view/pnut/packages/qnut-directory/src/db</td>
+</tr>
+</tbody>
+</table>
+<p>The different kinds of classes are then found in subdirectories as follow:</p>
+<table>
+<thead>
+<tr>
+<th>Class type</th>
+<th>Subdirectory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Managers and other classes</td>
+<td>db</td>
+</tr>
+<tr>
+<td>Entity</td>
+<td>db/model/entity</td>
+</tr>
+<tr>
+<td>Repository</td>
+<td>db/model/repository</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace\class</th>
+<th>Source Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tops\db\model\entity\Process</td>
+<td>packages/knockout_view/src/tops/db/model/entity/Process.php</td>
+</tr>
+<tr>
+<td>Tops\db\model\repository\ProcessesRepository</td>
+<td>packages/knockout_view/src/tops/db/model/repository/ProcessesRepository.php</td>
+</tr>
+<tr>
+<td>Peanut\QnutDirectory\db\DirectoryManager</td>
+<td>packages/knockout_view/pnut/packages/qnut-directory/src/db/DirectoryManager.php</td>
+</tr>
+<tr>
+<td>Peanut\QnutDirectory\db\model\entity\Person</td>
+<td>packages/knockout_view/pnut/packages/qnut-directory/src/db/model/entity/Person.php</td>
+</tr>
+<tr>
+<td>Peanut\QnutDirectory\db\model\repository\PersonsRepository</td>
+<td>packages/knockout_view/pnut/packages/qnut-directory/src/db/model/repository/PersonsRepository.php</td>
+</tr>
+</tbody>
+</table>
+<h2 id="model-builder">Model Builder</h2>
+<p>Model Builder is a mini-application using a PHP command line script, dev-tools/modelbuilder/create-model.php
+to generate entity and repository classes.</p>
+<h3>Data structures</h3>
+<p>Start by creating one or more tables in the database.  These must have a primary key id column and in most cases an active
+column.  For a timestamped entity also include timestamp columns.  For a lookup table inclde code (unique key),name and description.
+Tables must include a prefix such as qnut<em>, tops</em>, pnut<em>, or fma</em>.</p>
+<h4>Required colummns for Entity Types</h4>
+<p>Most entity classes derive from a sub-class of T</p>
+<p>An example lookup table:</p>
+<pre><code class="language-sql">CREATE TABLE `qnut_document_types` (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  `id` int unsigned NOT NULL AUTO_INCREMENT,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+  `code` varchar(64)  NOT NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+  `name` varchar(128)  NOT NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+  `description` varchar(256)  DEFAULT NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  `createdby` varchar(64) NOT NULL DEFAULT 'system',                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+  `createdon` datetime DEFAULT CURRENT_TIMESTAMP,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  `changedby` varchar(64)  DEFAULT NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+  `changedon` datetime DEFAULT NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  `active` tinyint(1) NOT NULL DEFAULT '1',                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  PRIMARY KEY (`id`),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+  UNIQUE KEY `uk_KEYNAME_code` (`code`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+) </code></pre>
+<h3>Model Builder Code Generation</h3>
+<p>The Model Builder system generates class definitions for entities and repositories based on database tables.</p>
+<p>The dev-tools\modelbuilder directory contains two files:</p>
+<ul>
+<li>create-fma-model.php<ul>
+<li>A startup script that uses the TModelBuilder class to generate the code.</li>
+</ul>
+</li>
+<li>modelbuilder-cms.ini<ul>
+<li>Input data to the script.</li>
+</ul>
+</li>
+</ul>
+<p>The TModelBuilder class is found at: packages/knockout_view/src/tops/db/TModelBuilder.php.</p>
+<p>The first step is to prepare the modelbuilder-cms.ini file to indicate the tables to be modeled and how the classes will be named.</p>
+<h4>Model Builder Ini file</h4>
+<p>The modelbuilder-cms.ini indicates the tables to use to build the entity and repository classes and some build options.</p>
+<h4>Settings Section</h4>
+<pre><code class="language-ini">[settings]</code></pre>
+<p>This section contains default values that may be overridden on a table by table basis.</p>
+<pre><code class="language-ini">overwrite=1</code></pre>
+<p>1 or 0 indicate if the output files will be overriden.</p>
+<pre><code class="language-ini">namespace='Tops\db\model'</code></pre>
+<p>Indicates the root namespace</p>
+<pre><code class="language-ini">prefixed=1</code></pre>
+<p>Indicates if the file name begins with a prefix, such as "tops_" in "tops_mailboxes"</p>
+<pre><code class="language-ini">plural=1</code></pre>
+<p>Used to determine the entity name, usually the table name ends in 's' so 'qnut_persons' becomes Person. If the file name
+ends in 'es' the value 2 indicates two characters are to be trimmed so 'tops_mailboxes' becomes Mailboxes.</p>
+<pre><code class="language-ini">; databaseKey=tops-db</code></pre>
+<p>If multiple databases are use this indicated the identifying key in databases.ini.  This is rarely used and defaults to Null
+which indicates the main cms database will be used.</p>
+<h4>The 'tables' section.</h4>
+<pre><code class="language-ini">tops_mailboxes=1
+qnut_email_failures=0</code></pre>
+<p>1 indicates the tables for which source will be generated. 0 indicates we skip the table for this run.</p>
+<h4>Sections by table name</h4>
+<p>The sections that follow are named by the individual table name and indicate settings that will be overridden by that table.
+Examples:</p>
+<pre><code class="language-ini">[tops_contactlog]
+entity=ContactLogEntry</code></pre>
+<p>The "plural" settings do not cover every case so sometimes we need to indicate a specific entity name.</p>
+<pre><code class="language-ini">[qnut_persons]
+namespace=Peanut\QnutDirectory\db\model</code></pre>
+<p>Most times you'll want to build multiple tables for one namespace. It that case set 'namespace=' in the settings section.
+When we build for multiple tables in different namespace you can indicate the namespace by table name here.</p>
+<pre><code class="language-ini">[tops_mailboxes]
+plural=2</code></pre>
+<h3>Generating the Code</h3>
+<p>Once the ini file is ready, open a terminal prompt in the project root directory and run the model builder php script.</p>
+<pre><code class="language-cmd">php dev-tools\modelbuilder\create-model.php</code></pre>
+<p>The output will be written to a temporary directory dev-tools\modelbuilder\output.  The directory structure corresponds
+to the namespace.</p>
+<p><img src="img/model-builder-output.jpg" alt="model-builder-output.jpg" /></p>
+<p>Writing the output files to a temporary location gives the developer a chance to review the code for any errors or special
+changes.  Then we move the source to its expected location.  See  the <a href="#namespaces-and-source-locations">"Namespaces and source locations"</a> section for details.</p>
+<h2>References</h2>
+<p>For additional information about client objects (ViewModels), server side classes such as ServiceCommands, as well as
+patterns and class models see these articles:</p>
+<ul>
+<li><a href="peanut-patterns.html">Peanut Patterns</a></li>
+<li><a href="service-commands.html">Service Commands</a></li>
+<li><a href="viewmodels-views.html">Viewmodels and Views</a></li>
+</ul>
+</body>
+</html>

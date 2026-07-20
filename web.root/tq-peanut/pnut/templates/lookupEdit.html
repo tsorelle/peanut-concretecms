@@ -1,0 +1,159 @@
+<div class="col-md-12">
+    <div class="row">
+
+        <div id="buttons-panel" class="col-md-6">
+            <form>
+                <div data-bind="visible:userCanEdit" style="margin-top: 10px">
+                    <a href="#" data-bind="click:createItem, attr: {title: newItemTitle}"
+                       >
+                        Add a new&nbsp;<span data-bind="text:itemName"></span> </a>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6" style="text-align: right">
+            <div class="form-check">
+                <input type="checkbox" data-bind="checked:activeOnly" class="form-check-input" id="ckactive">
+                <label class="form-check-label" for="ckactive">
+                     Show active only
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="table-panel" class="col-md-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">&nbsp</th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach:items">
+                <tr data-bind="css: {inactiveRow: active == 0}">
+                    <th scope="row" data-bind="text:name" ></th>
+                    <td data-bind="text:code"></td>
+                    <td data-bind="text:description"></td>
+                    <td><a href="#"  data-bind="click:$parent.showDetails">Details</a> </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="item-form">
+    <div class="modal-dialog modal-lg" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <div data-bind="visible:!newItem()">
+                    <h4 class="modal-title" data-bind="visible:viewState() == 'view'">
+                        <span data-bind="text:itemNameUC"></span> Information</h4>
+                    <h4 class="modal-title" data-bind="visible:viewState() == 'edit'">
+                        Edit <span data-bind="text:itemNameUC"></span> Information</h4>
+                </div>
+                <div data-bind="visible:newItem">
+                    <h4 class="modal-title" data-bind="visible:viewState() == 'edit'">
+                        Enter new <span data-bind="text:itemNameUC"></span> Information</h4>
+                </div>
+                <button type="button" class="close btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form data-bind="visible:viewState() == 'view'">
+                    <div id="item-info" >
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- active			-->
+                                <strong><span data-bind="visible:active() == 0" class="danger">Inactive</span></strong>
+                            </div>
+                            <!-- div data-bind="text:viewState"></div -->
+                        </div>
+                        <div class="row">
+                            <div class="col-8 mb-3">
+                                <!-- name			-->
+                                <div class="formDisplayLabel">Name</div>
+                                <div class="formDisplayText" data-bind="text:name"></div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <!-- code -->
+                                <div class="formDisplayLabel">Code</div>
+                                <div class="formDisplayText" data-bind="text:code"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3" >
+                            <div class="col-mb-12">
+                                <!-- description   -->
+                                <div class="formDisplayLabel">Description</div>
+                                <div class="formDisplayText" data-bind="text:description"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form data-bind="visible:viewState() == 'edit'">
+                    <div id="item-edit" >
+                        <div class="row" >
+
+                            <div class="col-8 form-group mb-3">
+                                <!-- name			-->
+                                <label for="name" class="form-label" >Name</label>
+                                <input id="name" class="form-control"
+                                       data-bind="value:name, css: {'is-invalid': nameError}" />
+                                <div class="text-danger" data-bind="visible:nameError">Please enter a name.</div>
+                            </div>
+                        
+                            <div class="col-2 form-group">
+                                <!-- code -->
+                                <div data-bind="visible:id()==0">
+                                    <label for="item-code" class="form-label">Code</label>
+
+                                    <input id="item-code" class="form-control"
+                                           data-bind="value:code, css: {'is-invalid': codeError}" />
+                                    <div class="text-danger" data-bind="visible:codeError">A unique code is required.</div>
+                                </div>
+                                <div data-bind="visible:id()!==0">
+                                    <div class="formDisplayLabel">Code</div>
+                                    <div class="formDisplayText" data-bind="text:code"></div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="form-check" data-bind="visible:!newItem()">
+                                    <input class="form-check-input" type="checkbox" id="active"  data-bind="checked:active">
+                                    <label class="form-check-label" for="active">Active</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12  mb-3">
+                                <!-- description -->
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" class="form-control"  data-bind="value:description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer"  data-bind="visible:!userCanEdit()">
+                <a href="#" data-bs-dismiss="modal">Close</a>
+            </div>
+            <div class="modal-footer" data-bind="visible:userCanEdit">
+                <button type="button" class="btn btn-primary" data-bind="visible:viewState() == 'view',click: editItem">Edit</button>
+                <button type="button" class="btn btn-outline-dark" data-bind="visible:viewState() == 'view'" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bind="visible:viewState() == 'edit',click: updateItem">
+                    <span data-bind="visible:!newItem()" >Save changes</span>
+                    <span data-bind="visible:newItem" >Create</span>
+                </button>
+                <button type="button" data-bind="visible:viewState() == 'edit',click:cancelEdit" class="btn btn-outline-dark" >
+                    Cancel
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

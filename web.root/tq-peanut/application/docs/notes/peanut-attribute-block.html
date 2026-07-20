@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Peanut Attribute Block</h1>
+<p>The Peanut Attribute Block is used to store page attribute values in a hidden input
+element on the page, usually to be sent to a service command. The purpose of this is
+to free the service command from having to use ConcreteCMS specific code to retrieve
+attribute values.  That way the service command can be used in non-concretecms installations.</p>
+<p>A simple demonstration can be found in the test page: peanut-attribute-test. The code is 
+in:</p>
+<ul>
+<li>web.root/application/peanut/tests/vm/PeanutAttributeTestViewModel.ts</li>
+<li>application/peanut/tests/view/PeanutAttributeTest.html</li>
+</ul>
+<p>The block has two fields:<br>
+<img src="img/attribute-event.jpg" alt="attribute-event.jpg" /></p>
+<ul>
+<li>Attribute name is the name of an attribute attached to the page.</li>
+<li>Field ID is the id of the of the input field that the block will create.</li>
+</ul>
+<p>The block retrieves the attribute value and creates the input in this form:</p>
+<pre><code class="language-html">   &lt;input type='hidden' id='event-location' value='meeting house' &gt;</code></pre>
+<p>You can use the view model convenience funciton getPageVariable() to retrieve the value:</p>
+<pre><code class="language-typescript">let location = this.getPageVarialble('event-location');</code></pre>
+<h2>Vm Context</h2>
+<p>This view model method will return a code composed of any shared context value (see below)
+and the id of the Knockout View block.</p>
+<pre><code class="language-typescript">let context = this.getVmContext()</code></pre>
+<p>You can place this value in a request sent to a service command, then the command can use the id
+to get the "input" field value placed in the block:<br>
+<img src="img/input-value.jpg" alt="input-value.jpg" /></p>
+<p>The "View Model Context" can also include a value shared in common by multiple blocks on the page 
+that may be used as an input parmeter to a service command.  Such is the case with our committee pages. 
+Each of these pages has three blocks that need to send a committee code to retrieve data 
+from the services.  The value is obtained by a hidden input on the page:</p>
+<p>In the ConcreteCms version you can use the Peanut Attribute Block to create the hidden input that stores this value.
+This allows us to create page types like "Committee Page" with the VmContext Attribute:<br>
+<img src="img/vmcontext-firstday.jpg" alt="vmcontext-firstday.jpg" /><br></p>
+<p>The Peanut Attribute Block defaults to the settings for the VM Context Value:<br>
+<img src="img/peanut-attribute-block-edit.jpg" alt="peanut-attribute-block-edit.jpg" /></p>
+<p>So you can simply drop the block on the page and retrive the value with the getVmContext() 
+function.</p>
+<p>See the service-test page for an example. Source:<br>
+application/peanut/tests/vm/ServiceTestViewModel.ts</p>
+<p>Then in the service command class use the TvmContext:GetContext() function to
+decode the vm context value. As in this example:<br></p>
+<pre><code class="language-php">$context = TVmContext::GetContext($request-&gt;contextValue ?? null);</code></pre>
+<p>This returns a data structure (stdclass) like this:</p>
+<pre><code class="language-php">{
+   viewmodel // name of the view model
+   value     // from the block input field
+   shared    // from context value
+   // if value or shared are blank both are set to the same value 
+}</code></pre>
+<h3>Peanut VM Context Template</h3>
+<p>Earlier versions, such as SCYM.org, did not use the Peanut Attribute Field block. Rather
+an HTML block with a custom block template: "Peanut Vm Context" is used  This does the
+same thing but is slightly more complicated to use.  The steps are:</p>
+<ol>
+<li>Place an HTML block on the page.  It need have no content at all but typically we put
+in a place holder comment:<pre><code class="language-html">&lt;!-- Place holder: Block content populated by Peanut VM Context block template --&gt;</code></pre>
+</li>
+<li>In 'Design and Block Template', select the 'Peanut VM Context' block template.
+<br>
+<img src="img/peanut-vm-context.jpg" alt="peanut-vm-context.jpg" /></li>
+</ol>
+<p>This technique is available in all versions, but use of the Peanut Attribute Field block is
+preferred.</p>
+<p>In SCYM, a frequent use case is on a page containing a "document-list" view model, to
+filter advance documents for a specific Yearly Meeting:<br>
+<img src="img/advance-docs.jpg" alt="advance-docs.jpg" /></p>
+</body>
+</html>

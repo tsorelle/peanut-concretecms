@@ -1,0 +1,22 @@
+<div id="contentmanager-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="contentmanager-view-container" class="row" style="display: none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mb-5" style="padding-left: 20%;padding-right: 30%;padding-top: 5rem">
+            <!-- image-block params="id:'testimg',owner:self,imagepath:'/assets/img/test',imagename:'test-image.gif',
+                                    canedit:canedit, title:'Test Image'"></image-block -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mb-5" style="padding-left: 20%;padding-right: 20%;padding-top: 5rem">
+                <div data-bind="descendantsComplete: afterDatabind">
+                    <content-block params="controller: controller, id: 'mycontent', source: content, canedit:canedit,"></content-block>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

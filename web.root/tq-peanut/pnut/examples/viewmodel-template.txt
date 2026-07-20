@@ -1,0 +1,18 @@
+/// <reference path="../../../../pnut/core/ViewModelBase.ts" />
+/// <reference path='../../../../typings/knockout/knockout.d.ts' />
+/// <reference path='../../../../pnut/core/peanut.d.ts' />
+
+namespace PackageName {
+
+    export class VmNameViewModel extends Peanut.ViewModelBase {
+        // observables
+
+        init(successFunction?: () => void) {
+            let me = this;
+            Peanut.logger.write('VmName Init');
+
+			me.bindDefaultSection();
+            successFunction();
+        }
+    }
+}

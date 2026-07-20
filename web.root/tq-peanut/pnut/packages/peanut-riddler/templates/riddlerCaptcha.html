@@ -1,0 +1,23 @@
+<div data-bind="visible:failed,text:guessLimitMessage" style="color:red;font-weight: bold"></div>
+<div class="form-group mb-3"  data-bind="visible:showInputs">
+    <label class="control-label" data-bind="visible:showInputs,text:riddlerHeader"></label>
+    <div style="color:red;font-weight: bold" data-bind="visible: answerError, text: answerError"></div>
+    <div data-bind="text: questionText"></div>
+</div>
+<div class="form-group mb-3" data-bind="css: {'has-error': answerError}">
+    <input type="text" class="form-control" id="answer" data-bind="visible:showInputs,textInput: answerInput" />
+</div>
+<div style="margin-bottom: 6px" data-bind="visible:waitmessage">
+    <span style="margin-right: 10px" data-bind="visible:spinnericon,css:spinnericon"></span><span data-bind="text: waitmessage"></span>. . .
+</div>
+<div data-bind="visible:showButton">
+    <button type="button" data-bind="click: onConfirmClick,attr: { class: buttonClass}">
+        <span data-bind="text:buttonLabel"></span>
+        <span  style="margin-left: 10px" data-bind="css: buttonicon,visible:buttonicon"></span>
+    </button>
+    <a style="margin-left: 20px" href="#" data-bind="click:cancelClick,visible:showCancel">Cancel</a>
+</div>
+<div data-bind="visible:showSystemError" >
+    <p style="font-weight: bold; color: red" data-bind="text:sysError1"></p>
+    <p data-bind="text:sysError2"></p>
+</div>

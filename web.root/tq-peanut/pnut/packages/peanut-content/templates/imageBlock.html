@@ -1,0 +1,51 @@
+<div data-bind="hidden:imageSrc">
+    <div data-bind="visible:canedit">
+        <span class="me-3"><em><strong>No image uploaded.</strong></em></span> <a href="#" data-bind="click:edit"><i class="far fa-edit content-edit-icon-button"></i></a>
+    </div>
+</div>
+<div class="content-container" data-bind="visible:imageSrc" style="min-height: 96px">
+    <div data-bind="hidden:newimage"
+        style="overflow: hidden;
+       position: relative;"
+    >
+        <img data-bind="attr:{src:imageSrc()}"
+             class="img img-fluid img-thumbnail" style="min-width:100%">
+        <div class="image.content-edit-icon" data-bind="visible:canedit"
+             style="position: absolute;
+                top: 0.4rem;
+                right: 0.4rem;"
+        >
+            <a href="#" data-bind="click:edit"><i class="far fa-edit content-edit-icon-button"></i></a>
+        </div>
+    </div>
+    <div data-bind="visible:newimage" >
+        <div>
+            <span class="me-3"><em><strong>New image uploaded.<br> Refresh to view.</strong></em></span> <a href="#" data-bind="click:edit"><i class="far fa-edit content-edit-icon-button"></i></a>
+        </div>
+    </div>
+</div>
+
+<div data-bind="attr: {id: editorModalId}"   class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" data-bind="text:editorTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                <input type="file" class="btn btn-default"
+                       data-bind="attr: {id: imageUploadId}, event: { change: onFileSelection}"
+                       placeholder="Select a file or drag from explorer"/>
+                </div>
+                <p data-bind="visible:invalidFile" class="text-danger" style="background-color: yellow">
+                    Invalid file.  Must be *.jpg, *.gif, or *.png
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary me-5" data-bind="click:save,visible:selected">Save changes</button>
+                <a href="#" data-bs-dismiss="modal">Close</a>
+            </div>
+        </div>
+    </div>
+</div>

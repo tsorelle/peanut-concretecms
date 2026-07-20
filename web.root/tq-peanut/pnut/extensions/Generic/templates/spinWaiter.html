@@ -1,0 +1,11 @@
+<div id="spin-waiter" style="padding-left:10px; padding-right:10px; width:100%;height:100%; position:fixed;top:0; left:0; bottom: 0; z-index: 999; display: none;" >
+    <div style="border: 1px solid black; padding-top: .5em; padding-right: .5em; background: white; box-shadow: 5px 10px lightgray;border-radius: 10px;">
+        <div style="padding-left: 1em;padding-right: 5em; padding-bottom: 1em;" >
+            <span>
+                <?php printf('<img style="max-width: 1.5rem; max-height: 1.5rem" src="%s/assets/img/spinner.gif"/> ',
+                    URL_APPLICATION);?>
+            </span>
+            <span style="padding-left: 1em; font-size: small; font-weight: bold;" id="spin-waiter-text"></span>
+        </div>
+    </div>
+</div>

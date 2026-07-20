@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>selectListObservable</h1>
+<p>Type: knockout component</p>
+<p>Encapsulates select list handling for INameValue[]</p>
+<h2>Initialize</h2>
+<p>In init() function</p>
+<pre><code class="language-typescript">me.application.loadResources([
+'@pnut/selectListObservable'
+], () =&gt; {
+
+});</code></pre>
+<h2>Constructor</h2>
+<pre><code class="language-typescript">me.taskEditForm.intervalType= new Peanut.selectListObservable(
+    // handler - null if no handler
+    me.onIntervalTypeChange,  
+    // selection array
+    [
+          {name: 'On demand', id: 1},
+          {name: 'Regular interval', id: 2},
+          {name: 'Weeky', id: 3},
+          {name: 'Daily', id: 4},
+          {name: 'Fixed time', id: 5}
+        ],
+    // initial default value 
+    1 );</code></pre>
+<h2>Handler</h2>
+<pre><code class="language-typescript">        onIntervalTypeChange = (type: ILookupItem) =&gt; {
+            let me = this;
+            me.taskEditForm.time('');
+        };</code></pre>
+<p>HTML in view example</p>
+<pre><code class="language-html">&lt;label for="document-types"&gt;Document type&lt;/label&gt;
+&lt;select class="form-control form-select"  id="document-types"
+   data-bind = "options: documentType.options, optionsText:'Name', value:documentType.selected"
+&gt;&lt;/select&gt;</code></pre>
+<p>for selectlist with handlers you need to call subscrible and unsubscribe</p>
+<pre><code class="language-typescript">this.taskEditForm.intervalType.unsubscribe();
+if (value) {
+    this.taskEditForm.intervalType.setValue(value);
+}
+else {
+    this.taskEditForm.intervalType.setDefaultValue();
+}
+this.taskEditForm.intervalType.subscribe();</code></pre>
+<p>If list is of type ILookupItem[] use assignLookupList:</p>
+<pre><code class="language-typescript">me.sessiontypeSelector.assignLookupList(response.sessionTypes);</code></pre>
+</body>
+</html>

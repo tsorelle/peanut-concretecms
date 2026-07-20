@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Theme Adaptation</h1>
+<h2>Current supported CMS</h2>
+<h3>Nutshell</h3>
+<p>Nutshell is our own framework for simple sites and demos.</p>
+<h2>UI Framework Support</h2>
+<p>The theme must include required css and javascript for a supported uiFramework. 
+Currently (2024) the preferred framework is Bootstrap 5.  Support for ui frameworks 
+is implemented in TypeScript classes and templates found in pnut/extensions.</p>
+<p>HTML Files in pnut/templates must support the selected ui framework, especially 
+serviceMessages.html.  In the current version these are Bootstrap specific<br />
+In a future version, these may be moved to pnut/extensions to afford better 
+support of other frameworks. </p>
+<h2>Main Page Requirements</h2>
+<h3>Head Element</h3>
+<p>Add bootstrap and font awesome script tags as needed. Bootstrap and FontAwesome based 
+themes my take care of this anyway.</p>
+<h3>End of body Element</h3>
+<p>The following code must be added at the end of the body element.</p>
+<pre><code class="language-php">&lt;!-- for Peanut support --&gt;
+    &lt;?php if (isset($mvvm)) { ?&gt;
+        &lt;!-- bootstrap dependencies for Peanut --&gt;
+        &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.js" integrity="sha512-XDpsu7o5F1+SqCmdXgSfbx7yPA99X0IQs8RsbiQSrJ4kxOZSlbJtgCJjmVbLiAPKOhnffctq61O/VMlD88GcxA==" crossorigin="anonymous" referrerpolicy="no-referrer"&gt;&lt;/script&gt;
+        &lt;script src="/nutshell/pnut/core/PeanutLoader.js"&gt;&lt;/script&gt;
+    &lt;?php }
+        \Peanut\sys\ViewModelManager::RenderStartScript();
+    ?&gt;</code></pre>
+<p>In a ConcreteCMS theme, this may be added to the end of elements/footer.php.</p>
+</body>
+</html>

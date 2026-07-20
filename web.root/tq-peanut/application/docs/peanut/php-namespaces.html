@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>PHP Namespaces</h1>
+<p>On startup, Peanut uses initializes an autoloader per the Psr-4 <a href="#1-autoloading">[1]</a> standard to map namespaces 
+to directories. Mapping starts with the HTML document root and builds<br />
+a set of paths that are mapped to their respective PHP namespace roots.</p>
+<p>Peanut packages <a href="#3-peanut-packages">[3]</a> are mapped to a root namespace matchine the directory name,
+The directory name is lowercase with '-' separators. For the namespace these
+are converted to camel case, "peanut-tasks" &gt; "PeanutTasks".</p>
+<p>These example paths are from the ConcreteCMS version.</p>
+<p>Two root paths are defined:</p>
+<ul>
+<li>module-root: web.root/packages/knockout_view</li>
+<li>application-root: web.root/application/src</li>
+</ul>
+<p>Then concatenated to determine sub-directories</p>
+<ul>
+<li>peanut-root-path: (module-root)/pnut</li>
+<li>peanut-php-source: (module-root)/src/peanut</li>
+<li>peanut-packages <a href="#3-peanut-packages">[3]</a>: (peanut-root-path)/packages</li>
+<li>tops-source <a href="#2-tops-php-library">[2]</a>: (module-root)/src/tops</li>
+</ul>
+<p>Using these variables, top level namespaces are mapped as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Base path in ConcreteCMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tops</td>
+<td>packages/knockout_view/src/tops</td>
+</tr>
+<tr>
+<td>Peanut</td>
+<td>packages/knockout_view/src/peanut</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>application/src</td>
+</tr>
+<tr>
+<td>PeanutTest</td>
+<td>packages/knockout_view/src/test</td>
+</tr>
+</tbody>
+</table>
+<p>Some concrete examples are:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Path in ConcreteCMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tops\db\model\entity</td>
+<td>packages/knockout_view/src/tops/db/model/entity</td>
+</tr>
+<tr>
+<td>Peanut\services</td>
+<td>packages/knockout_view/src/peanut/services</td>
+</tr>
+<tr>
+<td>Application\fma\services</td>
+<td>application/src/fma</td>
+</tr>
+<tr>
+<td>PeanutTest\scripts</td>
+<td>packages/knockout_view/src/test/scripts</td>
+</tr>
+</tbody>
+</table>
+<p>Peanut packages are mapped using a package name derived from a dash seperated directory name which is
+joined and camel cased. E.g.</p>
+<ul>
+<li>mailboxes = Mailboxes</li>
+<li>peanut-tasks = PeanutTasks</li>
+</ul>
+<p>The formula for mapping directory location is:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Path in ConcreteCMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Peanut(package name)</td>
+<td>packages/knockout_view/pnut/packages/(package directory)/src</td>
+</tr>
+</tbody>
+</table>
+<p>Some concrete examples are:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Path in ConcreteCMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Peanut\Malboxes</td>
+<td>packages/knockout_view/pnut/packages/mailboxes/src</td>
+</tr>
+<tr>
+<td>Peanut\PeanutPermissions</td>
+<td>packages/knockout_view/pnut/packages/peanut-permissions/src</td>
+</tr>
+<tr>
+<td>Peanut\PeanutRiddler</td>
+<td>packages/knockout_view/pnut/packages/peanut-riddler/src</td>
+</tr>
+<tr>
+<td>Peanut\PeanutTasks</td>
+<td>packages/knockout_view/pnut/packages/peanut-tasks/src</td>
+</tr>
+<tr>
+<td>Peanut\QnutCalendar</td>
+<td>packages/knockout_view/pnut/packages/qnut-calendar/src</td>
+</tr>
+<tr>
+<td>Peanut\QnutCommittees</td>
+<td>packages/knockout_view/pnut/packages/qnut-committees/src</td>
+</tr>
+<tr>
+<td>Peanut\QnutDirectory</td>
+<td>packages/knockout_view/pnut/packages/qnut-directory/src</td>
+</tr>
+<tr>
+<td>Peanut\QnutDocuments</td>
+<td>packages/knockout_view/pnut/packages/qnut-documents/src</td>
+</tr>
+<tr>
+<td>Peanut\QnutUsergroups</td>
+<td>packages/knockout_view/pnut/packages/qnut-usergroups/src</td>
+</tr>
+</tbody>
+</table>
+<p>Namespaces to classes in sub-directories to the base paths have namespaces corresponding to the 
+subdirectory name. Examples:</p>
+<ul>
+<li>PeanutTest\scripts in packages/knockout_view/src/test</li>
+<li>Application\fma\services in application/src/fma/services</li>
+<li>Peanut\QnutDirectory\db\model\repository in <ul>
+<li>packages/knockout_view/pnut/packages/qnut-directory/src/db/model/repository</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3>Footnotes:</h3>
+<h4>1-Autoloading</h4>
+<p>Autoloading is a PHP feature causing class files to be located by namespace and class name and
+included without an explicit "include" or "require" statement.
+Psr-4 is a standard for autoloaders established by the <a target="_blank" href="https://www.php-fig.org/psr/psr-4/">PHP Framework Interop Group</a></p>
+<h4>2-Tops PHP Library</h4>
+<p>TOPS is a general library of PHP classes by Terry SoRelle</p>
+</body>
+</html>

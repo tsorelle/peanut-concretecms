@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Service Commands</h1>
+<p>Service commands are PHP classes that respond to incoming requests posted
+from the client browser. Usually they will be posted from a TypeScript ViewModel
+class.</p>
+<p>The intention is for service commands to be the remote entry point for back-end services
+written in PHP and SQL database operations.  </p>
+<p>For a very simple example, See </p>
+<ul>
+<li>View model: web.root/application/peanut/tests/vm/ServiceTestViewModel.ts,</li>
+<li>Service command: web.root/application/src/fma/services/HelloWorldCommand.php</li>
+</ul>
+<h2>The Call</h2>
+<p>Here's an example service call from a view model;</p>
+<pre><code class="language-typescript">let me = this;
+let request = {"tester" : testerName,
+                "contextValue": this.contextValue()};
+me.services.executeService('HelloWorld', request,
+    // success function
+    function (serviceResponse: Peanut.IServiceResponse) {
+        if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+            let response = serviceResponse.Value;
+            alert(response.message);
+        }
+    }
+)  // fail function
+    .fail(() =&gt; {
+    alert('OOPS!!!!!!!!!!')
+})  // always function
+    .always(() =&gt; {
+    me.application.hideWaiter();
+});</code></pre>
+<p>(Note that the actual example file demonstrates the use of translation functions.
+We left that out here in order to focus in on the service command process itself.)</p>
+<p>We assign a variable 'me', to the 'this' reference.  This is a recommended practice
+because in a closure, such as success, fail, and always functions that follow,
+'this' may to not refer to the view model.  Using this technique, we can always
+use 'me' to reference any data or functions of the view model.</p>
+<p>Next we compose a request object to be sent as input to the service command.
+This can be any kind of json object.  Here we reference a local variable and
+a Knockout observable to get the data.</p>
+<pre><code class="language-typescript">let request = {"tester" : testerName,
+                "contextValue": this.contextValue()};</code></pre>
+<p>To initiate the request, we call</p>
+<pre><code class="language-typescript"> me.services.executeService('HelloWorld', request, ...</code></pre>
+<p>The me.services refers to the ServiceBroker class. <a href="#3-source-files-for-handling-service-command-requests">[3]</a>
+This object handles all remote service calls using the jQuery Ajax library <a href="#references">[references]</a>. </p>
+<p>The first parmater, the 'serviceName', is a shorted version of the PHP ServiceCommand object on the server. 
+In this case 'HelloWorld' is expanded to HelloWorldService command. In most cases we preceed the serviceName
+with an encoded version of the namespace as well.  See the section below <a href="#namespaces-in-executeService">Namespaces in executeService</a></p>
+<p>The next parameter is the request object (or null).</p>
+<p>Then we have an anonymous function that executes at the successful 
+conclusion of the service call. </p>
+<pre><code class="language-typescript">    function (serviceResponse: Peanut.IServiceResponse) {
+        if (serviceResponse.Result == Peanut.serviceResultSuccess) {
+            let response = serviceResponse.Value;
+            alert(response.message);
+        }
+    }</code></pre>
+<p>This function receives the serviceResponse object returned from the service.
+The serviceResponse.Result property tells us how things went. If the service
+fails in some way the serviceResponse will contain messages, which will
+automatically be displayed and the result code will be something other than
+serviceResultSuccess.  </p>
+<p>The serviceResponse.Value property contains the main data payload for a successful execution.
+and the remaining body of the function does what ever it needs to do for the
+view model.  Usually this means assigning some observables with the resulting data.</p>
+<h2>The Service Command handles the request</h2>
+<p>On the server side, after checking for the secure authenticity of the request,
+the service command object is instantiated and the .run() method is invoked.</p>
+<pre><code class="language-php">    protected function run()
+    {
+        // 1. retrieve the request object that was sent from the view model
+        $request = $this-&gt;getRequest();
+
+        // 2. Check for problems.
+        if (empty($request)) {
+            $this-&gt;addErrorMessage('No request received.');
+            return;
+        }
+        if (empty($request-&gt;tester)) {
+            $this-&gt;addErrorMessage('Tester name not received.');
+            return;
+        }
+
+        // 3. Translate the context code, 
+        $context = TVmContext::GetContext($request-&gt;contextValue ?? null);
+
+        // 4. show some messages.
+        $this-&gt;addInfoMessage('Hello World from: '.$request-&gt;tester);
+        $this-&gt;addInfoMessage("Input value is:".$context-&gt;value);
+        $this-&gt;addInfoMessage("Shared context:".$context-&gt;shared);
+
+        // 5. create and return the response object
+        $responseValue = new \stdClass();
+        $responseValue-&gt;message = "Greatings earthlings from ".$request-&gt;tester;
+        $this-&gt;setReturnValue($responseValue);
+    }
+</code></pre>
+<p>Explanation:</p>
+<ol>
+<li>getRequest() retrieves the data sent by the ViewMode.</li>
+<li>addErrorMessage() sets a message the will automatically be displayed by
+the view model. It also sets the result value to 'serviceResultError'.
+we can just return now because nothing to be done without input.</li>
+<li>This is optional. TVmContext::GetContext() retrieves server side data
+associated with the view model. More about that later.</li>
+<li>Add some messages. These will be automatically displayed by the view model.</li>
+<li>Create and return the data:<ul>
+<li>We create the response value as an 'stdClass', a simple PHP data structure. </li>
+<li>We assign any properties we need to return.</li>
+<li>setReturnValue() assigns our response to the .Value property of the 
+serviceResponse object.</li>
+</ul>
+</li>
+</ol>
+<h2 id="namespaces-in-executeService">Namespaces in executeService</h2>
+<p>In order to instantiate the service command object, the service request handling code constructs 
+a full class name from the serviceName parameter. Here are examples of how the full namespace is constructed.</p>
+<h3>HelloWorld:</h3>
+<p>In this case a default namespace is retrieved from the application/config/settings.ini file</p>
+<pre><code class="language-ini">[services]
+applicationNamespace='\Application\fma'</code></pre>
+<p>Since service command classes are always located in a 'services' sub-directory, '\services'
+is appended to the namespace.  The namespace and class name in the PHP file will be:</p>
+<pre><code class="language-php">namespace Application\fma\services;
+class HelloWorldCommand extends \Tops\services\TServiceCommand</code></pre>
+<h3>peanut.peanut-permissions::GetPermissions:</h3>
+<p>In most cases we prefix the service name with the namespace, followed by "::".
+This namespace is encoded for json compatibility in the remote service call.
+Words separated by '.' are given initial caps and the '.' becomes '\'.<br />
+Words separated by '-' are camel cased.</p>
+<p>As a result, the PHP definition this one refers to is</p>
+<pre><code class="language-php">namespace Peanut\PeanutPermissions\services;
+class GetPermissionsCommand extends TServiceCommand</code></pre>
+<h3>peanut.qnut-directory::messaging.InitializeDistributionLists</h3>
+<p>The service command class file might be located in a sub-directory to 
+the services directory, in this case 'services\messaging'.  In such
+a case we precede the service name following the '::' with the sub-path separated
+by '.'.</p>
+<p>The PHP definition this one refers to is:</p>
+<pre><code class="language-php">namespace Peanut\QnutDirectory\services\messaging;
+class InitializeDistributionListsCommand extends \Tops\services\TServiceCommand</code></pre>
+<p>Given the namespace and classname the service handler can instantiate
+the service command class due to PHP autoloading. <a href="#1-location-and-autoloading">[1]</a> </p>
+<h2>Creating a Service Command</h2>
+<ol>
+<li>Pick a namespace and locate the corresponding directory.<br> 
+Pick one of the following: <a href="#2-peanut-core-service-commands">[2]</a></li>
+</ol>
+<ul>
+<li>The appplication services directory, as indicated by applicationNamespace in the settings.ini.<br />
+In FMA's case:<ul>
+<li>Namespace: Application\fma\services;</li>
+<li>Location: web.root/application/src/fma/services</li>
+</ul>
+</li>
+<li>A peanut package directory. We will take an example from qnut-documents.<ul>
+<li>Namespace: Peanut\QnutDocuments\services</li>
+<li>Location: web.root/packages/knockout_view/pnut/packages/qnut-documents/src/services</li>
+</ul>
+</li>
+<li>We may also create a sub-directory to one of the above.</li>
+</ul>
+<ol start="2">
+<li>
+<p>Create the service command class in a PHP file.
+You may use this file as a template: web.root/packages/knockout_view/pnut/examples/servicecommand-template.txt<br>
+And save it to the location you identified in step 2, with the filename </p>
+</li>
+<li>
+<p>Change the namespace and class names <a href="#4-case-sensitivity">[4]</a></p>
+</li>
+<li>
+<p>Add the executeService call to your typescript view model file. You can use the content of this file as a template:<br>
+web.root/packages/knockout_view/pnut/examples/service-call-template.txt</p>
+</li>
+</ol>
+<hr>
+<h2>Notes:</h2>
+<h3>1-Location and Autoloading</h3>
+<p>The root location for a service command is not always obvious as it depends on autoload initialization routines
+found in the startup code and entries in the [autoload] section of the application/config/setting.ini
+file. If you are looking for one, the easiest approach is to just do a content
+search for the class name.</p>
+<p>For a detailed look at how namespaced are mapped to the directory structure, 
+see: <a href="php-namespaces.html">PHP Namespaces</a></p>
+<h3>2-Peanut Core Service Commands</h3>
+<p>Note that some service commands are found in sub-directories of web.root/packages/knockout_view/src.
+These classes are reserved for use of peanut core features.</p>
+<h3>3-Source files for handling service command requests</h3>
+<p>These are listed in order of their role in the service call sequence.</p>
+<ul>
+<li>ServiceBroker class in<br> 
+web.root/packages/knockout_view/pnut/core/Services.ts</li>
+<li>Routing path, /peanut/service/execute, defined in <br>
+web.root/application/bootstrap/app.php</li>
+<li>ServiceRequestHandler class in <br>
+web.root/packages/knockout_view/src/concrete5/ServiceRequestHandler.php</li>
+<li>ServiceFactory class in <br>
+web.root/packages/knockout_view/src/tops/services/ServiceFactory.php</li>
+<li>TAbstractServiceFactory::executeService() <br>
+in web.root/packages/knockout_view/src/tops/services/TAbstractServiceFactory.php</li>
+<li>TServiceCommand class in<br> 
+web.root/packages/knockout_view/src/tops/services/TServiceCommand.php<br></li>
+<li>Any concrete class that extends TServiceCommand</li>
+</ul>
+<h3>4-Case Sensitivity</h3>
+<p>If you are developing on a Windows computer, keep in mind that
+file names on the server operating system (Linux or other Unix type system)
+are case sensitive. Take care that your service command class name
+and the identifiers that refer to it have the same casing. Otherwise
+errors may occur in deployment that do not show up in development.</p>
+<h3 id="references">References</h3>
+<ul>
+<li><a target="_blank" href="https://api.jquery.com/jQuery.ajax/">jQuery Ajax</a></li>
+<li><a target="_blank" href="https://www.php.net/manual/en/language.oop5.autoload.php">PHP Autoloading</a></li>
+</ul>
+</body>
+</html>

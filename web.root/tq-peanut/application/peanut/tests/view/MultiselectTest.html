@@ -1,0 +1,19 @@
+<div id="multiselecttest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="multiselecttest-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Multiselect</h4>
+                <div style="margin-top: 1rem">
+                    <multi-select params="controller: multiSelectTestController,sort:'code',translator:self, label:'Multiselect',
+                        caption:'Select something...'"></multi-select>
+                </div>
+
+                <div>
+                    <selected-list params="source:multiSelectTestController,label:'Things READONLY',readonly:true,emptymessage:'Nothing here'"></selected-list>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

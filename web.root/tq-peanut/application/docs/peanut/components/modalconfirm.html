@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../../markdown.css">
+
+</head>
+<body>
+<p><a href="../../index.html">Return to docs home page</a></p>
+<h1>modal-confirm component</h1>
+<h2>Example markup:</h2>
+<pre><code class="language-html">&lt;modal-confirm params="id:'confirm-save-modal',headerText: 'Please confirm SAVE', bodyText: confirmText, confirmClick: save"&gt;&lt;/modal-confirm&gt;
+&lt;modal-confirm params="id:'confirm-delete-modal',headerText: 'Please confirm', bodyText: confirmText, confirmClick: confirm"&gt;&lt;/modal-confirm&gt;</code></pre>
+<p>Text parameters (bodyText, headerText) can be either a string (in quotes) or an observable (no quotes)</p>
+<h2>Example handling</h2>
+<pre><code class="language-typescript">showSaveModal = () =&gt; {
+    this.showModal('#confirm-save-modal')
+    // or Peanut.ui.helper.showModal(modal);
+};
+
+save = () =&gt; {
+    this.hideModal('#confirm-save-modal')
+    // or Peanut.ui.helper.showModal(modal);
+    alert('you saved');
+};</code></pre>
+<h2>Example initialization</h2>
+<pre><code class="language-typescript">init(applicationPath: string, successFunction?: () =&gt; void) {
+    me.application.initialize(applicationPath,
+    function() {
+    me.application.registerComponent('@pnut/modal-confirm', () =&gt; {
+    ...
+});</code></pre>
+<h2>Parameters:</h2>
+<ul>
+<li>Id: the element id of the modal used to show or hide it:</li>
+<li>confirmClick: Event handler for the "ok" or "yes" button</li>
+<li>headerText:  Text to appear in the modal header area.</li>
+<li>bodyText: Text to appear in the body area.</li>
+<li>buttonSet: a string indicating how to label the buttons:<ul>
+<li>'alert' : one button labeled 'Continue'</li>
+<li>'yesno' : two buttons labeled 'Yes' and 'No'</li>
+<li>'okcancel' : two buttons labelsed 'Ok' and 'Cancel'</li>
+<li>'your-ok-button||your-cancel-button' : uses custom labeling.</li>
+</ul>
+</li>
+</ul>
+</body>
+</html>

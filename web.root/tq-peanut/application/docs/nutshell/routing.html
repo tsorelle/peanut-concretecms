@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>Nutshell Routing</h1>
+<p>Nutshell employs a configuration file to define routes and associated pages with view models: \tq-peanut\application\config\routing.ini.</p>
+<p>Because WordPress lacks any custom routing other that the menu system, we use Nutshell to fill the gap.  The routing configuation is
+used to define service URIs and implement redirection.  If a path is configured for a view model, the system redirects
+to the Nutshell system to execute the service or display the view model on a page.  When the path is not found in the 
+configuration, WordPress takes over and handles the request.</p>
+<p>Here are some examples of routing configuration:</p>
+<p>Show the administrators permissions configuration page in Nutshell:</p>
+<pre><code class="language-ini">[admin/permissions]
+handler='page';
+mvvm=permissions
+roles='administrator';</code></pre>
+<p>Execute a Peanut service:</p>
+<pre><code class="language-ini">[peanut/service/execute]
+handler='service'
+args=sid,arg
+method='executeService'</code></pre>
+<p>Redirect to WordPress Page:</p>
+<pre><code class="language-ini">[recover-password]
+; wordpress
+handler='redirect'
+target='wp-login.php?action=lostpassword'</code></pre>
+</body>
+</html>

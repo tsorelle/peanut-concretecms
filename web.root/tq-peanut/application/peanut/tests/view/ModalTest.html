@@ -1,0 +1,53 @@
+<div id="modaltest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="modaltest-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- view model bindings -->
+                <button class="btn btn-primary mb-1" data-bind="click:onShowClick">
+                    Show
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- view model bindings -->
+                <button  class="btn btn-primary mb-1"  data-bind="click:confirmTest">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <modal-confirm params="id:'confirm-modal-test',headerText: 'Please confirm', bodyText: 'Ready to do this?',
+        confirmClick: onConfirmTestOk, translator:self"></modal-confirm>
+
+
+    <div class="modal" id="test-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button data-bind="visible:bootstrapVersion() < 4" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Test Modal</h4>
+                    <button data-bind="visible:bootstrapVersion() > 3" type="button" class="close btn-close"
+                            data-dismiss="modal",
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        <span data-bind="visible:bootstrapVersion() < 5" aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This is a test view model</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary" data-bind="click:onSaveChanges">Save changes</button>
+                    <!-- data-bs-dismiss used by bootstrap 5, data-dismiss used by bootstrap 3 and 4 -->
+                    <a href="#" data-bs-dismiss="modal" data-dismiss="modal">Close</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>

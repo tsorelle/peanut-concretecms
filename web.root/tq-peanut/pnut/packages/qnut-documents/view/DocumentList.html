@@ -1,0 +1,85 @@
+<!-- begin DocumentList view -->
+<style>
+    .doc-list-item {
+        padding-bottom: .5rem;
+        padding-top: .25rem;
+        border-bottom: 1px solid lightgrey;
+    }
+</style>
+<div id="documentlist-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="documentlist-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row" data-bind="visible:loadingDocumentList">
+            <div class="col-md-12">
+                <span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span>
+            </div>
+        </div>
+        <div class="row" data-bind="visible:errorMessage">
+            <div class="col-md-12">
+                <p data-bind="text:errorMessage"></p>
+            </div>
+        </div>
+        <div class="row"  data-bind="visible:loaded">
+            <div class="col-md-12">
+                <div data-bind="visible:documentList().length">
+                    <!-- todo: work on phone format -->
+                    <!-- todo: link title to document page
+                    <a href="'#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }"></a>
+                    -->
+                    <div data-bind="foreach:documentList">
+                        <div class="doc-list-item">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div>
+                                        <div class="btn-group" data-bind="visible:$parent.authenticated">
+                                            <button type="button" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" style="padding: 0;">
+                                                <i class="far fa-file"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li data-bind="visible:documentType=='PDF'">
+                                                    <a class="dropdown-item" href="#" target='_blank' data-bind="attr: { href: uri, title: $parent.docViewLinkTitle }">
+                                                        <i class="far fa-file-pdf"></i> <span data-bind="text:$parent.docViewLinkTitle"></span></a></li>
+                                                <li><a class="dropdown-item" href="#" target='_blank' data-bind="click:$parent.downloadDocument, attr: { href: uri, title: $parent.docDownloadLinkTitle }">
+                                                    <i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text:$parent.docDownloadLinkTitle"></span> </a></li>
+                                                <li><a class="dropdown-item" href="#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }">
+                                                    <i class="fas fa-pencil-alt" aria-hidden="true"></i> <span data-bind="text:$parent.docEditLinkTitle"></span> </a></li>
+                                            </ul>
+                                        </div>
+                                        <span data-bind="visible: documentType=='PDF' && !$parent.authenticated()"
+                                        style="margin-right: .5rem;">
+                                                    <a class="dropdown-item" href="#" target='_blank'
+                                                       style="display:inline;"
+                                                       data-bind="attr: { href: uri, title: $parent.docViewLinkTitle }">
+                                                       <i class="far fa-file-pdf"></i></a>
+
+                                        </span>
+                                        <a href="#" target="_blank" data-bind="attr: { href: uri, title: $parent.docViewLinkTitle }"
+                                        >
+                                            <span data-bind="text:title"></span> (<span data-bind="text:documentType"></span>)
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="padding-left: 3.4rem">
+                                    <translate params="code:'label-published',translator:$parent.self"></translate>: <span data-bind="text:publicationDate"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-bind="visible:documentList().length === 0">
+                    <!-- translate params="code:'document-search-not-found',translator:self"></translate-->
+                    <span data-bind="text:searchResultMessage"> </span>
+                </div>
+            </div>
+        </div>
+        <div class="row"  data-bind="visible:loaded">
+            <!-- div class="col-md-12" data-bind="visible:documentList().length" -->
+            <div class="col-md-12" id="doc-list-pager">
+                <pager params='click:changePage,page:currentPage,max:maxPages,owner:self'></pager>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End DocumentList view -->

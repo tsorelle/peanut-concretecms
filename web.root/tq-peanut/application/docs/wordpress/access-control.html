@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>Access Control in WordPress</h1>
+<h2>Overview</h2>
+<p>Peanut access control requires role based authentication, with the ability to assign multiple roles to users. 
+Nutshell and Concrete CMS support this natively. Although WordPress supports it internally, the unextended 
+installation does not provide a method of assigning more than one role to a user.</p>
+<p>This is a legacy of early versions of WordPress which did not use role based authentication, but rather assigned 
+a single level of authority. We suggest installing a plugin to provide this capability.</p>
+<p>A reliable choice is the <a target="_blank" href="https://wordpress.org/plugins/user-role-editor/">User Role Editor</a> plugin.</p>
+<h2>Roles:</h2>
+<p>To fully enable all peanut features, you can set up these new roles and assign "peanut permissions".
+Once that is done you can user the "User Role Editor" plugin to assign these roles to users.</p>
+<p>In a future release we will create the roles and assign permission automatically when the Peanut plugin is installed.<br />
+For now, you can use the /admin/permissions page.</p>
+<p>For larger user communities, you may want to create new roles.</p>
+<h3>Peanut Permissions</h3>
+<p>Note that someone in the "administrator" role has access to all pages and features.  On many sites with just one or two
+"managers" you may just rely on the "administrator" to handle all of these tasks.  Another alternative is to assign 
+peanut permissions to a newly created role or to an existing WordPress role such as 'Editor'.</p>
+<p>Manage the associations between roles and committees on the /admin/permissions page. Click the "Initialze roles" link
+to create a standard set of roles and permission assignments. You can add and remove roles from any permission at any time.</p>
+<h2>Page Authorizations</h2>
+<p>To control page access and determine the menu contents based on role and page uri use the /admin/authorizations page.</p>
+</body>
+</html>

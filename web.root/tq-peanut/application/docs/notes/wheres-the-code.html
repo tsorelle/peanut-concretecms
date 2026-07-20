@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Where's the Code?</h1>
+<p>Custom Code for the FMA site is found in the following locations.</p>
+<ol>
+<li>
+<p>The knockout_view package<br>
+Location: web.root/packages/knockout_view</p>
+<ul>
+<li>controller.php - basic ConcreteCMS startup and management code for the package</li>
+<li>knockout_view/blocks: Code for custom block templates. see section below.</li>
+<li>knockout_view/pnut: The PEANUT framework and code<ul>
+<li>pnut/core: essential core code for PEANUT.  </li>
+<li>pnut/components -  KnockoutJS components for PEANUT. HTML for these components is in the "templates" directory.</li>
+<li>pnut/packages - these are code modules mostly containing Knockout views/viewmodels,
+PHP source and configuration items.</li>
+<li>pnut/extensions - PEANUT UI extension TypeScript classes.</li>
+<li>pnut/js - Typescript utility classes</li>
+<li>pnut/js/lib: third-party javascript libraries<ul>
+<li>headjs: used by the PEANUT loader to dynamically include Javascript</li>
+<li>jquery: contains Jquery ajax and dependencies. Used only if jQuery is not provided by the CMS.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>knockout_view\src: PHP source files used by peanut core.  AKA "TOPS PHP Library"</li>
+</ul>
+</li>
+<li>
+<p>The peanut_utilities package<br>
+Location: web.root/packages/peanut_utilities </p>
+<ul>
+<li>controller.php - ConcreteCMS startup code</li>
+<li>blocks/pnut_attribute_field  <br>
+The sole purpose of this ConcreteCMS package is to provide the "Peanut Attribute Field" 
+block. This may be refactored later to be included in the knockout_view package.</li>
+</ul>
+</li>
+<li>
+<p>The application directory</p>
+<ul>
+<li>application/bootstrap<ul>
+<li>app.php: This is a standard part on ConcreteCMS, but inclues our code defining routing.</li>
+<li>peanut-app.php: this is just a backup copy of app.php with our customizations.</li>
+</ul>
+</li>
+<li>application/src: Application specific PHP code.</li>
+<li>application/peanut: Application speific PEANUT code including ViewModels/Views, KnockoutJS components and PHP source code.</li>
+</ul>
+</li>
+<li>
+<p>Peanut startup code in the theme directory</p>
+<ul>
+<li>Any theme used with PEANUT must include a small section of code 
+in the elements/footer_bottom.php file.  This is the single entry point
+for the PEANUT system which initiates the process of loading the viewmodels.  See: web.root/application/themes/fma/elements/footer_bottom.php</li>
+</ul>
+</li>
+<li>
+<p>Custom block templates<br>
+This code changes be behavior of ConcreteCMS blocks such as PageList and AutoNav.
+See: <a href="templates-and-styles.html">Templates and Styles</a></p>
+<ul>
+<li>Fma Top Navigation<ul>
+<li>Used only for the top navigation bar.</li>
+<li>Source: web.root/application/blocks/top_navigation_bar/templates/fma_top_navigation.php</li>
+</ul>
+</li>
+<li>Fma news page list<ul>
+<li>Location: web.root/application/blocks/page_list/templates/fma_news_page_list</li>
+</ul>
+</li>
+<li>Fma Featured Event Page List<ul>
+<li>Location: web.root/application/blocks/page_list/templates/fma_featured_events_page_list</li>
+</ul>
+</li>
+<li>Fma collapsible page list<ul>
+<li>Used for committee pages list<ul>
+<li>Location: web.root/application/blocks/page_list/templates/fma_collapsible_page_list</li>
+</ul>
+</li>
+<li>Fma events page list<ul>
+<li>todo: not working now. debug</li>
+<li>Location: web.root/application/blocks/page_list/templates/fma_events_page_list</li>
+</ul>
+</li>
+<li>breadcrumbs<ul>
+<li>For breadcrumb menus at top of page</li>
+<li>Example: /community/committees/care-and-counsel</li>
+<li>Location: web.root/application/themes/fma/blocks/autonav/templates/breadcrumb.php</li>
+<li>Note: same as crumbs.php, renamed for backward compatibility with original theme</li>
+</ul>
+</li>
+<li>Peanut Authenticated Content<ul>
+<li>hides content from anonymous users</li>
+<li>Location: web.root/packages/knockout_view/blocks/content/templates/peanut_authenticated_content/view.php</li>
+<li>Example: footer content column 2 second content block</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Peanut Html Placeholder<ul>
+<li>Used with HTML blocks that contain non-visual elements to
+make it visible in edit mode. Example in /tasks/testing/service-test</li>
+<li>Location: web.root/packages/knockout_view/blocks/html/templates/peanut_html_placeholder</li>
+<li>Theme templates<ul>
+<li>Several templates were provided by concreteCMS in the Atomik theme from which the FMA theme derives.</li>
+<li>Location: web.root/application/themes/fma/blocks</li>
+<li>Colapsible Knockout View</li>
+<li>Used to surround a Knockout View Block with a colapsible section.
+See committee pages for examples.</li>
+<li>Location: web.root/packages/knockout_view/blocks/knockout_view/templates/collapsible-knockout-view</li>
+</ul>
+</li>
+<li>Obsolete templates:<ul>
+<li>FMA Header Navigation - replaced by FMA Top Navagation</li>
+<li>FMA Landing page menu - Apply the custom class .landing-page-menu instead.<h2>Note</h2>
+<p>For information on dynamic object creation ee also <a href="../peanut/object-container.html">Object Container</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</body>
+</html>

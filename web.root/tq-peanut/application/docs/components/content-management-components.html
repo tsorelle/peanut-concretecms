@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Content Management Components and Implementation</h1>
+<h2>htmlEditContainer</h2>
+<p>This component provides a container for HTML editing functionality, allowing users to edit and manage HTML content within the application.</p>
+<p>It can be used by itself or, of saving and loding content is required, it can be used in conjunction with the <code>contentController</code> component.</p>
+<h2>contentController</h2>
+<p>This component provides a plugin functionality for the <code>htmlEditContainer</code> component, or any component 
+that implements the <code>Peanut.IContentEditor</code> interface.</p>
+<p>A viewmodel that uses this component must load and initialize both components. After that no other changes are required 
+except those specific to the viewmodel. See the initialization example below.</p>
+<h2>The View</h2>
+<p>The main view file must include the <code>content-controller</code> tag and a textarea for the editor.</p>
+<h3>Editor text area</h3>
+<p>The view must contain a textarea for the editor with an id matching the one passed in the htmlEditor.initialize() call
+in the viewmodel init() method.</p>
+<pre><code class="language-html">&lt;textarea rows="10"  class="form-control" id="messagehtml"&gt;&lt;/textarea&gt;</code></pre>
+<h3>Component tag:</h3>
+<p>In the HTML for the form that uses the editor add a tag for the 'content-controller' component, just before the
+end of the '*-view-container' div.</p>
+<pre><code class="language-html">&lt;content-controller params="owner:self,editor:htmlEditor,context:'newsletter'"&gt;&lt;/content-controller&gt;</code></pre>
+<p>Parameters:</p>
+<ul>
+<li>owner: the viewmodel that contains the editor. Always use 'self'.</li>
+<li>editor: the htmlEditor object as declared in the viewmodel.</li>
+<li>context: an identifier used associate the content with a particular form or view model.</li>
+</ul>
+<pre><code class="language-html">&lt;content-controller params="owner:self,editor:htmlEditor,context:'editor-test'"&gt;&lt;/content-controller&gt;</code></pre>
+<h2>The ViewModel</h2>
+<h3>Initialization</h3>
+<ol>
+<li>Add required reference paths:<pre><code class="language-typescript">/// &lt;reference path='../../pnut/core/Peanut.d.ts' /&gt;
+/// &lt;reference path='../../pnut/js/ViewModelHelpers.ts' /&gt;
+/// &lt;reference path='../../typings/tinymce/tinymce.d.ts' /&gt;</code></pre>
+</li>
+<li>In the view model init() method.</li>
+</ol>
+<ul>
+<li>First use loadResources() to load the htmlEditContainer observeable. This script will load required libraries
+such as tinymce and viewModel helpers.</li>
+<li>In the following block use registerComponents() to register the 'content-controller' component.</li>
+<li>In the block that follows that, instantiate and initialize the editor.</li>
+<li>Call me.htmlEditor.initialize() method and in the block that follows execute other initialization code
+and finally bindDefaultSection() and success().</li>
+</ul>
+<pre><code class="language-typescript">// load dependencies
+me.application.loadResources([
+  '@pnut/htmlEditContainer'
+], () =&gt; {
+    // register components
+    me.application.registerComponents([
+    '@pkg/peanut-content/content-controller'], () =&gt; {
+        // initialize editor
+        me.htmlEditor = new Peanut.htmlEditContainer(me);
+        me.htmlEditor.enableUnsavedWarning()
+        me.htmlEditor.includeDesignTools();
+        me.htmlEditor.includeFileControls();
+        me.htmlEditor.initialize('messagehtml',() =&gt; {
+            // finish the ViewModel initialization
+        });
+    });
+});    </code></pre>
+<h1>Installation</h1>
+<p>If the package is not yet installed, deploy the following files to the pnut folder:</p>
+<ul>
+<li>packages\peanut-content*</li>
+<li>pnut\js\htmlEditContainer.* (compare with existing file for differences)</li>
+<li>pnut\core\Peanut.d.ts</li>
+</ul>
+<p>On the target view model *.ts file, modify the init() method to register the content-controller component,
+per the example above.</p>
+<p>On the target view file *.html, include the content-controller tag, per the example above.</p>
+</body>
+</html>

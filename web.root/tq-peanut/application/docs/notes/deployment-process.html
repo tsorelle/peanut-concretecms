@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>Deployment Process</h1>
+<h2>Beginning state</h2>
+<p>Stage mirrors Testing except for database.php.</p>
+<p>Other than source code and configuration specifically mentioned below, staging and testing mirror production.</p>
+<h3>Environment differences</h3>
+<p>These differences must be preserved during deployments.</p>
+<h4>Dev</h4>
+<ul>
+<li>application\config\database.php<pre><code class="language-php">'database' =&gt; 'austinqu_fma' // (local version)</code></pre>
+</li>
+<li>application\config\classes.ini<pre><code class="language-ini">  [tops.mailer]
+  type='Tops\mail\TDevMailer'</code></pre>
+</li>
+<li>application\config\settings.ini<pre><code class="language-ini">  [locations]
+  ; vendor folder located in project directory above document root
+  ; composer='../vendor' (default)</code></pre>
+</li>
+</ul>
+<h4>Testing</h4>
+<ul>
+<li>application\config\database.php<pre><code class="language-php">'database' =&gt; 'austinqu_testing'</code></pre>
+</li>
+<li>application\config\ classes.ini<ul>
+<li>Email disabled:<pre><code class="language-ini">[tops.mailer]
+type='Tops\mail\TNullMailer'</code></pre>
+</li>
+<li>Email enabled for testing:<pre><code class="language-ini">[tops.mailer]
+type='Tops\mail\TMailgunMailer'</code></pre>
+</li>
+</ul>
+</li>
+<li>application\config\settings.ini<pre><code class="language-ini">  [locations]
+  ; vendor folder located in document root
+  composer='./vendor' </code></pre>
+<h4>Staging</h4>
+</li>
+</ul>
+<p>Same as testing except database:</p>
+<ul>
+<li>application\config\database.php<pre><code class="language-php">'database' =&gt; 'austinqu_staging'</code></pre>
+<h3>Production</h3>
+</li>
+<li>application\config\database.php<pre><code class="language-php">'database' =&gt; 'austinqu_fma'</code></pre>
+</li>
+<li>application\config\ classes.ini<pre><code class="language-ini">  [tops.mailer]
+  type='Tops\mail\TMailgunMailer'</code></pre>
+</li>
+<li>application\config\settings.ini<pre><code class="language-ini">  [locations]
+  ; vendor folder located in in home directory above document root
+  ; composer='../vendor'  (default) </code></pre>
+</li>
+</ul>
+<h2>Change flow:  Dev &gt; Testing &gt; Staging &gt; Production</h2>
+<p><img src="img/deployment-flow.jpg" alt="deployment-flow.jpg" /></p>
+<h3>Development and dev testing</h3>
+<ol>
+<li>Source changes and unit tests committed to repository</li>
+<li>Ready source changes submitted to Terry for review</li>
+<li>Terry deploys from dev to testing</li>
+<li>Testing in testing enviorment begins.</li>
+</ol>
+<h3>Deploy to Staging for Test</h3>
+<ol start="2">
+<li>Replace source changes from testing<ul>
+<li>vendor if needed</li>
+<li>packages</li>
+<li>application<ul>
+<li>blocks</li>
+<li>assets</li>
+<li>peanut</li>
+<li>src</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>If database.php overwritten, change database to austinqu_staging</li>
+<li>Reconcile any configuration changes.</li>
+</ol>
+<h3>Refresh Staging from Prod</h3>
+<ol>
+<li>Restore database</li>
+<li>Copy files from prod<ul>
+<li>files</li>
+<li>documents</li>
+</ul>
+</li>
+<li>Select new theme</li>
+<li>Apply interactive changes<br>
+See: <a href="cms-updates.html">CMS Updates.html</a></li>
+</ol>
+<h3>Final Iteration and release</h3>
+<ol>
+<li>Freeze CMS changes in prod.  Peanut changes can continue</li>
+<li>Update staging from prod and testing and described above</li>
+<li>Perform final tests</li>
+<li>Restore CMS database tables from staging to prod.
+do not overwrite tables prefixed with 'qnut<em>','tops</em>' or 'pnut_'</li>
+<li>Copy all source and config files from staging to prod</li>
+<li>Update configuration</li>
+<li>Replace vendor directory</li>
+</ol>
+</body>
+</html>

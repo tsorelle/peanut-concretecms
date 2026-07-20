@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Debugging with browser developer tools</h1>
+<p>Note: This doc was prepared using the Edge browser. The developer
+tools in Chrome are very similar.</p>
+<p>Suppose you get a mysterious error message like this one. Perhaps it only occurs
+in deployment.  </p>
+<p><img src="img/calendar-error.jpg" alt="Error Message" /></p>
+<p>Here's how to find where problems occur in a call to one of our ServiceCommand classes:</p>
+<p>(note: For more about the Service Command objects see: <a href="../peanut/service-commands.html">Service Commands</a>)</p>
+<p>Press F12 to open developer tools. These examples are in Edge but Chrome is 
+very similar.</p>
+<p>Click the "Sources" tab.</p>
+<p><img src="img/sources-tab.jpg" alt="Sources tab" /></p>
+<p>Browse the sources tree to find Services.ts or Services.js.</p>
+<p><img src="img/sources-tree.jpg" alt="Sources tree" /></p>
+<p>In the source pane, find ServiceBroker.executeRPC</p>
+<p>Set breakpoints in the .done and .fail functions. This will usually be on 
+lines 220 and 232:</p>
+<p><img src="img/breakpoints.jpg" alt="Breakpoints" /></p>
+<p>Refresh and one of these two breakpoints should be hit.  </p>
+<h2>Service Errors</h2>
+<p>If you see one of these messages:<br>
+<img src="img/service-error.jpg" alt="service-error.jpg" /><br></p>
+<p>It is likely the your debugger will break in the ".done()" function.<br>
+<img src="img/service-break-done.jpg" alt="service-break-done.jpg" /><br></p>
+<p>The .done function executes when a service call successfully executes.  However
+if the service catches an exception, the information you need is returned in
+serviceResponse.debugInfo object:<br></p>
+<p>In the right panel, under "Scope" and "local", expand the "serviceResponse" object:<br>
+<img src="img/get-debug-info.jpg" alt="get-debug-info.jpg" /><br></p>
+<p>The "message" property may tell all you need to know. The "trace" property contains all the detail.
+If you need this, right click "trace" and select "Copy string contents".<br>
+<img src="img/debug-get-trace.jpg" alt="debug-get-trace.jpg" /><br></p>
+<h2>System Failures</h2>
+<p>The .fail function will execute if there is a low level exception such as when a syntax
+error causes a PHP script not to execute.  You will typically see this message:<br>
+<img src="img/system-error-message.jpg" alt="system-error-message.jpg" /></p>
+<p>You should, in this case, hit the breakpoint in the fail() function:<br>
+<img src="img/debug-break-fail.jpg" alt="debug-break-fail.jpg" /></p>
+<p>Go to the right pane, look under the scope section and find:<br>
+Local &gt; jXHR &gt; responseJSON &gt; error. The file, line and message properties may tell you all you need to know. But if you need more,
+right click "trace:" and select "Copy Object"<br>
+<img src="img/debug-jxhr.jpg" alt="debug-jxhr.jpg" /><br></p>
+<p>Paste into a text file and you'll find very detailed information about the error, 
+which may show the way to resolution in your development environment:</p>
+</body>
+</html>

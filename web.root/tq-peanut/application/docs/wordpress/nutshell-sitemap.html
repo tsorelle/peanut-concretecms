@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h1>Nutshell Site Map Generation</h1>
+<p>This document explains how to generate the Peanut Nutshell menu configuration (<code>sitemap.xml</code>) from the WordPress navigation menu.</p>
+<h2>Overview</h2>
+<p>The Nutshell menu and site map is driven by an XML configuration file located in <code>web.root/tq-peanut/application/config/sitemap.xml</code>. 
+While this file can be edited manually, a class is provided to synchronize it with your WordPress main menu.</p>
+<p>The builder class is: Tops\cms\wordpress\WordPressSiteMapBuilder.  Example usage:</p>
+<pre><code class="language-php">$menuName = 'my-main-menu';
+$builder = new WordPressSiteMapBuilder($menuName);
+$result = $builder-&gt;build();</code></pre>
+<p>The return value is an \stdclass object containing:</p>
+<ul>
+<li>success: boolean indicating whether the build was successful</li>
+<li>errors: array of error messages or empty if successful</li>
+<li>outputFile: string with absolute path to the generated sitemap.xml file.</li>
+</ul>
+<h2>Generating the Site</h2>
+<p>The Peanut plugin, peanut.php, features an action filter that will run the menu regeneration 
+when the main menu is changed and keep the Nutshell menu in sync with the WordPress main menu.<br />
+To identify the main menu by menu name, place this entry in settings.ini:</p>
+<pre><code class="language-ini">[wordpress]
+menu-name=main-menu</code></pre>
+<p>If no setting is provided, the default menu name is <code>main-menu</code>.</p>
+<p>The builder will also run when changes to authorization paths are made using the 
+administration feature and you click the "Finalize" link to update the site map. 
+Note that this feature requires an entry in classes.ini:</p>
+<pre><code class="language-ini">[system.eventhandler]
+type='Tops\cms\wordpress\WordpressEventHandler'</code></pre>
+<p>If you need to regenerate the site map "manually", use the <code>BuildmenuTest</code> script. </p>
+<pre><code>https://(your site)/peanut/tests/buildmenu</code></pre>
+<p>Or run the following command from the project root:</p>
+<pre><code class="language-powershell">php bin/pnutstart.inc PeanutTest\scripts\BuildmenuTest</code></pre>
+<h2>Generation Logic</h2>
+<ul>
+<li><strong>Element Names</strong>: Generated from the menu item title. The script strips HTML, converts text to lowercase, and concatenates words (e.g., "Simple Test" becomes <code>&lt;simpletest&gt;</code>).</li>
+<li><strong>Title</strong>: Extracted from the menu item title with HTML stripped.</li>
+<li><strong>Description</strong>: Taken from the WordPress menu item description, truncated at the first newline, and stripped of HTML.</li>
+<li><strong>URI</strong>: The relative path of the menu item URL, with leading and trailing slashes removed.</li>
+<li><strong>Roles</strong>: Automatically resolved by querying the <code>AccessPathsRepository</code> using the item's URI.</li>
+<li><strong>Icons</strong>: Extracted from <code>&lt;i&gt;</code> tags within the title or from CSS classes (e.g., <code>fa-gear</code>) assigned to the menu item in WordPress.</li>
+</ul>
+<h2>Manual Additions and Multi-level Menus</h2>
+<p>WordPress navigation menus may be limited to two levels of hierarchy depending on the theme or configuration. However, Peanut's Nutshell menu supports deeper nesting.</p>
+<p>If your application requires a 3-level or deeper menu structure, 
+you may need to manually add these sub-elements to the sitemap. file.</p>
+<h3>Examples of Manual Nesting</h3>
+<p>Here are examples of manual nesting under the <code>tools/email</code> and <code>tools/admin</code> nodes.
+These sub-items appear in the Nutshell menu.</p>
+<pre><code class="language-xml">&lt;tools title="Tools" description="" roles="" uri="tools" icon="fa-solid fa-gear"&gt;
+    &lt;email title="Email" description="" roles="administrator,email_manager" uri="tools/email"&gt;
+      &lt;mailboxes title="Mailboxes" uri="tools/email/admin/mailboxes" description="Maintain Mailboxes" /&gt;
+      &lt;send title="Send Messages" description="Mailing form" uri="tools/email/admin/message"  /&gt;
+    &lt;/email&gt;
+    &lt;admin title="Admin" description="" roles="" uri="tools/admin"&gt;
+      &lt;permissions title="Permissions" uri="tools/admin/permissions" description="Manage permissions" /&gt;
+    &lt;/admin&gt;
+&lt;/tools&gt;</code></pre>
+<p>In the example above, nodes like <code>mailboxes</code>, <code>send</code>, and <code>permissions</code> are nested three levels deep. If these cannot be represented in the WordPress menu editor, they should be maintained manually in the XML configuration.</p>
+</body>
+</html>

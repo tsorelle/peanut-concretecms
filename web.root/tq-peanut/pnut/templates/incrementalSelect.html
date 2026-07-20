@@ -1,0 +1,25 @@
+<div class="form-group pnut-incremental-search" style="margin-bottom: 1rem">
+    <label class="control-label" data-bind="visible:label, text:label,attr: { for: controlId }"></label>
+    <div class="input-group" style="margin-bottom: 0px">
+      <input class="form-control" id="search" type="search" name="search"
+             data-bind="attr: {id: controlId, placeholder: caption},value: searchValue, valueUpdate: 'keyup',
+                event: {search:onSearchEvent}" autocomplete="off" />
+      <span class="input-group-btn"><button class="btn btn-default btn-outline-secondary" type="button" data-bind="click:showList">
+              <i data-bind="visible:listVisible" class="fa fa-caret-up"></i>
+              <i data-bind="visible:!listVisible()"class="fa fa-caret-down"></i>
+          </button></span>
+    </div>
+    <div class="pnut-inc-search-dropdown" style="position:absolute; z-index: 2; clear: both;background-color: white; max-height: 25ex; overflow: scroll; border: 1px solid lightgrey; padding: 0px"
+         data-bind="visible:listVisible">
+      <table class="table table-bordered" >
+        <tbody data-bind="foreach:availableItems">
+        <tr>
+          <td data-bind="text:name"></td>
+          <td><a href="#" data-bind="click:$parent.onSelected">Select
+            <!-- translate params="code:'label-select',translator:$parent.self"></translate -->
+          </a> </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+ </div>

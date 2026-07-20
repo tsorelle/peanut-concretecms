@@ -1,0 +1,93 @@
+<style>
+    label {
+        font-weight: bold;
+    }
+    #message-space {
+        max-width: 50rem;
+        margin: auto;
+    }
+    #signin-form {
+        background-color: blanchedalmond;
+        border: 1px double black;
+        padding: 2rem;
+    }
+    .signin-message-panel {
+        width: 100%;
+        padding: 2rem;
+    }
+</style>
+<div id="signin-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="signin-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div data-bind="visible:status() == 'ok'" class="">
+                    <h3>Welcome <span data-bind="text:userfullname"></span> </h3>
+                    <h5><a data-bind="attr: { href: redirectlink }">Continue to your page.</a> <i class="fas fa-arrow-right"></i> </h5>
+                </div>
+
+                <div id="message-space">
+                    <div data-bind="visible:status() == 'ready'" class="signin-message-panel">
+                        <form id="signin-form">
+                            <div class="mb-3" data-bind="visible:failed">
+                                <div class="mb-3">
+                                    <p class="text-danger">
+                                    <strong>Sorry, your sign in failed. Unrecognized user name or password</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="user-name">User name</label>
+                                <input class="form-control" id="user-name" placeholder="Enter username"
+                                       autocomplete="username"
+                                       data-bind="value:username">
+                            </div>
+                            <div class="form-group mb-3">
+                                <change-password params="password:password, label:'Password'"></change-password>
+                            </div>
+                            <!-- div class="form-group  mb-3" >
+                                <label for="visible-pwd">Password</label>
+                                <input type="text" class="form-control" id="visible-pwd" placeholder="Enter password"
+                                       >
+                            </div -->
+
+                            <div class="mt-3">
+                                <button type="button" class="me-3  btn btn-primary" data-bind="click:onSigninRequest">Sign in</button>
+                                <span class="me-3"><a style="color: #143d61;" href='/'>Return home</a></span>
+                                <a style="color: #143d61; " href='/recover-password'>Forgot your password?</a>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div data-bind="visible:status() == 'signing'" class="signin-message-panel">
+                        <div class="d-flex align-items-center">
+                            <strong style="font-size:1.6rem">Signing in...</strong>
+                            <!-- div class="spinner-border ms-auto" role="status" aria-hidden="true"></div -->
+                            <span class="fa fa-spinner fa-pulse fa-2x ms-3" style="color:lightgrey"></span>
+                        </div>
+                    </div>
+                    <div data-bind="visible:status() == 'blocked'" class="signin-message-panel">
+                        <h3>Sorry</h3>
+                        <p>Unable to sign you in after too many failed sign in attempts</p>
+                        <p>Try again later.</p>
+                    </div>
+                    <div data-bind="visible:status() == 'banned'" class="signin-message-panel">
+                        <p><strong>
+                            You are prohibited for logging into this site, due to a past apparent break in attack.
+                            Contact the administrator if you feel this is in error.
+                        </strong></p>
+                    </div>
+                    <div data-bind="visible:status() == 'error'" class="signin-message-panel">
+                        <p><strong>
+                            Sorry, cannot complete sign in due to this error:
+                        </strong></p>
+                        <p><strong>
+                            <span class="text-danger" data-bind="text:errormessage"></span>
+                        </strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

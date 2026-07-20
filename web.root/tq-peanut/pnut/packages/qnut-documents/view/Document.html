@@ -1,0 +1,416 @@
+<style>
+    #viewtab .row,
+    #editTab .row
+    {
+        margin-top: 3ex;
+    }
+</style>
+<div id="document-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="document-view-container" class="row" style="display: none;margin-bottom: 10rem">
+    <div class="col-md-12">
+        <div class="row" id="viewtab" data-bind="visible:tab() == 'view'">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="#" target="_blank" data-bind="visible: viewPdfHref, attr: {href: viewPdfHref}">
+                            <i class="far fa-file-pdf"></i><translate params="code:'document-icon-label-view',translator:self"></translate></a>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#" data-bind="visible: downloadHref, attr: {href: downloadHref}">
+                            <i class="fas fa-file-download"></i> <translate params="code:'document-icon-label-download',translator:self"></translate></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="#" data-bind="visible:canEdit, click:editDocument">
+                            <i class="far fa-edit"></i><translate params="code:'document-icon-label-edit',translator:self"></translate></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="#" data-bind="visible:canEdit, click:newDocument">
+                            <i class="fas fa-file-upload"></i><translate params="code:'document-icon-label-add',translator:self"></translate></a>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#"  data-bind="attr: {href: searchPage}">
+                            <span class="fas fa-search" aria-hidden="true"></span> <translate params="code:'document-icon-label-search',translator:self"></translate></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>
+                            <translate params="code:'label-title',translator:self"></translate>
+                        </label>
+                        <div><span data-bind="text:documentForm.title"></span></div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <translate params="code:'label-publication-date',translator:self"></translate>
+                        </label>
+                        <div><span data-bind="text:documentForm.publicationDate"></span></div>
+                    </div>
+                    <div class="col-md-5">
+                        <label>
+                            <translate params="code:'document-label-access',translator:self"></translate>
+                        </label>
+                        <div>
+                            <span data-bind="visible:documentForm.protected() == 1">
+                                <translate params="code:'document-access-protected',translator:self"></translate>
+                            </span>
+                            <span data-bind="visible:documentForm.protected() != 1">
+                                <translate params="code:'document-access-public',translator:self"></translate>
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>
+                                    <translate params="code:'document-file-name',translator:self"></translate>
+                                </label>
+                                <div><span data-bind="text:documentForm.filename"></span></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>
+                                    <translate params="code:'document-label-file-folder',translator:self"></translate>
+                                </label>
+                                <div><span data-bind="text:documentForm.folder"></span></div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 1ex">
+                            <div class="col-md-12">
+                                <entity-properties params="controller:documentForm.propertiesController, readOnly:1, columns:2, colwidth:'md'" ></entity-properties>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 form-group mb-3" style="padding-top: 2rem">
+                        <label><translate params="code:'document-committees-label',translator:self"></translate></label>
+                        <div>
+                            <span data-bind="visible:documentForm.selectedCommittees().length == 0">
+                                <translate params="code:'document-committees-none',translator:self"></translate>
+                            </span>
+                            <ul style="padding-left:2rem" data-bind="visible:documentForm.selectedCommittees().length, foreach:documentForm.selectedCommittees">
+                                <li data-bind="text:name"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 form-group" style="padding-top: 2rem">
+                        <label><translate params="code:'document-groups-label',translator:self"></translate></label>
+                        <div>
+                            <span data-bind="visible:documentForm.selectedGroups().length == 0">
+                                <translate params="code:'document-groups-none',translator:self"></translate>
+                            </span>
+                            <ul style="padding-left:2rem" data-bind="visible:documentForm.selectedGroups().length, foreach:documentForm.selectedGroups">
+                                <li data-bind="text:name"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>
+                            <translate params="code:'document-label-abstract',translator:self"></translate>
+                        </label>
+                        <div>
+                            <textarea style="width: 100%" readonly data-bind="value:documentForm.abstract"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" data-bind="visible:documentForm.addenda().length">
+                    <div class='table-responsive col-md-12'>
+                        <h3>Addenda</h3>
+                        <table class="table table-hover">
+                            <tbody data-bind="foreach:documentForm.addenda">
+                            <td>
+                               <span data-bind="text:title"></span>
+                                <span data-bind="visible:description"> - </span>
+                                <span data-bind="text:description"></span>
+                            </td>
+                            <td><a href="'#" target='_blank' data-bind="visible:documentType=='PDF', attr: { href: viewUrl, title: $parent.docViewLinkTitle }"><i class="far fa-file"></i></a></td>
+                            <td><a href="'#" data-bind="attr: { href: downloadUrl, title: $parent.docDownloadLinkTitle }"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+                            <td><a href="'#" target='_blank' data-bind="attr: { href: editUrl, title: $parent.docEditLinkTitle }"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a></td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="edittab" data-bind="visible:tab() == 'edit'">
+            <div class="col-md-12">
+                <form>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger" role="alert" data-bind="visible:documentForm.hasErrors">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                                <span class="sr-only"><translate params="code:'label-error',translator:self"></translate> :</span>
+                                <translate params="code:'form-error-message',translator:self"></translate>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 form-group" >
+                            <label for="edit-title">
+                                <translate params="code:'label-title',translator:self"></translate>
+                            </label>  <span class="text-danger" data-bind="visible:documentForm.titleError">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-title',translator:self"></translate>
+                            </span>
+
+                            <input class="form-control" id="edit-title" data-bind="value:documentForm.title"/>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="edit-date">
+                                <translate params="code:'label-publication-date',translator:self"></translate>
+                            </label>  <span class="text-danger" data-bind="visible:documentForm.publicationDateError">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-publicationdate',translator:self"></translate>
+                            </span>
+                            <input type="date" class="form-control datepicker" id="edit-date" data-bind="value:documentForm.publicationDate"/>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <entity-properties params="controller:documentForm.propertiesController, columns:2, colwidth:'sm'" ></entity-properties>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="edit-abstract">
+                                        <translate params="code:'document-label-abstract',translator:self"></translate>
+                                    </label>  <span class="text-danger" data-bind="visible:documentForm.abstractError">
+                                        <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-abstract',translator:self"></translate>
+                                    </span>
+                                    <div>
+                                        <textarea class="form-control"  id="edit-abstract" style="width: 100%" data-bind="value:documentForm.abstract"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-3">
+                            <multi-select params="items:committeeLookup, selected:documentForm.selectedCommittees, translator:self, label:'document-committees-label', caption:'document-committees-caption'"></multi-select>
+                        </div>
+                        <div class="col-md-3">
+                            <multi-select params="items:groupsLookup, selected:documentForm.selectedGroups, translator:self, label:'document-groups-label', caption:'document-groups-caption'"></multi-select>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-4 form-group" data-bind="visible:!currentFileName()">
+                            <label>
+                                <translate params="code:'document-file-name',translator:self"></translate>
+                            </label>
+                            <div ><translate params="code:'document-file-not-assigned',translator:self"></translate></div>
+
+                        </div>
+                        <div class="col-md-4 form-group" data-bind="visible:currentFileName">
+                            <label>
+                                <translate params="code:'document-file-name',translator:self"></translate>
+                            </label>
+                            <div ><span data-bind="text:currentFileName"></span></div>
+                            <div  data-bind="visible:currentFileName"  class="form-check">
+                                <input type="checkbox" data-bind="checked:replaceFile" class="form-check-input" id="ckreplace">
+                                <label class="form-check-label" for="ckreplace">
+                                    Replace File
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="edit-folder">
+                                <translate params="code:'document-label-file-folder',translator:self"></translate>
+                            </label>
+                            <input class="form-control" id="edit-folder" data-bind="value:documentForm.folder"/>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>
+                                <translate params="code:'document-label-access',translator:self"></translate>
+                            </label>
+                            <div>
+                                <div class="radio-inline">
+                                    <label><input type="radio" name="protected" value="0" data-bind="checked: documentForm.protected">
+                                        <translate params="code:'document-access-public',translator:self"></translate> </label>
+                                </div>
+                                <div class="radio-inline">
+                                    <label><input type="radio" name="protected" value="1" data-bind="checked: documentForm.protected">
+                                        <translate params="code:'document-access-protected',translator:self"></translate> </label>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="row" data-bind="visible:replaceFile() || !currentFileName() ">
+                        <div class="col-md-4" data-bind="visible:replaceFile() || !currentFileName() ">
+                            <div class="radio">
+                                <label><input type="radio" name="disposition" value="upload" data-bind="checked:fileDisposition">
+                                    <translate params="code:'document-label-upload-file',translator:self"></translate> </label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="disposition" value="assign" data-bind="checked:fileDisposition">
+                                    <translate params="code:'document-label-assign-file',translator:self"></translate> </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 form-group" data-bind="visible:fileDisposition() == 'assign'">
+                            <label for="edit-file">
+                                <translate params="code:'document-file-name',translator:self"></translate>
+                            </label> <span class="text-danger" data-bind="visible:documentForm.fileNameError">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-filename',translator:self"></translate>
+                            </span>
+
+                            <input class="form-control" id="edit-file" data-bind="value:documentForm.filename"/>
+                        </div>
+                        <div class="col-md-8 form-group" data-bind="visible:fileDisposition() == 'upload'">
+                            <label for="documentFile"><translate params="code:'document-label-select-file',translator:self"></translate> </label>
+                            <span class="text-danger" data-bind="visible:documentForm.fileSelectError">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-file-select',translator:self"></translate>
+                            </span>
+
+                            <input type="file" class="btn btn-outline-dark" id="documentFile" id="documentFile" placeholder="Select a file or drag from explorer"/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-2 form-group">
+                            <label for="addendum-type" title='Indicate if this document is an addendum to a newsletter or other document'><translate params="code:'label-addendum-type',translator:self"></translate>
+
+                            </label>
+                            <select class="form-control" id="addendum-type"
+                                    title='Indicate if this document is an addendum to a newsletter or other document'
+                                    data-bind="options: documentForm.addendumTypes,optionsText:'name',
+				                            value: documentForm.selectedAddendumType, optionsCaption: 'None'">
+                            </select>
+                        </div>
+                        <div class="col-md-2 form-group" data-bind="visible:documentForm.selectedAddendumType">
+                            <label for="addendum-date"
+                                title="Indicate the publication date of the main document."
+                            >
+                                <translate params="code:'label-addendum-date',translator:self"></translate>
+
+                            </label>
+                            <!-- span class="text-danger" data-bind="visible:documentForm.publicationDateError">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span> <translate params="code:'document-error-publicationdate',translator:self"></translate>
+                            </span -->
+                            <input type="date" class="form-control datepicker" id="addendum-date" data-bind="value:documentForm.addendumDate"  title="Indicate the publication date of the main document."
+                            />
+                        </div>
+                        <div class="col-md-8 form-group" data-bind="visible:documentForm.selectedAddendumType">
+                            <label for="addendum-date">
+                                <translate params="code:'label-addendum-comment',translator:self"></translate>
+                            </label>
+                            <input class="form-control" id="addendum-comment" data-bind="value:documentForm.addendumComment"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <button class="btn btn-primary" data-bind="click:updateDocument">
+                                <translate params="code:'label-save-changes',translator:self"></translate>
+                            </button>
+                            <button class="btn btn-link" data-bind="click:cancelEdit, visible:documentId() > 0">
+                                <translate params="code:'label-cancel',translator:self"></translate>
+                            </button>
+                            <a href="#"  style="margin-left: 1rem" data-bind="attr: {href: searchPage},visible: documentId() == 0">
+                                <span class="fa fa-search" aria-hidden="true"></span> <translate params="code:'document-search-return',translator:self"></translate>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row" data-bind="visible:documentId() > 0">
+                        <div class="col-md-12 form-group">
+                            <button class="btn btn-link" data-bind="click:confirmDelete">
+                                <translate params="code:'label-delete',translator:self"></translate>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" id="errortab" data-bind="visible:tab() == 'error'">
+            <div class="col-md-12">
+                <h3>
+                    <translate params="code:'document-error-page',translator:self"></translate>
+                </h3>
+            </div>
+        </div>
+
+        <div id="conflictstab" data-bind="visible:tab() == 'conflicts'">
+            <div class="row" data-bind="visible:tab() == 'conflicts'">
+                <div class="col-md-12">
+                    <h3>
+                        <translate params="code:'document-conflicts',translator:self"></translate>
+                    </h3>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class='table-responsive'>
+                        <table class="table table-hover">
+                            <thead>
+                            <th>
+                                <translate params="code:'label-title',case:'ucfirst',translator:self"></translate>
+                            </th>
+                            <th>
+                                <translate params="code:'label-publication-date',translator:self"></translate>
+                            </th>
+                            <th>&nbspLinks</th>
+                            </thead>
+                            <tbody data-bind="foreach:conflicts">
+                                <td data-bind="text:title"></td>
+                                <td data-bind="text:publicationDate"></td>
+                                <td>
+                                    <a href="#" data-bind="click:$parent.loadNewDocument, attr: { title: $parent.docViewLinkTitle }"> <i class="far fa-file"></i>
+                                        <span data-bind="text:$parent.docViewLinkTitle"></span>
+                                    </a>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-link" data-bind="click:showEditPage">
+                            <translate params="code:'document-edit-return',translator:self"></translate>
+                        </button>
+                    </div>
+            </div>
+        </div>
+
+        <div class="modal" id="confirm-delete-document-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form>
+                        <div class="modal-header">
+                            <h4 class="modal-title"><translate params="code:'label-delete',translator:self"></translate> <translate params="code:'document-entity',translator:self"></translate> </h4>
+                            <button type="button" class="close btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h3><translate params="code:'document-confirm-delete',translator:self"></translate></h3>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bind="click: deleteDocument"><translate params="code:'label-delete',translator:self"></translate> </button>
+                            <button type="button" class="btn btn-link"  data-bs-dismiss="modal"><translate params="code:'label-cancel',translator:self"></translate></button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+    </div>
+</div>

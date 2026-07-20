@@ -1,0 +1,33 @@
+<div id="servicetest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="servicetest-view-container" class="row" style="display: none">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-6">
+                <form>
+                    <h4>Service Test</h4>
+                    <label>Your name</label><br>
+                    <input id="tester" name="tester">
+                    <div>
+                        <button class="btn btn-primary mb-1" data-bind="click:onService">Click me</button>
+                    </div>
+                </form>
+                <div>
+                    <h4>Translations</h4>
+                    <p><translate params="code:'test',default:'Testing translator',translator:self"></translate></p>
+                    <p>
+                        <translate params="code:'hello',default:'Hi',translator:self"></translate>&nbsp;
+                        <translate params="code:'world',default:'earth',translator:self"></translate>
+                    </p>
+                    <p><span data-bind="text:languageA"></span> <span  data-bind="text:languageB"></span></p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h4>Sevice Data</h4>
+                <p>Context id: <span data-bind="text:contextValue"></span> </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+<input type="hidden" id="peanut-vm-context" value="context-test" >

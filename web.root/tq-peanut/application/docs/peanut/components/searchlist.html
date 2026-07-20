@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../../markdown.css">
+
+</head>
+<body>
+<p><a href="../../index.html">Return to docs home page</a></p>
+<h1>searchListObservable</h1>
+<p>Type: Observable container class.</p>
+<p>A class for supporting presentation of a UI component allowing a pageable selection list based on a query selection result.</p>
+<p>Source code:</p>
+<pre><code>/pnut/js/searchListObservable.ts</code></pre>
+<h2>Examples</h2>
+<p>Usage example, within a Knockout component:</p>
+<pre><code>/pnut/packages/qnut-directory/components/personSelectorComponent.ts</code></pre>
+<p>Usage within a ViewModel:</p>
+<pre><code>/pnut/packages/qnut-directory/vm/DirectoryViewModel.ts</code></pre>
+<h2>Initialization</h2>
+<pre><code class="language-typescript">           me.application.loadResources([
+                    '@pnut/ViewModelHelpers',
+                    '@pnut/editPanel',
+                    '@pnut/searchListObservable',
+                ], () =&gt; {
+
+                });
+</code></pre>
+<h2>Constructor</h2>
+<h3>Example:</h3>
+<pre><code class="language-typescript">me.personsList = new Peanut.searchListObservable(2, 12);</code></pre>
+<h4>Parameters:</h4>
+<ul>
+<li>columnCount: Number of columns used to display result links</li>
+<li>maxInColumn: Maximum links in each column<h4>Markup example</h4>
+</li>
+</ul>
+<p>Note references to personList methods and observables. Also the use of $parent to reference the owning view model.</p>
+<pre><code class="language-html"> &lt;div id="findPersonResults"  class="row found well" data-bind="visible:personsList.selectionCount"&gt;
+    &lt;div id="persons-found-header" class="row"&gt;
+        &lt;div class="col-md-12"&gt;
+            &lt;translate params="code:'label-found',translator:self"&gt;&lt;/translate&gt;: &lt;span data-bind="text: personsList.selectionCount"&gt;&lt;/span&gt; &lt;translate params="code:'dir-person-entity-plural',translator:self"&gt;&lt;/translate&gt;.
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+    &lt;div id="persons-found-nav" class="row"&gt;
+        &lt;div class="col-md-6" style="padding-right: 3px" data-bind="visible:personsList.hasPrevious"&gt;
+            &lt;a href="#"  data-bind="click:personsList.previousPage"&gt;&lt;span class="fa fa-backward"&gt;&lt;/span&gt; &lt;translate params="code:'nav-previous',translator:self"&gt;&lt;/translate&gt;&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class="col-md-6" style="padding-right: 3px" data-bind="visible:personsList.hasMore"&gt;
+            &lt;a href="#" data-bind="click:personsList.nextPage"&gt;&lt;translate params="code:'nav-more',translator:self"&gt;&lt;/translate&gt;&amp;nbsp;&lt;span class="fa fa-forward"&gt;&lt;/span&gt;&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt; &lt;!-- end found header --&gt;
+
+    &lt;div class="row" id="persons-found-list"&gt;
+        &lt;div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" data-bind="foreach: personsList.selectionList[1]"&gt;
+            &lt;div class="link-list-item"&gt;
+                &lt;a href="#" data-bind="click:$parent.addPersonToAddress"&gt;&lt;span data-bind="text: Name"&gt;&lt;/span&gt;&lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" data-bind="foreach: personsList.selectionList[2]"&gt;
+            &lt;div class="link-list-item"&gt;
+                &lt;a href="#" data-bind="click:$parent.addPersonToAddress"&gt;&lt;span data-bind="text: Name"&gt;&lt;/span&gt;&lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt; &lt;!-- end found list --&gt;
+
+&lt;/div&gt;
+</code></pre>
+<h4>Methods</h4>
+<p>These methods and observables are typically used in the owning view model:</p>
+<ul>
+<li>setList(list : INameValuePair[]) - assign the search result list</li>
+<li>reset() - clear the search result list</li>
+<li>searchValue :  ko.observable(''); - extract the selected value (selectedItem.Value)</li>
+</ul>
+<h2>Incremental Search Select Component</h2>
+<p>Type: Model/View Pattern</p>
+<h4>Example:</h4>
+<p>Extracted from:</p>
+<pre><code>/pnut/packages/qnut-directory/view/Directory.html</code></pre>
+<p>This example present a searchable selection list is presented in order for the user to select multiple affiliation values.</p>
+<pre><code class="language-html">&lt;div class="form-group"&gt;
+    &lt;div&gt;
+        &lt;span style="font-weight: bold"&gt;&lt;translate params="code:'dir-label-organization',translator:self"&gt;&lt;/translate&gt;: &lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="input-group" style="margin-bottom: 10px"&gt;
+        &lt;input class="form-control" id="orgsearch" type="search" name="search" placeholder="Select or search for an organization"
+               data-bind="value: personForm.orgSearchValue, valueUpdate: 'keyup'" autocomplete="off" /&gt;
+        &lt;span class="input-group-btn"&gt;&lt;button class="btn btn-default btn-outline-secondary" type="button" data-bind="click:personForm.onShowOrgList"&gt;
+            &lt;i data-bind="visible:personForm.orgListVisible" class="fa fa-caret-up"&gt;&lt;/i&gt;
+            &lt;i data-bind="visible:!personForm.orgListVisible()"class="fa fa-caret-down"&gt;&lt;/i&gt;
+        &lt;/button&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div style="position:absolute; z-index: 2; clear: both;background-color: white; max-height: 25ex; overflow: scroll; border: 1px solid lightgrey; padding: 10px"
+         data-bind="visible:personForm.orgListVisible"&gt;
+        &lt;table class="table table-bordered" &gt;
+            &lt;tbody data-bind="foreach:personForm.orgLookupList"&gt;
+            &lt;tr&gt;
+                &lt;td data-bind="text:name"&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;a href="#" data-bind="click:$parent.personForm.onOrgSelect"&gt;
+                    &lt;translate params="code:'label-select',translator:$parent.self"&gt;&lt;/translate&gt;&lt;/a&gt; &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Note the data-bind prameters to the input control:</p>
+<pre><code class="language-html">data-bind="value: personForm.orgSearchValue, valueUpdate: 'keyup'" autocomplete="off"</code></pre>
+<p>The view model code is in the observable container class  personObservable:</p>
+<pre><code>/pnut/packages/qnut-directory/js/PersonObservable.ts</code></pre>
+<p>Here the orgSearchValue is subscribed to a method that filters the list, orgLookupList, referenced in the table below.</p>
+<pre><code class="language-typescript">onOrgSearchChange = (value: string) =&gt; {
+    let me = this;
+    if (value) {
+        me.selectedOrganization(null);
+        me.orgLookupList([]);
+        value = value.toLowerCase();
+        let newlist = me.organizations.filter((org: Peanut.ILookupItem) =&gt; {
+            return (org.name.toLowerCase().indexOf(value) &gt;= 0);
+        });
+        me.orgLookupList(newlist);
+        me.orgListVisible(newlist.length &gt; 0);
+    }
+    else {
+        me.orgLookupList(me.organizations);
+    }
+};</code></pre>
+<p>The "valueUpdate: 'keyup'" binding causes orgSearchValue() to be updated as the user types, thus triggering
+the onOrgSearchChange() method to refilter the list on every key stroke.</p>
+<p>Also note the styles on the DIV element containing the table which position the selection list as a drop-down.</p>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Components in Peanut</h1>
+<p>(old core version)</p>
+<p>Knockout view models can be reused across pages on a web site.  Knockout 
+components can be reused across view models and embedded in the view as 
+a custom element.</p>
+<p>See the <a target="_blank" href="https://knockoutjs.com/documentation/component-overview.html">Knockout Documentation</a></p>
+<p>Here is the convention for component source using the example of the 
+"Modal Confirm" component</p>
+<ul>
+<li>ViewModel in components/modalConfirmComponent.ts</li>
+<li>Markup in templates/modalConfirm.html</li>
+<li>Custom element name = modal-confirm. example:<pre><code class="language-html">&lt;modal-confirm params="id:'confirm-save-modal',
+  headerText: 'Please confirm SAVE', bodyText: confirmText, 
+  confirmClick: save"&gt;&lt;/modal-confirm&gt;</code></pre>
+<p>See <a href="modalconfirm.html">Modal Confirm</a> for details about this component.</p>
+</li>
+</ul>
+<p>For a full example see the test page for modals:</p>
+<ul>
+<li>web.root/application/peanut/tests/vm/ModalTestViewModel.ts</li>
+<li>web.root/application/peanut/tests/view/ModalTest.html</li>
+</ul>
+<h2>Loading a component</h2>
+<p>To use a component, place the custom tag in your view.  And load it
+in the init() funtion of the view model as in this example:</p>
+<pre><code class="language-typescript">    init(successFunction?: () =&gt; void) {
+        console.log('Init ModalTest');
+        let me = this;
+        me.application.registerComponents(['@pnut/modal-confirm'], () =&gt; {
+            me.bindDefaultSection();
+            successFunction();
+        });
+    }</code></pre>
+<p>Note that the component name is preceded by a code indication the source location.
+In this case '@pnut' is a 'path token' expands to web.root/packages/knockout_view/pnut.<br />
+The viewmodel and html files would be found in 'component' and 'template'
+subdirectories.</p>
+<p>See <a href="../view-model-init.html">View Model Intialization</a> for information 
+about other path tokens.</p>
+<h2>Creating a component</h2>
+<p>Creating a component is similar to creating a view model with some departures.</p>
+<ol>
+<li>Decide on a component name. Example: 'my-widget'.  There is no need to list it in an ini file.
+Loading code in the hosting view model takes care of finding and loading the component.</li>
+<li>Use web.root/packages/knockout_view/pnut/examples/component-viewmodel.txt as a template.</li>
+<li>Change the class name according to your component name, example:<br>
+'my-widget' = 'myWidgetComponent'<br>
+Note that our convention is to begin the class name in lowercase and camel case
+the rest.</li>
+<li>Find a location in web.root/application/peanut or one of the peanut packages directories</li>
+<li>Create the view model and template files in the appropriate sub-directories,
+Example:</li>
+</ol>
+<ul>
+<li>components/myWidgetComponent.ts</li>
+<li>templates/myWidget.html</li>
+</ul>
+<ol start="6">
+<li>
+<p>In the constructor of the component class, retrive and assign the
+attribute values. Example</p>
+<pre><code class="language-typescript">constructor(params : any) {
+ let me = this;
+
+ if (!params) {
+     throw('Params not defined in modalConfirmComponent');
+ }
+ if (!params.name) {
+     throw('Parameter "name" is required.')
+ }
+ me.name(params.name);
+}</code></pre>
+<p>Check out the existing components for detailed examples.</p>
+</li>
+</ol>
+</body>
+</html>

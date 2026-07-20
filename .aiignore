@@ -1,0 +1,14 @@
+# This file defines which files and directories should be ignored by the AI.
+# It follows the same syntax as .gitignore.
+#
+# If this file exists, it may be used instead of or in addition to .gitignore.
+# To allow the AI to see a file that is ignored by git, use the ! prefix.
+#
+
+# Explicitly allow access to ignore files
+!.gitignore
+!/.gitignore
+!**/.gitignore
+!.aiignore
+!/.aiignore
+!**/.aiignore

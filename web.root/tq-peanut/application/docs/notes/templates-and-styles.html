@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Templates and Styles</h1>
+<p><a href="/help/docs">Home</a></p>
+<p>In Concrete CMS one may use the "Design &amp; Block Template" menu to apply customizations of
+block behavior and appearance.  </p>
+<p>Important things you can do:</p>
+<ol>
+<li>Apply a template. </li>
+<li>Apply a custom CSS class.</li>
+<li>Change margins, padding and other styling properties.</li>
+</ol>
+<p>On our site we make extensive use of templates and CSS classes which are defined in our theme.<br />
+The "manual" styling items (#3 in the list) are occasionally useful for quick fixes, but use of 
+stylesheets is the preferred alternative since these styles can be applied across the site 
+and are subject to version control.</p>
+<p>In edit mode, start by clicking the block and select "Design and Block Template"<br>
+<img src="img/block-menu.jpg" alt="block-menu.jpg" /></p>
+<h2>Block templates</h2>
+<p><img src="img/block-template.jpg" alt="Block Template" /></p>
+<p>The  "Block Template" feature allows us to override default behavior of blocks. Templates may
+be provided by ConcreteCMS, third-party packages and our own code. </p>
+<p>For a complete list of templates used in our website, see: <a href="wheres-the-code.html">"Where's the Code?"</a></p>
+<h2>Css Custom Classes</h2>
+<p>When in the "Design and Block Template" dialog, you may add a 
+custom class.  Click the "cog" icon, and enter the class name under
+custom class. Remember to click "Add (class name)..." befor you click 'Save'</p>
+<p><img src="img/custom-class.jpg" alt="custom-class.jpg" /></p>
+<p>These custom classes are commonly used on our site:</p>
+<ul>
+<li>landing-page-menu - formats an autonav block to appear as a menu</li>
+<li>landing-page-list - formats a page list block as a landing page menu.
+Use the page list if you want page descriptions to appear.</li>
+<li>pnut-basic-pagelist - simple format for page lists.</li>
+<li>fma-group-page-list  - format for collapsible page list on group pages</li>
+</ul>
+<h2>References:</h2>
+<ul>
+<li><a target="_blank" href="https://documentation.concretecms.org/tutorials/override-almost-any-core-file-concrete-cms">How to Override almost any Core File in ConcreteCMS</a></li>
+<li><a target="_blank" href="https://documentation.concretecms.org/9-x/developers/working-with-blocks/modifying-default-view-template-core-block-type">Creating a Custom Template</a></li>
+</ul>
+</body>
+</html>

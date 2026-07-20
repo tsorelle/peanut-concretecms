@@ -1,0 +1,24 @@
+<div id="youtubecomponenttest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="youtubecomponenttest-view-container" class="container" style="display: none">
+    <div data-bind="foreach:videos">
+        <div class="mb-3">
+        <div class="row">
+            <div class="col-md-12">
+                    <youtube-frame params="data: $data"></youtube-frame>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                <button class="btn btn-primary me-3" data-bind="click:$parent.pause">Pause</button>
+                <button class="btn btn-secondary  me-3" data-bind="click:$parent.play">Play</button>
+                <button class="btn btn-danger me-3" data-bind="click:$parent.stop">Stop</button>
+                </div>
+                <div>
+                    <p data-bind="text:status"></p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Trouble Shooting</h1>
+<p>Here are some tips on how to trouble shoot some very cryptic 
+error message you might see.</p>
+<p>For more tips about debugging problems, see <a href="../peanut/debug-with-browser.html">Debug with Browser.html</a></p>
+<h2>PHP Error cannot get file contents of HTML file</h2>
+<pre><code>Whoops \ Exception \ ErrorException (E_WARNING)
+
+file_get_contents(D:/dev/fma/austinquakers-2019/web.root/application/peanut/tests/view/SimpleTests.html): 
+Failed to open stream: No such file or directory</code></pre>
+<p>Can't download the view HTML file. Could be a spelling mistake in viewmodels.ini</p>
+<pre><code class="language-ini">[simple-test]
+vm=tests/SimpleTests</code></pre>
+<p>Should be "SimpleTest" not "SimpleTests!</p>
+<h2>Error messge in CMS: Cannot find view model configuration</h2>
+<p><img src="img/cant-find-config.jpg" alt="cant-find-config.jpg" /></p>
+<p>Another viewmodel.ini error. The section header doesn't match the viewmodel value in the Knockout View block.</p>
+<pre><code class="language-ini">[simple-tests]
+vm=tests/SimpleTests</code></pre>
+<p>"[simple-tests]" should be "[simple-test]"</p>
+<p>Or it was misspelled in the Knockout Block:</p>
+<p><img src="img/knockout-block-error.jpg" alt="knockout-block-error.jpg" /></p>
+<p>Check the source files too, they should be spelled correctly and in the correct location</p>
+<ul>
+<li>Viewmodel: vm/tests/SimpleTest.ts</li>
+<li>View:      view/tests/SimpleTest.html</li>
+</ul>
+<p>Incorrect casing will cause this issue on UNIX/Linux systems.</p>
+<h2>Some class name is not a constructor message</h2>
+<p>You may see something like this in the JavaScript console:</p>
+<p><img src="img/not-a-class-error.jpg" alt="not-a-class-error.jpg" /></p>
+<p>Usually this means that the class name in the viewmodel file does not match the file name.</p>
+<p>If in SimpleTest.ts, you have...</p>
+<pre><code class="language-typescript">    export class SimpleTestsViewModel  extends Peanut.ViewModelBase {</code></pre>
+<p>This would fail because the loader would find the 'SimpleTestViewModel.js' but the 
+'SimpleTestViewModel' class cannot be instantiated because it was misspelled.</p>
+<h2>Cannot Instantiate Service</h2>
+<p>Oh no!</p>
+<p><img src="img/service-error.jpg" alt="service-error.jpg" /></p>
+<p>This is dreaded because it tells us nothing about the error.  It means that the client was not able
+to find and execute the service command at all.  But the issue is usually pretty simple.</p>
+<p>We'll need more information so, with the debugger in your browser, 
+set a break point in the ServiceBroker.ts.  This technique is described in detail in
+<a href="../peanut/debug-with-browser.html">Debug with Browser</a>.</p>
+<p><img src="img/cannot-instantiate-service-error.jpg" alt="cannot-instantiate-service-error.jpg" /></p>
+<p>The "Cannot instantiate service" error most often means a spelling error in the file name or 
+the PHP service class. Did you follow the naming conventions?</p>
+<p>In this example, the file is named "HelloWorldCommand.php" which is correct but the class name
+does not match:</p>
+<pre><code class="language-php">class HelloWorld extends \Tops\services\TServiceCommand</code></pre>
+<p>It lacks "Command" on the end of the name.</p>
+<h2>PHP errors</h2>
+<p>Oh my! This looks bad.</p>
+<p><img src="img/unexpected-system-error.jpg" alt="unexpected-system-error.jpg" /></p>
+<p>Calm down, this is even easier to diagnose that the previous example.</p>
+<p>If we set our JavaScript breakpoint in the fail() funtion of executeRPC() we can examine the
+debugInfo object.</p>
+<p><img src="img/service-command-syntax-error.jpg" alt="service-command-syntax-error.jpg" /></p>
+<p>DebugInfo contains a detailed error dump that will reveal
+a code problem such as a syntax error and show you exactly where to find it.</p>
+<p>In this case...</p>
+<pre><code class="language-php">uses Peanut\sys\TVmContext;</code></pre>
+<p>Should be "use" not "uses".</p>
+<h2>Binding Container Not Found</h2>
+<p>Well, this is bewildering.  The view model just never renders. Nothing shows up!</p>
+<p>Check the JavaScript console.</p>
+<p><img src="img/binding-container-not%20found.jpg" alt="binding-container-not found.jpg" /></p>
+<p>Container element ... for section binding not found, means that your view html
+file lacks a div that is used to bind the view model.</p>
+<pre><code class="language-html">&lt;div id="simpletest-load-message"&gt;&lt;span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div id="simpletests-view-container" style="display:none" class="col-md-12 pb-3" &gt;</code></pre>
+<p>See, the div id "simpletests-view-container" is misspelled. It should be
+"simpletest-view-container" as indicated in the console message.</p>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<div data-bind="visible:ready">
+    <div class="row">
+        <div class="col-md-12">
+            <div style="color:red" data-bind="visible: eventError">
+                    <!-- todo: translate -->
+                We need more information.  Be sure to give us title and date as well as a location or room.
+            </div>
+
+            <form>
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- requestor-->
+                        <div class="form-group mb-3" data-bind="css: {'has-error': requestorError}">
+                            <label class="control-label" for="requestor"><translate params="code:'calendar-label-requestor',translator:owner"></translate></label>
+                            <span style="color:red" data-bind="visible: requestorError">
+                                &nbsp;Name is required
+                            </span>
+                            <input type="text" class="form-control" id="requestor" data-bind="value: requestor" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- email-->
+                        <div class="form-group mb-3" data-bind="css: {'has-error': emailError}">
+                            <label class="control-label" for="email"><translate params="code:'label-email',translator:owner"></translate></label>
+                            <span style="color:red" data-bind="visible: emailError">
+                                &nbsp;Invalid!
+                            </span>
+                            <input type="text" class="form-control" id="email" data-bind="value: email" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                    <!-- title -->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="title">
+                                <translate params="code:'label-title',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="title" data-bind="value: title" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- date-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="date">
+                                <translate params="code:'label-date',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="date" data-bind="value: date" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- time-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="time">
+                                <translate params="code:'label-time',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="time" data-bind="value: time" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- location-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="location">
+                                <translate params="code:'label-location',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="location" data-bind="value: location" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- room-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="room">
+                                <translate params="code:'label-room',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="room" data-bind="value: room" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- repeat-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="repeat">
+                                <translate params="code:'calendar-label-repeating-event',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="repeat" data-bind="value: repeat" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- eventType-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="eventType">
+                                <translate params="code:'calendar-label-event-type',translator:owner"></translate></label>
+                            <select  class="form-control"  id="eventType"
+                                     data-bind="options: eventTypes,value: selectedEventType"></select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- committee-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="committee">
+                                <translate params="code:'calendar-request-committee',translator:owner"></translate></label>
+                            <input type="text" class="form-control" id="committee" data-bind="value: committee" />
+                        </div>
+
+                        <!-- comments-->
+                        <div class="form-group mb-3">
+                            <label class="control-label" for="comments">
+                                <translate params="code:'label-comments',translator:owner"></translate></label>
+                            <textarea rows="3" data-bind="value:comments" class="form-control" id="comments"></textarea>
+                        </div>
+
+                        <!-- buttons -->
+                        <div class="form-group" >
+                            <button class="btn btn-primary" data-bind="click:send" style="margin-left: 1rem">Send <i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                            <button class="btn btn-primary" data-bind="click:clearAll" style="margin-left: 1rem">Clear</button>
+                            <button class="btn btn-primary" data-bind="visible:cancel,click:cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

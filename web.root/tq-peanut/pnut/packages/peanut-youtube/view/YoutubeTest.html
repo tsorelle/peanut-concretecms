@@ -1,0 +1,27 @@
+<div id="youtubetest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"></span></div>
+<div id="youtubetest-view-container" class="container" style="display: none">
+    <div class="row">
+        <div class="col-md-12">
+            <div data-bind="hidden:videoOn">
+                <p><a href="#" data-bind="click:showVideo">PLAY</a></p>
+            </div>
+
+        </div>
+    </div>
+    <div id='songPlayer1' class="modal" tabindex="-1">
+        <div class="modal-dialog  modal-lg">
+            <!-- styling in .video-modal -->
+            <div class="modal-content video-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-bind="text:songTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <youtube-frame params="id:'video-frame-1',ytcode:youtubeCode"></youtube-frame>
+                </div>
+                <!-- no modal-footer for videos -->
+            </div>
+        </div>
+    </div>
+
+</div>

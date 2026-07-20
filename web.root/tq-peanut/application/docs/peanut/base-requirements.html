@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<p><a href="/help/docs">Return to docs home page</a></p>
+<h1>Base Requirements for Latest Core</h1>
+<p>updated: 12/14/2025</p>
+<h2>Core Libraries and third party components</h2>
+<p>These indicated the latest versions used in testing on this site as of update. </p>
+<h3>For base functonaility</h3>
+<ul>
+<li><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/JavaScript_technologies_overview">Javascript</a> (typescript target) ES6/ES2015</li>
+<li><a target="_blank" href="https://www.php.net/">PHP</a> 8.2.0</li>
+<li><a target="_blank" href="https://www.mysql.com/">MySQL</a> 8.0.31</li>
+<li><a target="_blank" href="https://www.typescriptlang.org/">Typescript</a> 5.4.3 (bundled with PHPStorm)</li>
+<li><a target="_blank" href="https://www.typescriptlang.org/">Knockout JS</a> 3.5.1</li>
+<li><a target="_blank" href="https://headjs.github.io/">Head JS</a> v1.0.3</li>
+<li><a target="_blank" href="https://jquery.com/">JQuery</a> 3.6.0  (jquery only used for Ajax calls)</li>
+<li><a target="_blank" href="https://nodejs.org/en/">Node JS</a> v20.11.0 (development only)</li>
+</ul>
+<h3>For UI features</h3>
+<ul>
+<li><a target="_blank" href="https://getbootstrap.com/">Bootstrap</a> 5.x</li>
+<li><a target="_blank" href="https://fontawesome.com/">Fontawesome</a> 6.x</li>
+<li><a target="_blank" href="https://sass-lang.com/">SASS</a> and <a target="_blank" href="https://lesscss.org/">LESS</a>. These are scripting languages used to produce
+css files. SASS is used in ConcreteCMS 9 and is preferred.</li>
+</ul>
+<p>JQuery Ajax and HeadJS are included in PEANUT</p>
+<h3>Deprecated:</h3>
+<ul>
+<li>LoDash or Underscore, use ES6 JavaScript for string and array functions.</li>
+</ul>
+<h2>Technical Discussion</h2>
+<p>PEANUT for PHP/Typescript was originally developed around 2016 and used several
+foundational libraries and techniques that have sense become "passe" but not
+obsolete. Although they could be replaced by more modern alternatives, I believe
+the core Peanut source should hold up well for the next five or more years.</p>
+<p>Here I'll discuss these technologies and techniques and indicate why they were chosen
+in the first place and suggest alternatives for future exploration.</p>
+<h2>Knockout JS</h2>
+<p><a target="_blank" href="https://knockoutjs.com/">https://knockoutjs.com/</a></p>
+<p>Knockout JS is a JavaScript library that supports data binding between a viewmodel object
+and an HTML fragment called the view. This is known as the MVVM (Model-View-Viewmodel) pattern.</p>
+<p>It is very much at the heart of the Peanut framework.</p>
+<p>Knockout has not been enhanced since 2019, and alternatives such as Angular JS and Vue may be
+preferred for new projects.  Knockout has several virtues though.  It is lightweight and reliable.
+And it is far easier to use than any of the other frameworks.  The syntax and technique is 
+so different from the others that it would take considerable effort to replace in the existing code.</p>
+<p>Alternatives: Vue.js (<a target="_blank" href="https://vuejs.org/">https://vuejs.org/</a>) is widely used and well regarded. I'd recommend it if
+a top-to-bottom redesign is considered.</p>
+<h2>JQuery</h2>
+<p>Use of JQuery was dropped by Bootstrap and many of its core features are obviated in recent JavaScript
+versions.  In Peanut we are using it for "AJAX" service calls (see pnut/core/Services.ts) and to
+dynamically load HTML such as Knockout "views".
+Theoretically it may be inefficient to use such a large library for such narrow purposes.<br />
+But I have not notices any issues so it is hard to find a compelling reason to change.</p>
+<p>Alternatives: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch]">Fetch API</a> or 
+<a target="_blank" href="https://axios-http.com/docs/intro">Axios</a></p>
+<p>For more see <a target="_blank" href="https://sourcebae.com/blog/what-are-the-best-alternatives-to-ajax-exploring-the-options/">Best Ajax Alternatives</a></p>
+<h2>JavaScript Modules and Loading</h2>
+<p>When Peanut was written the current most widely supported versions of JavaScript had standard to
+support modules and no functionality for dynamic loading of them.</p>
+<p>Accordingly we used <a target="_blank" href="https://axios-http.com/docs/intro">TypeScript "Namespaces"</a> to define modules.
+To load modules and other resources we wrote our own code using the (Head JS)[<a target="_blank" href="https://headjs.github.io/">https://headjs.github.io/</a>] to handle the task.</p>
+<p>Since then, JavaScript introduced the "Import" and "Export" keywords to define modules. 
+See <a target="_blank" href="https://www.typescriptlang.org/docs/handbook/2/modules.html">Modules</a> in the TypeScript
+manual.  Not that since we are not using import/export much, the "reference path" directive is 
+often require and is used in all our TS files:</p>
+<pre><code class="language-typescript">/// &lt;reference path="..." /&gt;</code></pre>
+<p>But JavaScript still lacks suffient support for ordered asynchronous loading. An a third party library or system
+is needed. Currently <a target="_blank" href="https://webpack.js.org/">Webpack</a> is the most popular solution.</p>
+<p>Replacing our loader with WebPack would require considerable revision to nearly all our Typescript files and
+it is not clear whether Webpack would serve out purposes.</p>
+<p>To get an idea of how our loading system see pnut/core/PeanutLoader.ts. You may note that Head.js is only used
+in two places and JQuery in another two.  If a preferred alternavive to this low level 
+loading function can be found it would be easy to introduce. I'm not really sure one could improve
+on head.js and JQuery may still be needed for Ajax calls.</p>
+<p>To see how our loading routines work or a higher level, examine the init() function in any 
+viewmodel TS file and look for application functions: loadStyleSheets and loadResources.
+Note that these have a function parameter that executes on load success. This is how we
+make sure that dependent modules are not loaded in the wrong order.</p>
+</body>
+</html>

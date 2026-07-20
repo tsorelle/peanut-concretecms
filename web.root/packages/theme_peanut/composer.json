@@ -1,0 +1,39 @@
+{
+  "name": "portlandlabs/pl_theme_english_garden",
+  "description": "English Garden Theme.",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "type": "concrete5-package",
+  "require": {
+    "php": ">=7.4"
+  },
+  "conflict": {
+      "concrete5/core": "<9.3"
+  },
+  "config": {
+      "allow-plugins": {
+          "mlocati/composer-patcher": true,
+          "pestphp/pest-plugin": true
+      }
+  },
+  "require-dev": {
+      "roave/security-advisories": "dev-latest",
+      "laravel/pint": "^1.16",
+      "rector/rector": "^1.1",
+      "concrete5/core": "^9",
+      "pestphp/pest": "^1.23",
+      "mockery/mockery": "^1.6"
+  },
+  "scripts": {
+      "lint": "pint",
+      "rector": "rector",
+      "test:lint": "@lint --test",
+      "test:rector": "@rector --dry-run",
+      "test:unit": "pest",
+      "test": [
+          "@test:lint",
+          "@test:rector",
+          "@test:unit"
+      ]
+  }
+}

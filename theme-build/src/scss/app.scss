@@ -1,0 +1,30 @@
+// Import base stylesheets
+@import "~@concretecms/bedrock/assets/bedrock/scss/frontend";
+
+// FRONT END - Follow these and make files in their corresponding folders to add customizations.
+// Check the FEATURES.md file for how these line up with blocks and functionalities.
+
+// @import "features/account";
+@import "features/basics";
+// @import "features/boards";
+// @import "features/calendar";
+// @import "features/conversations";
+// @import "features/desktop";
+@import "features/documents";
+@import "features/express";
+// @import "features/faq";
+@import "features/imagery";
+@import "features/maps";
+// @import "features/multilingual";
+@import "features/navigation";
+// @import "features/polls";
+// @import "features/profile";
+@import "features/search";
+@import "features/social";
+@import "features/taxonomy";
+// @import "features/testimonials";
+@import "features/video";
+
+// div.ccm-page {
+
+// }

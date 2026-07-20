@@ -1,0 +1,8 @@
+This is your weekly reminder of upcoming calendar events and scheduled tasks for the [[committee-name]] committee.
+[[date-range]]
+
+[[content]]
+
+If you no longer serve on this committee, please reply to this message and let us know.
+
+If you no longer wish to receive any committee reminders or other notifications, you can unsubscribe at [[siteUrl]][[optout-page]]?uid=[[uid]]

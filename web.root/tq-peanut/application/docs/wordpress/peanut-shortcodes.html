@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../markdown.css">
+</head>
+<body>
+<h2>Peanut shortcodes</h2>
+<p>WordPress shortcodes are a way to embed dynamic content into your WordPress posts and pages. 
+They are a simple and easy way to add functionality to your site without having to write any code. </p>
+<p>Peanut provides some custom short codes that are especially useful for placing in widget areas.</p>
+<p>Currently we have the following short codes:</p>
+<ul>
+<li>[peanut-contact-link] displays a link to the peanut contact form.</li>
+<li>[peanut-signin-link] displays a "Sign Out" link if the user is signed in.  If not signed in, the user full name and a "Sign In" link is displayed.</li>
+</ul>
+<p>These are typically placed in footer widget areas to emulate the look of the default Nutshell theme. For example in the Bootscore theme, place </p>
+<ul>
+<li>[peanut-contact-link] in "Footer 1"</li>
+<li>[peanut-signin-link]  in "Footer 4"</li>
+</ul>
+<p>Caution: At certain times, a shortcode may execute its code before the peanut classes are loaded, causing an exception.
+This is especially true for those inserted in widget areas, since the customizer page may load without peanut initialization.</p>
+<p>In theme and plugin files watch out for functions that may execute early or in admin or customizer pages, 
+such as function.php in themes and plugin php files such as peanut.php. Check if a peanut class exists before executing 
+code that depends on peanut PHP libraries. As in the example below.</p>
+<pre><code class="language-php">        if (class_exists('\Tops\sys\TUser')) {
+            // better formatting
+            $userName = TUser::getCurrent()-&gt;getFullName() .' | ';
+        } else {
+            // use if Peanut class is not available
+            $userName = wp_get_current_user()-&gt;display_name .' | ';
+        }</code></pre>
+<p>See  web.root/wp-content/themes/bootscore-child/functions.php for the full example.</p>
+</body>
+</html>

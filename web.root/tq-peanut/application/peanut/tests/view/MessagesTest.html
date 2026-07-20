@@ -1,0 +1,45 @@
+<!-- div class="container" -->
+<h2>Messages Test</h2>
+<div id="messagestest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:gray"></span></div>
+<div id="messagestest-view-container"  style="display: none">
+<div class="row"  >
+    <div class="col-md-6">
+        <h3>Wait Messages</h3>
+        <div>
+            <button class="btn btn-primary mb-1" data-bind="click:onShowWaiter" >Show Waiter</button>
+        </div>
+        <div>
+            <button  class="btn btn-primary mb-1" data-bind="click:onShowActionWaiter" >Show Action Waiter</button>
+        </div>
+        <div>
+            <button  class="btn btn-primary mb-1" data-bind="click:onShowBannerWaiter" >Show Banner Waiter</button>
+        </div>
+        <div>
+            <button  class="btn btn-primary mb-1" data-bind="click:onShowSpinWaiter" >Show Spin Waiter</button>
+        </div>
+
+        <div>
+            <button  class="btn btn-primary mb-1" data-bind="click:onShowProgressWaiter" >Show Progress Waiter</button>
+        </div>
+
+        <div>
+            <button  class="btn btn-primary mb-1" data-bind="click:onShowProcessWaiter" >Show Process Waiter</button>
+        </div>
+        <div>
+            <button  class="btn btn-primary mb-1" data-bind="click:onHideWaiter" >Hide Waiter</button>
+        </div>
+
+
+    </div>
+    <div class="col-md-6">
+        <h3>Alert Messages</h3>
+        <button  class="btn btn-success mb-1"  data-bind="click:onShowMessage" >Show Message</button><br><br>
+
+        <div>
+            <button  class="btn btn-danger mb-1" data-bind="click:onShowError" >Show Error</button>
+        </div>
+
+    </div>
+
+</div>
+</div>

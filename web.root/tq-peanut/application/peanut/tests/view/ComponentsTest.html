@@ -1,0 +1,48 @@
+<!-- div class="container" -->
+<input type="hidden" id="peanut-vm-context" value="context-test">
+<h2>View Model Test</h2>
+<div id="componentstest-load-message"><span class="fa fa-spinner fa-pulse fa-2x" style="color:gray"></span></div>
+<div class="row">
+    <div id="componentstest-view-container" class="col-md-8" style="display: none">
+
+        <h3 id="mainheader">Early Bound Components</h3>
+
+        <intro-message></intro-message>
+        <message-constructor></message-constructor>
+        <div data-bind="visible:messagePanel() == 'button'">
+            <button  class="btn btn-primary mb-1"  data-bind="click:onShowForm">Show form component</button>
+        </div>
+        <div data-bind="visible:messageButtonVisible">
+            <button  class="btn btn-primary mb-1" data-bind="click:onShowMessageComponent">Show message component</button>
+        </div>
+        <div data-bind="visible:messagePanel() == 'form'">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <input data-bind="value:messageText" /><button data-bind="click:onSendMessage">Send message</button>
+        </div>
+        <h4 class="mt-4">Environment information</h4>
+        <p>Device size <span data-bind="text:deviceSize"></span>
+            <br>Bootstrap version: <span data-bind="text:bootstrapVersion"></span>
+        </p>
+        <form style="border: 1px solid black" class="p-4 w-75 mb-4">
+        <div class="form-group mb-3">
+            <change-password params="password:password, label:'Password component:'"></change-password>
+        </div>
+        <div class="mt-3 mb-3">
+            <button type="button" class="me-3  btn btn-secondary" data-bind="click:onSigninRequest">Show password</button>
+        </div>
+
+            <month-lookup params="selected: testMonth, month: 1, label: 'Month Lookup Component'"></month-lookup>
+            <button type="button" class="btn btn-secondary" data-bind="click:onAddMonth">Show selected month</button>
+        </form>
+
+
+    </div>
+    <div class="col-md-4">
+        <h3>Late Bound Components</h3>
+
+        <div id="test-form-container"><test-form></test-form></div>
+        <div id="test-message-container"><test-message></test-message></div>
+
+    </div>
+</div>
+<!-- /div -->

@@ -1,0 +1,18 @@
+<div class="form-group mb-3" data-bind="visible:!inline()">
+  <label class="control-label" data-bind="visible:label, text:label, attr: {for: controlId, title:labelTitle}"></label>
+  <select class="form-control"
+          data-bind=" attr: {id: controlId, title: title, autocomplete: autocomplete},
+                      options: options,
+                      optionsText:'name',
+				      value: selectedItem,
+				      optionsCaption: caption">
+  </select>
+</div>
+<select class="form-control"
+        data-bind="   visible: inline,
+                      attr: {id: controlId, title: title, autocomplete: autocomplete},
+                      options: options,
+                      optionsText:'name',
+				      value: selectedItem,
+				      optionsCaption: caption">
+</select>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peanut Documentation</title>
+    <link rel="stylesheet" href="../../markdown.css">
+
+</head>
+<body>
+<p><a href="../../index.html">Return to docs home page</a></p>
+<h1>lookupEditComponent</h1>
+<p>This component allows the a data management page for any entity that supports the ILookupItem interface.</p>
+<h2>Markup example</h2>
+<h2>Parameters</h2>
+<p>Required:</p>
+<ul>
+<li>items: observable array</li>
+<li>onUpdate:  (item: ILookupItem) =&gt; void;</li>
+</ul>
+<p>Optional:</p>
+<ul>
+<li>name: string - item name</li>
+<li>plural: string - plural version of name if needed</li>
+<li>canEdit: observable<boolean> or 'yes' - defaults to false</li>
+<li>translator: self - not supported at this time.</li>
+</ul>
+<h2>Implementation</h2>
+<p>The view contains only the component tag and parameters.</p>
+<p>Example:</p>
+<pre><code class="language-html">&lt;div id="quarterlymeeting-load-message"&gt;&lt;span class="fa fa-spinner fa-pulse fa-2x" style="color:lightgrey"&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div id="quarterlymeeting-view-container" class="row" style="display: none"&gt;
+    &lt;lookup-edit params="
+        items:quarterlies,
+        onUpdate:updateQuarterly,
+        name:'quarterly',
+        plural:'quarterlies',
+        canEdit:userCanEdit"&gt;
+    &lt;/lookup-edit&gt;
+&lt;/div&gt;
+</code></pre>
+</body>
+</html>
