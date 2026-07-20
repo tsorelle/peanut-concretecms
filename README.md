@@ -1,2 +1,2 @@
-# peanut-ccms
-Peanut Reference Application for Concrete CMS version 9+
+# peanut-concretecms
+Reference architecture for Peanut in ConcreteCMS version 9+
