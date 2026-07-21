@@ -9,20 +9,10 @@
     "forceConsistentCasingInFileNames": false
   },
   "include"  : [
-    "web.root/application/peanut/components/**/*",
-    "web.root/application/peanut/tests/components/**/*",
-    "web.root/application/peanut/tests/vm/**/*",
-    "web.root/application/peanut/vm/**/*",
-    "web.root/application/tests/peanut/vm/**/*",
-    "web.root/packages/knockout_view/pnut/admin/**/*",
-    "web.root/packages/knockout_view/pnut/components/**/*",
-    "web.root/packages/knockout_view/pnut/core/**/*",
-    "web.root/packages/knockout_view/pnut/extensions/**/*",
-    "web.root/packages/knockout_view/pnut/packages/**/*",
-    "web.root/packages/knockout_view/pnut/packages/**/*",
-    "web.root/tests/js/**/*"
+    "web.root/tq-peanut/application/peanut/**/*",
+    "web.root/tq-peanut/pnut/**/*",
   ],
   "exclude": [
-    "web.root/packages/knockout_view/typings/**/*"
+    "web.root/tq-peanut/typings/**/*"
   ]
 }

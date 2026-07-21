@@ -62,6 +62,3 @@ node_modules/
 /theme-build/output/
 /theme-build/package-lock.json
 
-# Project exclude paths
-/web.root/packages/knockout_view/typings/**
-/web.root/packages/knockout_view/typings-old/**
