@@ -51,7 +51,7 @@ node_modules/
 
 # Web root - Specific package/theme folders
 /web.root/packages/theme_basic_bedrock/
-/web.root/packages/knockout_view/installation/
+/web.root/packages/tq_peanut/installation/
 
 # Developer tools and test files
 /dev-tools/model-builder/**

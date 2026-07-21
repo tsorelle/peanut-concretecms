@@ -28,13 +28,13 @@ Initalizes settings used by Peanut and registers autoload functions for our
 vendors directory as well as Peanut PHP code.</p>
 </li>
 <li>
-<p>Concrete\Package\KnockoutView\on_start()<br>
+<p>Concrete\Package\TqPeanut\on_start()<br>
 Registers the required javascript assets: headJS and the Peanut loader. 
 All other JS and CSS dependencies are loaded dynamically by Peanut, 
 unless they are already present in ConcreteCMS.</p>
 </li>
 <li>
-<p>Concrete\Package\KnockoutView\Block\KnockoutView\Controller.view()<br></p>
+<p>Concrete\Package\TqPeanut\Block\KnockoutView\Controller.view()<br></p>
 <ul>
 <li>Retrieves and initializes view model settings: ViewModelManager::getViewModelSettings();</li>
 <li>Using the view model setting, the content of the ViewModel's view html file is
@@ -53,7 +53,7 @@ later loading code.</p>
      if (class_exists('\Peanut\sys\ViewModelManager')) {
          \Peanut\sys\ViewModelManager::RenderStartScript();
      } else {
-         print "ViewModelManager not found. Package 'knockout_view' is required.";
+         print "ViewModelManager not found. Package 'tq_peanut' is required.";
      }
  }</code></pre>
 <p>At run time, RenderStartScript() produces code that loads one or more viewmodels used on the
@@ -72,22 +72,22 @@ to the markup.<br><br>Example:</p>
 <p>In most cases only one view model is loaded. A Committee page uses four blocks.<br></p>
 </li>
 <li>
-<p>PeanutLoader.startApplication() in web.root/packages/knockout_view/pnut/core/PeanutLoader.ts<br></p>
+<p>PeanutLoader.startApplication() in web.root/packages/tq_peanut/pnut/core/PeanutLoader.ts<br></p>
 <ul>
 <li>Loads remaining javascript dependencies</li>
 <li>Calls Application.startVM</li>
 </ul>
 </li>
 <li>
-<p>Appliction.startVM() in web.root/packages/knockout_view/pnut/core/App.ts<br>
+<p>Appliction.startVM() in web.root/packages/tq_peanut/pnut/core/App.ts<br>
 Calls koHelper.loadViewModel() to load the first viewmodel.</p>
 </li>
 <li>
-<p>Peanut.KnockoutHelper.loadViewModel() in web.root/packages/knockout_view/pnut/core/KnockoutHelper.ts<br>
+<p>Peanut.KnockoutHelper.loadViewModel() in web.root/packages/tq_peanut/pnut/core/KnockoutHelper.ts<br>
 Instantiates and initializes the ViewModel, then calls the start() method for the viewmodel.</p>
 </li>
 <li>
-<p>Peanut.ViewModelBase.start() in web.root/packages/knockout_view/pnut/core/ViewModelBase.ts<br>
+<p>Peanut.ViewModelBase.start() in web.root/packages/tq_peanut/pnut/core/ViewModelBase.ts<br>
 ViewModelBase, as you might guess, is the base class for all viewmodels. The start() routine which
 performs initialization and them calls the init() method for the current instance.</p>
 </li>

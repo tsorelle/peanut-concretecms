@@ -165,7 +165,7 @@ In FMA's case:<ul>
 </li>
 <li>A peanut package directory. We will take an example from qnut-documents.<ul>
 <li>Namespace: Peanut\QnutDocuments\services</li>
-<li>Location: web.root/packages/knockout_view/pnut/packages/qnut-documents/src/services</li>
+<li>Location: web.root/packages/tq_peanut/pnut/packages/qnut-documents/src/services</li>
 </ul>
 </li>
 <li>We may also create a sub-directory to one of the above.</li>
@@ -173,7 +173,7 @@ In FMA's case:<ul>
 <ol start="2">
 <li>
 <p>Create the service command class in a PHP file.
-You may use this file as a template: web.root/packages/knockout_view/pnut/examples/servicecommand-template.txt<br>
+You may use this file as a template: web.root/packages/tq_peanut/pnut/examples/servicecommand-template.txt<br>
 And save it to the location you identified in step 2, with the filename </p>
 </li>
 <li>
@@ -181,7 +181,7 @@ And save it to the location you identified in step 2, with the filename </p>
 </li>
 <li>
 <p>Add the executeService call to your typescript view model file. You can use the content of this file as a template:<br>
-web.root/packages/knockout_view/pnut/examples/service-call-template.txt</p>
+web.root/packages/tq_peanut/pnut/examples/service-call-template.txt</p>
 </li>
 </ol>
 <hr>
@@ -194,23 +194,23 @@ search for the class name.</p>
 <p>For a detailed look at how namespaced are mapped to the directory structure, 
 see: <a href="php-namespaces.html">PHP Namespaces</a></p>
 <h3>2-Peanut Core Service Commands</h3>
-<p>Note that some service commands are found in sub-directories of web.root/packages/knockout_view/src.
+<p>Note that some service commands are found in sub-directories of web.root/packages/tq_peanut/src.
 These classes are reserved for use of peanut core features.</p>
 <h3>3-Source files for handling service command requests</h3>
 <p>These are listed in order of their role in the service call sequence.</p>
 <ul>
 <li>ServiceBroker class in<br> 
-web.root/packages/knockout_view/pnut/core/Services.ts</li>
+web.root/packages/tq_peanut/pnut/core/Services.ts</li>
 <li>Routing path, /peanut/service/execute, defined in <br>
 web.root/application/bootstrap/app.php</li>
 <li>ServiceRequestHandler class in <br>
-web.root/packages/knockout_view/src/concrete5/ServiceRequestHandler.php</li>
+web.root/packages/tq_peanut/src/concrete5/ServiceRequestHandler.php</li>
 <li>ServiceFactory class in <br>
-web.root/packages/knockout_view/src/tops/services/ServiceFactory.php</li>
+web.root/packages/tq_peanut/src/tops/services/ServiceFactory.php</li>
 <li>TAbstractServiceFactory::executeService() <br>
-in web.root/packages/knockout_view/src/tops/services/TAbstractServiceFactory.php</li>
+in web.root/packages/tq_peanut/src/tops/services/TAbstractServiceFactory.php</li>
 <li>TServiceCommand class in<br> 
-web.root/packages/knockout_view/src/tops/services/TServiceCommand.php<br></li>
+web.root/packages/tq_peanut/src/tops/services/TServiceCommand.php<br></li>
 <li>Any concrete class that extends TServiceCommand</li>
 </ul>
 <h3>4-Case Sensitivity</h3>

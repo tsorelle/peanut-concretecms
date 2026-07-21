@@ -8,7 +8,7 @@ if (!$c->isEditMode()) {
     if (class_exists('\Peanut\sys\ViewModelManager')) {
         \Peanut\sys\ViewModelManager::RenderStartScript();
     } else {
-        print "ViewModelManager not found. Package 'knockout_view' is required.";
+        print "ViewModelManager not found. Package 'tq_peanut' is required.";
     }
 }
 ?>

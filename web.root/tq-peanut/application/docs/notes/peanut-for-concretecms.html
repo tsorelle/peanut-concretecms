@@ -16,7 +16,7 @@ blocks:</p>
 <ol>
 <li>
 <p>Knockout View Block  (in "Knockout View" package)<br>
-in web.root/packages/knockout_view<br>
+in web.root/packages/tq_peanut<br>
 see: <a href="knockout-view.html">Knockout View Block</a><br></p>
 </li>
 <li>
@@ -51,7 +51,7 @@ at the end of the file, just before the terminating body tag.</p>
         if (class_exists('\Peanut\sys\ViewModelManager')) {
             \Peanut\sys\ViewModelManager::RenderStartScript();
         } else {
-            print "ViewModelManager not found. Package 'knockout_view' is required.";
+            print "ViewModelManager not found. Package 'tq_peanut' is required.";
         }
     }
 ?&gt;
@@ -60,7 +60,7 @@ at the end of the file, just before the terminating body tag.</p>
 <p>This inserts JavaScript code that loads the viewmodels needed for the particular page.<br />
 See <a href="startup-sequence.html">Startup Sequence</a> for details.</p>
 <h4>Required JavaScript</h4>
-<p>The required javascript is inserted by the controller.php file in the knockout_view package.</p>
+<p>The required javascript is inserted by the controller.php file in the tq_peanut package.</p>
 <pre><code class="language-php">    public function on_start()
     {
         $al = AssetList::getInstance();

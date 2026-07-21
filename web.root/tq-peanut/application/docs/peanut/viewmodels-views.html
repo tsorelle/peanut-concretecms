@@ -97,18 +97,18 @@ For example: austinquakers.org for Friends Meeting of Austin.</li>
 <li>PHP source such as Service Commands for the application go in web.root/application/src</li>
 </ul>
 </li>
-<li>Sub-directories of the Peanut Package directory: web.root/packages/knockout_view/pnut/packages<ul>
+<li>Sub-directories of the Peanut Package directory: web.root/packages/tq_peanut/pnut/packages<ul>
 <li>This is for code that might be used in other sites with Peanut.<ul>
 <li>Each package has a "config" subdirectory containing its viewmodels.ini file.</li>
 <li>Each package has a "src" subdirectory for PHP source code.</li>
 <li>Directory names for packages for use by other Friends meetings and organizations are
-prefixed with "qnut-".  E.g. web.root/packages/knockout_view/pnut/packages/qnut-committees</li>
+prefixed with "qnut-".  E.g. web.root/packages/tq_peanut/pnut/packages/qnut-committees</li>
 <li>Peanut core features are contained in package directories prefixt with "peanut-".
-E.g. web.root/packages/knockout_view/pnut/packages/qnut-committees</li>
+E.g. web.root/packages/tq_peanut/pnut/packages/qnut-committees</li>
 </ul>
 </li>
 <li>PHP code used in common by all Peanut and application features is in:
-web.root/packages/knockout_view/src<h3>Naming</h3>
+web.root/packages/tq_peanut/src<h3>Naming</h3>
 <p>Viewmodel names are camel cased, e.g. "SimpleTest". We derive the viewmodel identifier
 by lowercasing the name and putting a hyphen between words. E.g. "simple-test"</p>
 </li>
@@ -142,7 +142,7 @@ roles=authenticated</code></pre>
 <h2>Creating the View file in HTML</h2>
 </li>
 </ul>
-<p>To start, open the template file, web.root/packages/knockout_view/pnut/examples/view-template.txt.</p>
+<p>To start, open the template file, web.root/packages/tq_peanut/pnut/examples/view-template.txt.</p>
 <p>Replace the two occurance of "viewname" with the viewmodel name, the name not the identifier.  For example
 the SimpleTest viewmodel will have two divs</p>
 <pre><code class="language-html">&lt;div id="simpletest-load-message"&gt;&lt;span class="..." style="color:lightgrey"&gt;&lt;/span&gt;&lt;/div&gt;
@@ -150,7 +150,7 @@ the SimpleTest viewmodel will have two divs</p>
 <p>Save in your chosen location as (ViewModel name).html. <br>Example: web.root/application/peanut/tests/view/SimpleTest.html</p>
 <p>Now you can add your markup and data bindins inside the "-view-container" div.</p>
 <h2>Defining the ViewModel class in TypeScript</h2>
-<p>To start, open the template file, web.root/packages/knockout_view/pnut/examples/viewmodel-template.txt</p>
+<p>To start, open the template file, web.root/packages/tq_peanut/pnut/examples/viewmodel-template.txt</p>
 <p>Replace "VmNameViewModel" with the class name of your view model. E.g "SimpleTestViewModel"</p>
 <p>Replace "PackageName" with the appropriate name space for your view model.  For viewmodels in packages this corresponds 
 to the directory name. Viewmodels in pnut/packages/qnut-directory have the namespace QnutDirectory. Viewmodels in
@@ -159,10 +159,10 @@ application/peanut use "Peanut" as the namespace.</p>
 web.root/application/peanut/tests/vm/SimpleTestViewModel.ts</p>
 <p>Depending on the location you may need to correct the relative paths in reference path elements.</p>
 <p>If your location is web.root/application/peanut/tests/vm.  The reference to ViewModelBase.ts is</p>
-<pre><code class="language-html">/// &lt;reference path='../../../../packages/knockout_view/pnut/core/ViewModelBase.ts' /&gt;</code></pre>
+<pre><code class="language-html">/// &lt;reference path='../../../../packages/tq_peanut/pnut/core/ViewModelBase.ts' /&gt;</code></pre>
 <p>In web.root/application/peanut/vm.</p>
-<pre><code class="language-html">/// &lt;reference path='../../../packages/knockout_view/pnut/core/ViewModelBase.ts' /&gt;</code></pre>
-<p>In a package directory, e.g. web.root/packages/knockout_view/pnut/packages/qnut-directory/vm</p>
+<pre><code class="language-html">/// &lt;reference path='../../../packages/tq_peanut/pnut/core/ViewModelBase.ts' /&gt;</code></pre>
+<p>In a package directory, e.g. web.root/packages/tq_peanut/pnut/packages/qnut-directory/vm</p>
 <pre><code class="language-html">/// &lt;reference path="../../../../pnut/core/ViewModelBase.ts" /&gt;</code></pre>
 <p>File names are case sensitive.
 Correct:</p>
@@ -255,11 +255,11 @@ a comma delimited list in a single string. Example:</p>
 locate the resource:</p>
 <ul>
 <li>'@pnut/' refers the the Peanut JavaScript source directory. <ul>
-<li>In ConcreteCMS: web.root/packages/knockout_view/pnut/js</li>
+<li>In ConcreteCMS: web.root/packages/tq_peanut/pnut/js</li>
 </ul>
 </li>
 <li>'@pkg/' refers to the Peanut packages directory.<br><ul>
-<li>In ConcreteCMS: web.root/packages/knockout_view/pnut/packages</li>
+<li>In ConcreteCMS: web.root/packages/tq_peanut/pnut/packages</li>
 </ul>
 </li>
 <li>'@lib/' refers to an external or local Javascript library.<ul>

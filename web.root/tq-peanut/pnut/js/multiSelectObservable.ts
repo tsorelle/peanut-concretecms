@@ -1,6 +1,6 @@
 /// <reference path='../../pnut/core/Peanut.d.ts' />
 /// <reference path='../../typings/knockout/index.d.ts' />
-// web.root/packages/knockout_view/pnut/js/multiSelectObservable.ts
+// web.root/packages/tq_peanut/pnut/js/multiSelectObservable.ts
 namespace Peanut {
 
     export interface IMultiSelectObservable {
@@ -52,5 +52,6 @@ namespace Peanut {
         }
     }
 }
+
 
 

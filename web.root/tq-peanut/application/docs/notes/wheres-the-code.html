@@ -11,12 +11,12 @@
 <p>Custom Code for the FMA site is found in the following locations.</p>
 <ol>
 <li>
-<p>The knockout_view package<br>
-Location: web.root/packages/knockout_view</p>
+<p>The tq_peanut package<br>
+Location: web.root/packages/tq_peanut</p>
 <ul>
 <li>controller.php - basic ConcreteCMS startup and management code for the package</li>
-<li>knockout_view/blocks: Code for custom block templates. see section below.</li>
-<li>knockout_view/pnut: The PEANUT framework and code<ul>
+<li>tq_peanut/blocks: Code for custom block templates. see section below.</li>
+<li>tq_peanut/pnut: The PEANUT framework and code<ul>
 <li>pnut/core: essential core code for PEANUT.  </li>
 <li>pnut/components -  KnockoutJS components for PEANUT. HTML for these components is in the "templates" directory.</li>
 <li>pnut/packages - these are code modules mostly containing Knockout views/viewmodels,
@@ -30,7 +30,7 @@ PHP source and configuration items.</li>
 </li>
 </ul>
 </li>
-<li>knockout_view\src: PHP source files used by peanut core.  AKA "TOPS PHP Library"</li>
+<li>tq_peanut\src: PHP source files used by peanut core.  AKA "TOPS PHP Library"</li>
 </ul>
 </li>
 <li>
@@ -40,7 +40,7 @@ Location: web.root/packages/peanut_utilities </p>
 <li>controller.php - ConcreteCMS startup code</li>
 <li>blocks/pnut_attribute_field  <br>
 The sole purpose of this ConcreteCMS package is to provide the "Peanut Attribute Field" 
-block. This may be refactored later to be included in the knockout_view package.</li>
+block. This may be refactored later to be included in the tq_peanut package.</li>
 </ul>
 </li>
 <li>
@@ -100,7 +100,7 @@ See: <a href="templates-and-styles.html">Templates and Styles</a></p>
 </li>
 <li>Peanut Authenticated Content<ul>
 <li>hides content from anonymous users</li>
-<li>Location: web.root/packages/knockout_view/blocks/content/templates/peanut_authenticated_content/view.php</li>
+<li>Location: web.root/packages/tq_peanut/blocks/content/templates/peanut_authenticated_content/view.php</li>
 <li>Example: footer content column 2 second content block</li>
 </ul>
 </li>
@@ -109,14 +109,14 @@ See: <a href="templates-and-styles.html">Templates and Styles</a></p>
 <li>Peanut Html Placeholder<ul>
 <li>Used with HTML blocks that contain non-visual elements to
 make it visible in edit mode. Example in /tasks/testing/service-test</li>
-<li>Location: web.root/packages/knockout_view/blocks/html/templates/peanut_html_placeholder</li>
+<li>Location: web.root/packages/tq_peanut/blocks/html/templates/peanut_html_placeholder</li>
 <li>Theme templates<ul>
 <li>Several templates were provided by concreteCMS in the Atomik theme from which the FMA theme derives.</li>
 <li>Location: web.root/application/themes/fma/blocks</li>
 <li>Colapsible Knockout View</li>
 <li>Used to surround a Knockout View Block with a colapsible section.
 See committee pages for examples.</li>
-<li>Location: web.root/packages/knockout_view/blocks/knockout_view/templates/collapsible-knockout-view</li>
+<li>Location: web.root/packages/tq_peanut/blocks/tq_peanut/templates/collapsible-knockout-view</li>
 </ul>
 </li>
 <li>Obsolete templates:<ul>
